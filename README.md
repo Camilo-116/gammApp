@@ -2,7 +2,7 @@
 
 Gaming Social Network.
 
-Mobile Programming Course Project.
+Mobile Programming Course Final Project.
 
 ## Getting Started
 
