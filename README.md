@@ -1,6 +1,8 @@
-# gamma
+# GammApp
 
-A new Flutter project.
+Gaming Social Network.
+
+Mobile Programming Course Project.
 
 ## Getting Started
 
