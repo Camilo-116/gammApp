@@ -36,10 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
             height: double.infinity,
             child: SingleChildScrollView(
               physics: AlwaysScrollableScrollPhysics(),
-              padding: EdgeInsets.symmetric(
-                horizontal: 40.0,
-                vertical: 120.0,
-              ),
+              padding: EdgeInsets.fromLTRB(40.0, 70, 40, 30.0),
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -211,7 +208,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _buildLoginBtn() {
     return Container(
-        padding: EdgeInsets.symmetric(vertical: 25.0),
+        padding: EdgeInsets.only(top: 25.0, bottom: 10),
         child: SizedBox(
           width: double.infinity,
           child: ElevatedButton(
@@ -242,14 +239,14 @@ class _LoginScreenState extends State<LoginScreen> {
               color: Colors.white, fontWeight: FontWeight.bold),
         ),
         Row(
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextButton(
               onPressed: () {},
               child: const Text('¿No tienes una cuenta? Registrate aquí',
                   style: TextStyle(
                       color: Colors.white,
-                      fontSize: 16.0,
+                      fontSize: 12.0,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Montserrat')),
             ),
