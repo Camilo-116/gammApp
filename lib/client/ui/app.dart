@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
             if (controller.splash) {
               return SplashScreen();
             }
-            return const MyHomePage(title: 'Chupela');
+            return LoginScreen();
           },
         ));
   }
