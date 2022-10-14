@@ -1,6 +1,11 @@
+import 'dart:developer';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
+
+import 'signup_page.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -14,73 +19,75 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(children: <Widget>[
-        Container(
-          height: double.infinity,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color(0xFF73AEF5),
-                Color(0xFF61A4F1),
-                Color(0xFF478DE0),
-                Color(0xFF398AE5),
-              ],
-              stops: [0.1, 0.4, 0.7, 0.9],
-            ),
-          ),
-        ),
-        Container(
+      body: Center(
+        child: Stack(children: <Widget>[
+          Container(
             height: double.infinity,
-            child: SingleChildScrollView(
-              physics: AlwaysScrollableScrollPhysics(),
-              padding: EdgeInsets.fromLTRB(40.0, 70, 40, 30.0),
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      'Inicio de sesión',
-                      style: GoogleFonts.openSans(
-                        color: Colors.white,
-                        fontSize: 30.0,
-                        fontWeight: FontWeight.bold,
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Color.fromARGB(255, 89, 147, 218),
+                  Color.fromARGB(255, 78, 140, 212),
+                  Color.fromARGB(255, 55, 117, 192),
+                  Color.fromARGB(255, 37, 103, 177),
+                ],
+                stops: [0.1, 0.4, 0.7, 0.9],
+              ),
+            ),
+          ),
+          SizedBox(
+              height: double.infinity,
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.fromLTRB(40.0, 70, 40, 30.0),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        'Inicio de sesión',
+                        style: GoogleFonts.openSans(
+                          color: Colors.white,
+                          fontSize: 30.0,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 30.0),
-                    _buildEmailTF(),
-                    SizedBox(height: 30.0),
-                    _buildPasswordTF(),
-                    _buildForgotPasswordBtn(),
-                    _buildRememberMeBtn(),
-                    _buildLoginBtn(),
-                    _buildSignWith(),
-                  ]),
-            ))
-      ]),
+                      const SizedBox(height: 30.0),
+                      _buildTF('Nombre de Usuario', Icons.person, false),
+                      const SizedBox(height: 20.0),
+                      _buildTF('Contraseña', Icons.lock, _isObscure),
+                      _buildForgotBtn(),
+                      _buildRememberMeBtn(),
+                      _buildLoginBtn(),
+                      _buildSignWith(),
+                    ]),
+              ))
+        ]),
+      ),
     );
   }
 
-  Widget _buildEmailTF() {
+  Widget _buildTF(String nCampo, IconData icon, bool obscure) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          'Correo electrónico',
+          nCampo,
           style: GoogleFonts.openSans(
             color: Colors.white,
-            fontSize: 18.0,
             fontWeight: FontWeight.bold,
+            fontSize: 18,
           ),
         ),
-        SizedBox(height: 10.0),
+        const SizedBox(height: 10.0),
         Container(
           alignment: Alignment.centerLeft,
           decoration: BoxDecoration(
-            color: Color.fromARGB(69, 255, 255, 255),
+            color: const Color.fromARGB(69, 255, 255, 255),
             borderRadius: BorderRadius.circular(10.0),
-            boxShadow: [
+            boxShadow: const [
               BoxShadow(
                 color: Colors.black12,
                 blurRadius: 6.0,
@@ -88,22 +95,25 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ],
           ),
-          height: 60.0,
           child: TextField(
+            autocorrect: false,
+            enableSuggestions: false,
+            obscureText: obscure,
             keyboardType: TextInputType.emailAddress,
-            style: TextStyle(color: Colors.white),
+            style: const TextStyle(color: Colors.white),
             decoration: InputDecoration(
               border: InputBorder.none,
-              contentPadding: EdgeInsets.only(top: 14.0),
+              // contentPadding: const EdgeInsets.only(top: 14.0),
               prefixIcon: Icon(
-                Icons.email,
+                icon,
                 color: Colors.white,
+                size: 25,
               ),
-              hintText: 'Ingresa tu correo',
+              hintText: 'Ingresa tu ${nCampo.toLowerCase()}',
               hintStyle: GoogleFonts.openSans(
-                color: Colors.white,
-                fontWeight: FontWeight.normal,
-              ),
+                  color: Colors.white,
+                  fontWeight: FontWeight.normal,
+                  fontSize: 12),
             ),
           ),
         ),
@@ -111,93 +121,48 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildPasswordTF() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Text(
-          'Contraseña',
-          style: GoogleFonts.openSans(
-            color: Colors.white,
-            fontSize: 18.0,
-            fontWeight: FontWeight.bold,
-          ),
+  Widget _buildForgotBtn() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        TextButton(
+          onPressed: () {
+            log('To signup page');
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SignupScreen()),
+            );
+          },
+          child: const Text('¿Olvidaste tu contraseña o usuario?',
+              style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 10,
+                  fontFamily: 'Montserrat')),
         ),
-        SizedBox(height: 10.0),
-        Container(
-          alignment: Alignment.centerLeft,
-          decoration: BoxDecoration(
-            color: Color.fromARGB(69, 255, 255, 255),
-            borderRadius: BorderRadius.circular(10.0),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 6.0,
-                offset: Offset(0, 2),
-              ),
-            ],
-          ),
-          height: 60.0,
-          child: TextField(
-            obscureText: true,
-            style: TextStyle(color: Colors.white),
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.only(top: 14.0),
-              prefixIcon: Icon(
-                Icons.lock,
-                color: Colors.white,
-              ),
-              hintText: 'Ingresa tu contraseña',
-              hintStyle: GoogleFonts.openSans(
-                color: Colors.white,
-                fontWeight: FontWeight.normal,
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildForgotPasswordBtn() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            TextButton(
-              onPressed: () {},
-              child: const Text('¿Olvidaste tu contraseña?',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Montserrat')),
-            ),
-          ],
-        )
       ],
     );
   }
 
   Widget _buildRememberMeBtn() {
-    return Container(
+    return SizedBox(
       height: 20.0,
       child: Row(children: <Widget>[
         Theme(
             data: ThemeData(unselectedWidgetColor: Colors.white),
-            child: Checkbox(
-              value: _rememberMe,
-              checkColor: Colors.green,
-              activeColor: Colors.white,
-              onChanged: (value) {
-                setState(() {
-                  _rememberMe = value!;
-                });
-              },
+            child: SizedBox(
+              child: Checkbox(
+                value: _rememberMe,
+                checkColor: Colors.green,
+                activeColor: Colors.white,
+                onChanged: (value) {
+                  setState(() {
+                    _rememberMe = value!;
+                  });
+                },
+              ),
             )),
-        Text('Recuérdame',
+        Text('Mantener sesión iniciada',
             style: GoogleFonts.openSans(
               color: Colors.white,
               fontWeight: FontWeight.normal,
@@ -208,19 +173,19 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _buildLoginBtn() {
     return Container(
-        padding: EdgeInsets.only(top: 25.0, bottom: 10),
+        padding: const EdgeInsets.only(top: 25.0, bottom: 10),
         child: SizedBox(
           width: double.infinity,
           child: ElevatedButton(
             onPressed: (() => print('Login Button Pressed')),
             style: ElevatedButton.styleFrom(
-              padding: EdgeInsets.all(15.0),
+              padding: const EdgeInsets.all(15.0),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30.0),
               ),
               backgroundColor: Colors.white,
             ),
-            child: Text('Login',
+            child: Text('Ingresar',
                 style: GoogleFonts.openSans(
                   color: Colors.blueAccent,
                   fontSize: 18.0,
@@ -234,22 +199,34 @@ class _LoginScreenState extends State<LoginScreen> {
     return Column(
       children: <Widget>[
         Text(
-          '- OR -',
+          '- O bien -',
           style: GoogleFonts.openSans(
               color: Colors.white, fontWeight: FontWeight.bold),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            TextButton(
-              onPressed: () {},
-              child: const Text('¿No tienes una cuenta? Registrate aquí',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12.0,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Montserrat')),
+            RichText(
+              text: const TextSpan(
+                text: '¿No tienes una cuenta? ',
+              ),
             ),
+            TextButton(
+                onPressed: () {
+                  log('Register button pressed');
+                },
+                child: const Text('Registrate aquí',
+                    style: TextStyle(
+                      decoration: TextDecoration.underline,
+                      fontFamily: 'Montserrat',
+                      color: Colors.white,
+                    ))),
+            // const Text('¿No tienes una cuenta? ',
+            //     style: TextStyle(
+            //         color: Colors.white,
+            //         fontSize: 12.0,
+            //         fontWeight: FontWeight.bold,
+            //         fontFamily: 'Montserrat')),
           ],
         )
       ],

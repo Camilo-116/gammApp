@@ -18,10 +18,12 @@ class MyApp extends StatelessWidget {
         ),
         home: GetX<NavigationController>(
           builder: (controller) {
-            if (controller.splash) {
-              return SplashScreen();
-            }
-            return LoginScreen();
+            return AnimatedSwitcher(
+                duration: const Duration(milliseconds: 1500),
+                // transitionBuilder: (Widget child, Animation<double> animation) {
+                //   return ScaleTransition(scale: animation, child: child);
+                // },
+                child: (controller.splash) ? SplashScreen() : LoginScreen());
           },
         ));
   }
