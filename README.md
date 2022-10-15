@@ -1,5 +1,5 @@
 # GammApp
-
+![Logo](assets/images/GammApp.png?raw=true)
 Gaming Social Network.
 
 Mobile Programming Course Final Project.
