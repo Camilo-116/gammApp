@@ -1,11 +1,10 @@
 import 'dart:developer';
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
-
 import 'signup_page.dart';
+import 'package:gamma/client/ui/home.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -127,11 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
       children: [
         TextButton(
           onPressed: () {
-            log('To signup page');
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => SignupScreen()),
-            );
+            log('Forgot Password Button Pressed');
           },
           child: const Text('¿Olvidaste tu contraseña o usuario?',
               style: TextStyle(
@@ -177,7 +172,13 @@ class _LoginScreenState extends State<LoginScreen> {
         child: SizedBox(
           width: double.infinity,
           child: ElevatedButton(
-            onPressed: (() => print('Login Button Pressed')),
+            onPressed: () {
+              log('To Home page');
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SocialMedia()),
+              );
+            },
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.all(15.0),
               shape: RoundedRectangleBorder(
@@ -213,7 +214,11 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             TextButton(
                 onPressed: () {
-                  log('Register button pressed');
+                  log('To signup page');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SignupScreen()),
+                  );
                 },
                 child: const Text('Registrate aquí',
                     style: TextStyle(
