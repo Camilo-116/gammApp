@@ -218,7 +218,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   log('To signup page');
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => DiscoverGamersWidget()),
+                    MaterialPageRoute(builder: (context) => SignupScreen()),
                   );
                 },
                 child: const Text('Registrate aquí',
