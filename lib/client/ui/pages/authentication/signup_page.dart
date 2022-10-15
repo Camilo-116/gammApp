@@ -64,8 +64,6 @@ class _SignupScreenState extends State<SignupScreen> {
                       //   ],
                       // ),
                       _buildTF('Nombre', TextInputType.name, false),
-                      // _buildRowTF('Nombre', TextInputType.name, 'Apellido',
-                      //     TextInputType.name, false),
                       const SizedBox(height: 20.0),
                       _buildTF('Nombre de Usuario', TextInputType.name, false),
                       const SizedBox(height: 20.0),
@@ -130,7 +128,9 @@ class _SignupScreenState extends State<SignupScreen> {
             decoration: InputDecoration(
               border: InputBorder.none,
               contentPadding: const EdgeInsets.only(left: 15.0),
-              hintText: 'Ingresa tu ${nCampo.toLowerCase()}',
+              hintText: (nCampo == 'Confirmar Contraseña')
+                  ? 'Ingresa nuevamente tu contraseña'
+                  : 'Ingresa tu ${nCampo.toLowerCase()}',
               hintStyle: GoogleFonts.openSans(
                   color: Colors.white,
                   fontWeight: FontWeight.normal,

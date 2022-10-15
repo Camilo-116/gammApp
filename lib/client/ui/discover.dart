@@ -3,14 +3,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:swipeable_card_stack/swipeable_card_stack.dart';
 
-class DiscoverGamersWidget extends StatefulWidget {
-  const DiscoverGamersWidget({Key? key}) : super(key: key);
+class DiscoverGamers extends StatefulWidget {
+  const DiscoverGamers({Key? key}) : super(key: key);
 
   @override
-  _DiscoverGamersWidgetState createState() => _DiscoverGamersWidgetState();
+  _DiscoverGamersState createState() => _DiscoverGamersState();
 }
 
-class _DiscoverGamersWidgetState extends State<DiscoverGamersWidget> {
+class _DiscoverGamersState extends State<DiscoverGamers> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   late SwipeableCardSectionController swipeableStackController;
 
@@ -29,15 +29,16 @@ class _DiscoverGamersWidgetState extends State<DiscoverGamersWidget> {
         backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
         leading: Padding(
-          padding: EdgeInsetsDirectional.fromSTEB(16, 0, 0, 0),
+          padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 0, 0),
           child: IconButton(
-            icon: Icon(
-              Icons.chevron_left,
+            icon: const Icon(
+              Icons.arrow_back,
               color: Colors.black,
               size: 26,
             ),
             onPressed: () {
-              print('IconButton pressed ...');
+              print('Back home ...');
+              Navigator.pop(context);
             },
           ),
         ),
@@ -59,14 +60,14 @@ class _DiscoverGamersWidgetState extends State<DiscoverGamersWidget> {
               Expanded(
                 child: Card(
                   clipBehavior: Clip.antiAliasWithSaveLayer,
-                  color: Color(0xFFF5F5F5),
+                  color: const Color(0xFFF5F5F5),
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       Container(
                         width: MediaQuery.of(context).size.width,
                         height: 400,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: Colors.white,
                         ),
                         child: Image.network(
@@ -81,33 +82,33 @@ class _DiscoverGamersWidgetState extends State<DiscoverGamersWidget> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           IconButton(
-                            icon: Icon(
+                            icon: const Icon(
                               Icons.chevron_left,
                               color: Colors.black,
                               size: 30,
                             ),
                             onPressed: () {
-                              print('IconButton pressed ...');
+                              print('Left swipe ...');
                             },
                           ),
                           IconButton(
-                            icon: Icon(
+                            icon: const Icon(
                               Icons.add,
                               color: Colors.black,
                               size: 30,
                             ),
                             onPressed: () {
-                              print('IconButton pressed ...');
+                              print('Add ...');
                             },
                           ),
                           IconButton(
-                            icon: Icon(
+                            icon: const Icon(
                               Icons.chevron_right,
                               color: Colors.black,
                               size: 30,
                             ),
                             onPressed: () {
-                              print('IconButton pressed ...');
+                              print('Right swipe ...');
                             },
                           ),
                         ],
