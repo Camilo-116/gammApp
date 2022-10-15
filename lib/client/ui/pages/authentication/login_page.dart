@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
 import 'signup_page.dart';
 import 'package:gamma/client/ui/home.dart';
+import 'package:gamma/client/ui/discover.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -176,7 +177,7 @@ class _LoginScreenState extends State<LoginScreen> {
               log('To Home page');
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => SocialMedia()),
+                MaterialPageRoute(builder: (context) => HomePageWidget()),
               );
             },
             style: ElevatedButton.styleFrom(
@@ -217,7 +218,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   log('To signup page');
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => SignupScreen()),
+                    MaterialPageRoute(builder: (context) => DiscoverGamersWidget()),
                   );
                 },
                 child: const Text('Registrate aquí',
