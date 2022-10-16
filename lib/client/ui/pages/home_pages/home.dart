@@ -147,11 +147,16 @@ class _HomePageState extends State<HomePage> {
                                 mainAxisSize: MainAxisSize.max,
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  const Icon(
-                                    Icons.favorite_border,
-                                    color: Color(0xFFFF0000),
-                                    size: 24,
+                                children: <Widget>[
+                                  IconButton(
+                                    icon: const Icon(
+                                      Icons.favorite_border,
+                                      color: Color(0xFFFF0000),
+                                      size: 24,
+                                    ),
+                                    onPressed: () {
+                                      print('Like pressed ...');
+                                    },
                                   ),
                                   Text(
                                     '1.2 K',
@@ -160,10 +165,15 @@ class _HomePageState extends State<HomePage> {
                                         fontWeight: FontWeight.normal,
                                         fontSize: 16),
                                   ),
-                                  const FaIcon(
-                                    FontAwesomeIcons.solidCommentAlt,
-                                    color: Color(0xFFB7B4B4),
-                                    size: 24,
+                                  IconButton(
+                                    icon: const Icon(
+                                      Icons.comment_outlined,
+                                      color: Colors.black,
+                                      size: 24,
+                                    ),
+                                    onPressed: () {
+                                      print('Make a comment...');
+                                    },
                                   ),
                                   Text(
                                     '120',
@@ -172,10 +182,15 @@ class _HomePageState extends State<HomePage> {
                                         fontWeight: FontWeight.normal,
                                         fontSize: 16),
                                   ),
-                                  const Icon(
-                                    Icons.ios_share,
-                                    color: Colors.black,
-                                    size: 24,
+                                  IconButton(
+                                    icon: const Icon(
+                                      Icons.ios_share,
+                                      color: Colors.black,
+                                      size: 24,
+                                    ),
+                                    onPressed: () {
+                                      print('Share pressed ...');
+                                    },
                                   ),
                                   Text(
                                     '15',
