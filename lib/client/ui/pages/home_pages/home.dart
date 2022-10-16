@@ -1,8 +1,10 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'discover.dart';
+import 'home_drawer.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -19,29 +21,41 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: Colors.white,
+      drawer: Drawer(
+        child: Container(
+          color: Colors.grey,
+          child: HomeDrawer(),
+        ),
+      ),
+      drawerDragStartBehavior: DragStartBehavior.start,
+      drawerEdgeDragWidth: 40,
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        automaticallyImplyLeading: false,
+        backgroundColor: const Color(0xFFB2B2B2),
+        iconTheme: const IconThemeData(color: Colors.black),
         title: Text(
           'Feed',
           style: GoogleFonts.poppins(
               color: Colors.black, fontWeight: FontWeight.bold, fontSize: 22),
         ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: IconButton(
-                icon: const Icon(
-                  Icons.radar,
-                  color: Colors.black,
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const DiscoverGamers()),
-                  );
-                }),
+          IconButton(
+              icon: const Icon(
+                Icons.radar,
+              ),
+              splashRadius: 17,
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const DiscoverGamers()),
+                );
+              }),
+          IconButton(
+            icon: const Icon(
+              Icons.notifications,
+            ),
+            splashRadius: 17,
+            onPressed: () {},
           ),
         ],
         centerTitle: true,

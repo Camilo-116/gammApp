@@ -14,6 +14,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   bool _rememberMe = false;
   bool _isObscure = true;
+  final textControllers = [TextEditingController(), TextEditingController()];
 
   @override
   Widget build(BuildContext context) {
@@ -54,13 +55,15 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       const SizedBox(height: 30.0),
-                      _buildTF('Nombre de Usuario', Icons.person, false),
+                      _buildTF('Nombre de Usuario', Icons.person, false,
+                          textControllers[0]),
                       const SizedBox(height: 20.0),
-                      _buildTF('Contraseña', Icons.lock, _isObscure),
-                      _buildForgotBtn(),
+                      _buildTF('Contraseña', Icons.lock, _isObscure,
+                          textControllers[1]),
+                      _buildForgotBtn(textControllers),
                       _buildRememberMeBtn(),
-                      _buildLoginBtn(),
-                      _buildSignWith(),
+                      _buildLoginBtn(textControllers),
+                      _buildSignWith(textControllers),
                     ]),
               ))
         ]),
@@ -68,7 +71,8 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildTF(String nCampo, IconData icon, bool obscure) {
+  Widget _buildTF(String nCampo, IconData icon, bool obscure,
+      TextEditingController controller) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -98,6 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
             autocorrect: false,
             enableSuggestions: false,
             obscureText: obscure,
+            controller: controller,
             keyboardType: TextInputType.emailAddress,
             style: const TextStyle(color: Colors.white),
             decoration: InputDecoration(
@@ -120,13 +125,16 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildForgotBtn() {
+  Widget _buildForgotBtn(List<TextEditingController> controllers) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         TextButton(
           onPressed: () {
             log('Forgot Password Button Pressed');
+            for (var controller in controllers) {
+              controller.clear();
+            }
           },
           child: const Text('¿Olvidaste tu contraseña o usuario?',
               style: TextStyle(
@@ -166,7 +174,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildLoginBtn() {
+  Widget _buildLoginBtn(List<TextEditingController> controllers) {
     return Container(
         padding: const EdgeInsets.only(top: 25.0, bottom: 10),
         child: SizedBox(
@@ -177,7 +185,11 @@ class _LoginScreenState extends State<LoginScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const HomePage()),
-              );
+              ).then((value) {
+                for (var controller in controllers) {
+                  controller.clear();
+                }
+              });
             },
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.all(15.0),
@@ -196,7 +208,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ));
   }
 
-  Widget _buildSignWith() {
+  Widget _buildSignWith(List<TextEditingController> controllers) {
     return Column(
       children: <Widget>[
         Text(
@@ -218,7 +230,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => SignupScreen()),
-                  );
+                  ).then((value) {
+                    for (var controller in controllers) {
+                      controller.clear();
+                    }
+                  });
                 },
                 child: const Text('Registrate aquí',
                     style: TextStyle(

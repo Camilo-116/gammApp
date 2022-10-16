@@ -80,7 +80,18 @@ class _SignupScreenState extends State<SignupScreen> {
                       _buildRegisterBtn(),
                     ]),
               )),
-        )
+        ),
+        Positioned(
+          left: 28,
+          top: 30,
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            color: Colors.white,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ),
       ]),
     );
   }

@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import 'controllers/authentication_controller.dart';
@@ -12,8 +15,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var node = FocusNode();
     return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
+      onTap: () {
+        FocusScope.of(context).requestFocus(node);
+      },
       child: GetMaterialApp(
           title: 'Flutter Demo',
           debugShowCheckedModeBanner: false,
