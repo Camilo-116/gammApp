@@ -2,7 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import '../views/user.dart';
 import 'discover.dart';
 import 'home_drawer.dart';
 
@@ -102,18 +102,30 @@ class _HomePageState extends State<HomePage> {
                                 shape: BoxShape.circle,
                               ),
                               child: Image.network(
-                                'https://picsum.photos/seed/222/600',
+                                'https://cdn-icons-png.flaticon.com/512/149/149071.png',
                               ),
                             ),
                             Padding(
                               padding: const EdgeInsetsDirectional.fromSTEB(
                                   6, 0, 0, 0),
-                              child: Text(
-                                'Username',
-                                style: GoogleFonts.poppins(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.normal,
-                                    fontSize: 16),
+                              child: TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => const UserPage()),
+                                  );
+                                },
+                                child: Text(
+                                  'Username',
+                                  style: GoogleFonts.poppins(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16),
+                                ),
+                                style: TextButton.styleFrom(
+                                  padding: EdgeInsets.zero,
+                                ),
                               ),
                             ),
                             const Expanded(
