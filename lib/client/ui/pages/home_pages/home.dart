@@ -4,14 +4,14 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'discover.dart';
 
-class HomePageWidget extends StatefulWidget {
-  const HomePageWidget({Key? key}) : super(key: key);
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
 
   @override
-  _HomePageWidgetState createState() => _HomePageWidgetState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageWidgetState extends State<HomePageWidget> {
+class _HomePageState extends State<HomePage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -28,24 +28,21 @@ class _HomePageWidgetState extends State<HomePageWidget> {
               color: Colors.black, fontWeight: FontWeight.bold, fontSize: 22),
         ),
         actions: [
-          Positioned(
-            left: 0,
-            child: Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: IconButton(
-                  icon: const Icon(
-                    Icons.radar,
-                    color: Colors.black,
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const DiscoverGamers()),
-                    );
-                  }),
-            ),
-          )
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: IconButton(
+                icon: const Icon(
+                  Icons.radar,
+                  color: Colors.black,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const DiscoverGamers()),
+                  );
+                }),
+          ),
         ],
         centerTitle: true,
         elevation: 2,

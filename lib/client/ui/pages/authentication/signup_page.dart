@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
 
@@ -39,7 +40,7 @@ class _SignupScreenState extends State<SignupScreen> {
               height: double.infinity,
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(40.0, 40, 40, 30.0),
+                padding: const EdgeInsets.fromLTRB(40.0, 40, 40, 10.0),
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
@@ -48,7 +49,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         textAlign: TextAlign.center,
                         style: GoogleFonts.openSans(
                           color: Colors.white,
-                          fontSize: 30.0,
+                          fontSize: 20.0,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -64,12 +65,15 @@ class _SignupScreenState extends State<SignupScreen> {
                       //   ],
                       // ),
                       _buildTF('Nombre', TextInputType.name, false),
-                      const SizedBox(height: 20.0),
+                      const SizedBox(height: 15.0),
                       _buildTF('Nombre de Usuario', TextInputType.name, false),
-                      const SizedBox(height: 20.0),
+                      const SizedBox(height: 15.0),
+                      _buildTF('Correo Electrónico', TextInputType.emailAddress,
+                          false),
+                      const SizedBox(height: 15.0),
                       _buildTF('Contraseña', TextInputType.visiblePassword,
                           _isObscure),
-                      const SizedBox(height: 20.0),
+                      const SizedBox(height: 15.0),
                       _buildTF('Confirmar Contraseña',
                           TextInputType.visiblePassword, _isObscure),
                       _buildRememberMeBtn(),
@@ -101,7 +105,7 @@ class _SignupScreenState extends State<SignupScreen> {
           nCampo,
           style: GoogleFonts.openSans(
             color: Colors.white,
-            fontSize: 14.0,
+            fontSize: 12.0,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -132,9 +136,10 @@ class _SignupScreenState extends State<SignupScreen> {
                   ? 'Ingresa nuevamente tu contraseña'
                   : 'Ingresa tu ${nCampo.toLowerCase()}',
               hintStyle: GoogleFonts.openSans(
-                  color: Colors.white,
-                  fontWeight: FontWeight.normal,
-                  fontSize: 12),
+                color: Colors.white,
+                fontWeight: FontWeight.normal,
+                fontSize: 10,
+              ),
             ),
           ),
         ),
@@ -193,7 +198,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
   Widget _buildRegisterBtn() {
     return Container(
-        padding: const EdgeInsets.only(top: 25.0, bottom: 10),
+        padding: const EdgeInsets.only(top: 0, bottom: 0),
         child: SizedBox(
           width: double.infinity,
           child: ElevatedButton(
