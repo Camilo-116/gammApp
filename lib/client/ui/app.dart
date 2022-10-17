@@ -29,10 +29,11 @@ class MyApp extends StatelessWidget {
           home: GetX<AuthenticationController>(
             builder: (controller) {
               return AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 1500),
-                  // transitionBuilder: (Widget child, Animation<double> animation) {
-                  //   return ScaleTransition(scale: animation, child: child);
-                  // },
+                  duration: const Duration(milliseconds: 300),
+                  transitionBuilder:
+                      (Widget child, Animation<double> animation) {
+                    return ScaleTransition(scale: animation, child: child);
+                  },
                   child:
                       (!controller.logged) ? LoginScreen() : const HomePage());
             },

@@ -33,7 +33,7 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: const Color(0xFFB2B2B2),
         iconTheme: const IconThemeData(color: Colors.black),
         title: Text(
-          'Feed',
+          'GammApp',
           style: GoogleFonts.poppins(
               color: Colors.black, fontWeight: FontWeight.bold, fontSize: 22),
         ),
@@ -72,14 +72,14 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           mainAxisSize: MainAxisSize.max,
           children: [
-            ListView(
+            ListView.builder(
               padding: EdgeInsets.zero,
               shrinkWrap: true,
               scrollDirection: Axis.vertical,
-              children: [
-                Container(
+              itemCount: 2,
+              itemBuilder: (BuildContext context, int index) {
+                return Container(
                   width: MediaQuery.of(context).size.width,
-                  height: 400,
                   decoration: const BoxDecoration(
                     color: Colors.white,
                   ),
@@ -90,7 +90,7 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       Padding(
                         padding:
-                            const EdgeInsetsDirectional.fromSTEB(12, 0, 12, 0),
+                            const EdgeInsetsDirectional.fromSTEB(12, 5, 12, 2),
                         child: Row(
                           mainAxisSize: MainAxisSize.max,
                           children: [
@@ -116,15 +116,15 @@ class _HomePageState extends State<HomePage> {
                                         builder: (context) => const UserPage()),
                                   );
                                 },
+                                style: TextButton.styleFrom(
+                                  padding: EdgeInsets.zero,
+                                ),
                                 child: Text(
                                   'Username',
                                   style: GoogleFonts.poppins(
                                       color: Colors.black,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16),
-                                ),
-                                style: TextButton.styleFrom(
-                                  padding: EdgeInsets.zero,
                                 ),
                               ),
                             ),
@@ -219,8 +219,8 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ],
                   ),
-                ),
-              ],
+                );
+              },
             ),
           ],
         ),

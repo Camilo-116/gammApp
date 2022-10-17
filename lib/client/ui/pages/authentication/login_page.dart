@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:gamma/client/ui/controllers/authentication_controller.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
 import '../home_pages/home.dart';
@@ -14,6 +15,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   bool _rememberMe = false;
   bool _isObscure = true;
+  AuthenticationController authentication_controller = Get.find();
   final textControllers = [TextEditingController(), TextEditingController()];
 
   @override
@@ -182,14 +184,17 @@ class _LoginScreenState extends State<LoginScreen> {
           child: ElevatedButton(
             onPressed: () {
               log('To Home page');
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const HomePage()),
-              ).then((value) {
+              if (authentication_controller.login()) {
                 for (var controller in controllers) {
                   controller.clear();
                 }
-              });
+              }
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => const HomePage()),
+              // ).then((value) {
+
+              // });
             },
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.all(15.0),

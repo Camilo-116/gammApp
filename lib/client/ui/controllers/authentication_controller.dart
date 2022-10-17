@@ -6,7 +6,12 @@ class AuthenticationController extends GetxController {
 
   bool get logged => _logged.value;
 
-  set logged(bool value) {
+  set logged(bool logged) {
     _logged.value = logged;
+  }
+
+  bool login() {
+    _logged.value = true;
+    return _logged.value;
   }
 }

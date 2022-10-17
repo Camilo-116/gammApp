@@ -1,4 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:gamma/client/ui/controllers/authentication_controller.dart';
+import 'package:gamma/client/ui/controllers/navigation_controller.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../views/user.dart';
 import '../views/friends.dart';
@@ -12,142 +17,95 @@ class HomeDrawer extends StatefulWidget {
 }
 
 class _HomeDrawerState extends State<HomeDrawer> {
+  // ignore: prefer_final_fields
+  NavigationController navigation_controller = Get.find();
+  AuthenticationController authentication_controller = Get.find();
+  final List<IconData> _icons = [
+    Icons.home,
+    Icons.person,
+    Icons.person_search,
+    Icons.settings,
+    Icons.logout
+  ];
+  final List<String> _titles = [
+    'Página Principal',
+    'Perfil',
+    'Amigos',
+    'Ajustes',
+    'Cerrar Sesión'
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          UserAccountsDrawerHeader(
-            accountName: Text(
-              'Username',
-              style: GoogleFonts.poppins(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            accountEmail: Text(
-              'username@user.com',
-              style: GoogleFonts.poppins(
-                fontSize: 14,
-                fontWeight: FontWeight.normal,
-                color: Colors.white,
-              ),
-            ),
-            currentAccountPicture: CircleAvatar(
-              child: ClipOval(
-                child: Image.asset(
-                  'assets/images/user.png',
-                  fit: BoxFit.cover,
-                  width: 90,
-                  height: 90,
-                ),
-              ),
-              backgroundColor: Colors.white,
-            ),
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: NetworkImage(
-                      'https://t4.ftcdn.net/jpg/04/09/70/87/360_F_409708782_HxuxOH8f7xSmj5p4ygbAbuJE74vGGj2N.jpg'),
-                  fit: BoxFit.cover),
-            ),
-          ),
-          ListTile(
-            leading: Icon(
-              Icons.home,
-              color: Colors.black,
-            ),
-            title: Text(
-              'Home',
-              style: GoogleFonts.poppins(
-                fontSize: 16,
-                fontWeight: FontWeight.normal,
-                color: Colors.black,
-              ),
-            ),
-            onTap: () {
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            leading: Icon(
-              Icons.person,
-              color: Colors.black,
-            ),
-            title: Text(
-              'Profile',
-              style: GoogleFonts.poppins(
-                fontSize: 16,
-                fontWeight: FontWeight.normal,
-                color: Colors.black,
-              ),
-            ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const UserPage()),
-              );
-            },
-          ),
-          ListTile(
-            leading: Icon(
-              Icons.person_search,
-              color: Colors.black,
-            ),
-            title: Text(
-              'Friends',
-              style: GoogleFonts.poppins(
-                fontSize: 16,
-                fontWeight: FontWeight.normal,
-                color: Colors.black,
-              ),
-            ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const FriendsPage()),
-              );
-            },
-          ),
-          ListTile(
-            leading: Icon(
-              Icons.settings,
-              color: Colors.black,
-            ),
-            title: Text(
-              'Settings',
-              style: GoogleFonts.poppins(
-                fontSize: 16,
-                fontWeight: FontWeight.normal,
-                color: Colors.black,
-              ),
-            ),
-            onTap: () {
-              print('Settings pressed');
-            },
-          ),
-          ListTile(
-            leading: Icon(
-              Icons.logout,
-              color: Colors.black,
-            ),
-            title: Text(
-              'Logout',
-              style: GoogleFonts.poppins(
-                fontSize: 16,
-                fontWeight: FontWeight.normal,
-                color: Colors.black,
-              ),
-            ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => LoginScreen()),
-              );
-            },
-          )
-        ],
+      child: ListTileTheme(
+        selectedColor: Colors.blue,
+        child: ListView.builder(
+            padding: EdgeInsets.zero,
+            itemCount: _titles.length + 1,
+            itemBuilder: (BuildContext context, int index) {
+              return (index == 0)
+                  ? UserAccountsDrawerHeader(
+                      accountName: Text(
+                        'Username',
+                        style: GoogleFonts.poppins(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      accountEmail: Text(
+                        'username@user.com',
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          fontWeight: FontWeight.normal,
+                          color: Colors.white,
+                        ),
+                      ),
+                      currentAccountPicture: CircleAvatar(
+                        backgroundColor: Colors.white,
+                        child: ClipOval(
+                          child: Image.asset(
+                            'assets/images/user.png',
+                            fit: BoxFit.cover,
+                            width: 90,
+                            height: 90,
+                          ),
+                        ),
+                      ),
+                      decoration: const BoxDecoration(
+                        image: DecorationImage(
+                            image: NetworkImage(
+                                'https://t4.ftcdn.net/jpg/04/09/70/87/360_F_409708782_HxuxOH8f7xSmj5p4ygbAbuJE74vGGj2N.jpg'),
+                            fit: BoxFit.cover),
+                      ),
+                    )
+                  : Obx(
+                      () => ListTile(
+                        selected: navigation_controller.drawerTiles[index - 1],
+                        selectedTileColor: Colors.blueGrey,
+                        leading: Icon(
+                          _icons[index - 1],
+                          color: Colors.black,
+                        ),
+                        title: Text(
+                          _titles[index - 1],
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.normal,
+                            color: Colors.black,
+                          ),
+                        ),
+                        onTap: () {
+                          navigation_controller.selectTile = index - 1;
+                          Navigator.pop(context);
+                          (index - 1 == 4)
+                              ? authentication_controller.logged = false
+                              : {};
+                        },
+                      ),
+                    );
+            }),
       ),
     );
   }
