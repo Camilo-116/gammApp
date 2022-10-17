@@ -76,7 +76,7 @@ class _HomePageState extends State<HomePage> {
               padding: EdgeInsets.zero,
               shrinkWrap: true,
               scrollDirection: Axis.vertical,
-              itemCount: 2,
+              itemCount: 1,
               itemBuilder: (BuildContext context, int index) {
                 return Container(
                   width: MediaQuery.of(context).size.width,
