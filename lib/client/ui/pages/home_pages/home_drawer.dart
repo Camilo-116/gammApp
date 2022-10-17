@@ -38,74 +38,122 @@ class _HomeDrawerState extends State<HomeDrawer> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      child: ListTileTheme(
-        selectedColor: Colors.blue,
-        child: ListView.builder(
-            padding: EdgeInsets.zero,
-            itemCount: _titles.length + 1,
-            itemBuilder: (BuildContext context, int index) {
-              return (index == 0)
-                  ? UserAccountsDrawerHeader(
-                      accountName: Text(
-                        'Username',
-                        style: GoogleFonts.poppins(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+      child: Column(
+        children: [
+          Expanded(
+            child: ListTileTheme(
+              selectedColor: Colors.blue,
+              child: ListView.builder(
+                  padding: EdgeInsets.zero,
+                  itemCount: _titles.length + 1,
+                  itemBuilder: (BuildContext context, int index) {
+                    return (index == 0)
+                        ? UserAccountsDrawerHeader(
+                            accountName: Text(
+                              'Username',
+                              style: GoogleFonts.poppins(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                            accountEmail: Text(
+                              'username@user.com',
+                              style: GoogleFonts.poppins(
+                                fontSize: 14,
+                                fontWeight: FontWeight.normal,
+                                color: Colors.white,
+                              ),
+                            ),
+                            currentAccountPicture: CircleAvatar(
+                              backgroundColor: Colors.white,
+                              child: ClipOval(
+                                child: Image.asset(
+                                  'assets/images/user.png',
+                                  fit: BoxFit.cover,
+                                  width: 90,
+                                  height: 90,
+                                ),
+                              ),
+                            ),
+                            decoration: const BoxDecoration(
+                              image: DecorationImage(
+                                  image: NetworkImage(
+                                      'https://t4.ftcdn.net/jpg/04/09/70/87/360_F_409708782_HxuxOH8f7xSmj5p4ygbAbuJE74vGGj2N.jpg'),
+                                  fit: BoxFit.cover),
+                            ),
+                          )
+                        : Obx(
+                            () => ListTile(
+                              selected:
+                                  navigation_controller.drawerTiles[index - 1],
+                              selectedTileColor:
+                                  const Color.fromARGB(166, 41, 15, 171),
+                              leading: Icon(
+                                _icons[index - 1],
+                                color: Colors.black,
+                              ),
+                              title: Text(
+                                _titles[index - 1],
+                                style: GoogleFonts.poppins(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.normal,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              onTap: () {
+                                navigation_controller.selectTile = index - 1;
+                                Navigator.pop(context);
+                                (index - 1 == 4)
+                                    ? authentication_controller.logged = false
+                                    : {};
+                              },
+                            ),
+                          );
+                  }),
+            ),
+          ),
+          Align(
+            alignment: FractionalOffset.bottomCenter,
+            child: Padding(
+                padding: const EdgeInsets.fromLTRB(50, 10.0, 50, 30),
+                child: GestureDetector(
+                  onTap: () {
+                    log('Start matchmaking...');
+                  },
+                  child: Container(
+                    width: 180,
+                    height: 80,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color(0xFF2D15AB),
+                          spreadRadius: 3,
+                          blurRadius: 8,
+                        ),
+                      ],
+                      image: const DecorationImage(
+                        image: AssetImage("assets/images/matchmaking.png"),
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Emparéjame',
+                        style: TextStyle(
+                          fontSize: 22,
+                          foreground: Paint()
+                            ..style = PaintingStyle.stroke
+                            ..strokeWidth = 1
+                            ..color = Colors.white,
                         ),
                       ),
-                      accountEmail: Text(
-                        'username@user.com',
-                        style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          fontWeight: FontWeight.normal,
-                          color: Colors.white,
-                        ),
-                      ),
-                      currentAccountPicture: CircleAvatar(
-                        backgroundColor: Colors.white,
-                        child: ClipOval(
-                          child: Image.asset(
-                            'assets/images/user.png',
-                            fit: BoxFit.cover,
-                            width: 90,
-                            height: 90,
-                          ),
-                        ),
-                      ),
-                      decoration: const BoxDecoration(
-                        image: DecorationImage(
-                            image: NetworkImage(
-                                'https://t4.ftcdn.net/jpg/04/09/70/87/360_F_409708782_HxuxOH8f7xSmj5p4ygbAbuJE74vGGj2N.jpg'),
-                            fit: BoxFit.cover),
-                      ),
-                    )
-                  : Obx(
-                      () => ListTile(
-                        selected: navigation_controller.drawerTiles[index - 1],
-                        selectedTileColor: Colors.blueGrey,
-                        leading: Icon(
-                          _icons[index - 1],
-                          color: Colors.black,
-                        ),
-                        title: Text(
-                          _titles[index - 1],
-                          style: GoogleFonts.poppins(
-                            fontSize: 16,
-                            fontWeight: FontWeight.normal,
-                            color: Colors.black,
-                          ),
-                        ),
-                        onTap: () {
-                          navigation_controller.selectTile = index - 1;
-                          Navigator.pop(context);
-                          (index - 1 == 4)
-                              ? authentication_controller.logged = false
-                              : {};
-                        },
-                      ),
-                    );
-            }),
+                    ),
+                  ),
+                )),
+          )
+        ],
       ),
     );
   }
