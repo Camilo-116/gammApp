@@ -33,7 +33,7 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: const Color(0xFFB2B2B2),
         iconTheme: const IconThemeData(color: Colors.black),
         title: Text(
-          'GammApp',
+          'Feed',
           style: GoogleFonts.poppins(
               color: Colors.black, fontWeight: FontWeight.bold, fontSize: 22),
         ),
@@ -61,168 +61,176 @@ class _HomePageState extends State<HomePage> {
         centerTitle: true,
         elevation: 2,
       ),
-      body: post(),
+      body: _postListView(),
     );
   }
 
-  Widget post() {
-    return SafeArea(
-      child: GestureDetector(
-        onTap: () => FocusScope.of(context).unfocus(),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            ListView.builder(
-              padding: EdgeInsets.zero,
-              shrinkWrap: true,
-              scrollDirection: Axis.vertical,
-              itemCount: 1,
-              itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  width: MediaQuery.of(context).size.width,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Padding(
-                        padding:
-                            const EdgeInsetsDirectional.fromSTEB(12, 5, 12, 2),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Container(
-                              width: 46,
-                              height: 46,
-                              clipBehavior: Clip.antiAlias,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                              ),
-                              child: Image.network(
-                                'https://cdn-icons-png.flaticon.com/512/149/149071.png',
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsetsDirectional.fromSTEB(
-                                  6, 0, 0, 0),
-                              child: TextButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => const UserPage()),
-                                  );
-                                },
-                                style: TextButton.styleFrom(
-                                  padding: EdgeInsets.zero,
-                                ),
-                                child: Text(
-                                  'Username',
-                                  style: GoogleFonts.poppins(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16),
-                                ),
-                              ),
-                            ),
-                            const Expanded(
-                              child: Align(
-                                alignment: AlignmentDirectional(1, 0),
-                                child: Icon(
-                                  Icons.keyboard_control,
-                                  color: Colors.black,
-                                  size: 24,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Image.network(
-                        'https://picsum.photos/seed/901/600',
-                        width: 100,
-                        height: 300,
-                        fit: BoxFit.cover,
-                      ),
-                      Padding(
-                        padding:
-                            const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: <Widget>[
-                                  IconButton(
-                                    icon: const Icon(
-                                      Icons.favorite_border,
-                                      color: Color(0xFFFF0000),
-                                      size: 24,
-                                    ),
-                                    onPressed: () {
-                                      print('Like pressed ...');
-                                    },
-                                  ),
-                                  Text(
-                                    '1.2 K',
-                                    style: GoogleFonts.poppins(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.normal,
-                                        fontSize: 16),
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(
-                                      Icons.comment_outlined,
-                                      color: Colors.black,
-                                      size: 24,
-                                    ),
-                                    onPressed: () {
-                                      print('Make a comment...');
-                                    },
-                                  ),
-                                  Text(
-                                    '120',
-                                    style: GoogleFonts.poppins(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.normal,
-                                        fontSize: 16),
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(
-                                      Icons.ios_share,
-                                      color: Colors.black,
-                                      size: 24,
-                                    ),
-                                    onPressed: () {
-                                      print('Share pressed ...');
-                                    },
-                                  ),
-                                  Text(
-                                    '15',
-                                    style: GoogleFonts.poppins(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.normal,
-                                        fontSize: 16),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
+  Widget _postListView() {
+    return ListView.builder(
+        itemCount: 5,
+        itemBuilder: (context, index) {
+          return _postView();
+        });
+  }
+
+  Widget _postView() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _postAuthor(),
+        _postImage(),
+        _postActions(),
+        _postCaption(),
+      ],
+    );
+  }
+
+  Widget _postAuthor() {
+    const double _imageSize = 44;
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsetsDirectional.fromSTEB(12, 5, 12, 2),
+          child: Row(mainAxisSize: MainAxisSize.max, children: [
+            Container(
+              width: _imageSize,
+              height: _imageSize,
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+              ),
+              child: Image.network(
+                  'https://cdn-icons-png.flaticon.com/512/149/149071.png'),
             ),
-          ],
+            Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(6, 0, 0, 0),
+              child: TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const UserPage()),
+                  );
+                },
+                child: Text(
+                  'User',
+                  style: GoogleFonts.poppins(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: Align(
+                alignment: AlignmentDirectional(1, 0),
+                child:
+                    Icon(Icons.keyboard_control, color: Colors.black, size: 24),
+              ),
+            )
+          ]),
+        )
+      ],
+    );
+  }
+
+  Widget _postImage() {
+    return AspectRatio(
+      aspectRatio: 1,
+      child: Image.network(
+        'https://picsum.photos/seed/901/600',
+        width: 100,
+        height: 300,
+        fit: BoxFit.cover,
+      ),
+    );
+  }
+
+  Widget _postActions() {
+    return Padding(
+      padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+              child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              IconButton(
+                icon: const Icon(
+                  Icons.favorite_border,
+                  color: Color(0xFFFF0000),
+                  size: 24,
+                ),
+                onPressed: () {
+                  print('Like pressed ...');
+                },
+              ),
+              Text(
+                '1.2 K',
+                style: GoogleFonts.poppins(
+                    color: Colors.black,
+                    fontWeight: FontWeight.normal,
+                    fontSize: 16),
+              ),
+              IconButton(
+                icon: const Icon(
+                  Icons.comment_outlined,
+                  color: Colors.black,
+                  size: 24,
+                ),
+                onPressed: () {
+                  print('Make a comment...');
+                },
+              ),
+              Text(
+                '120',
+                style: GoogleFonts.poppins(
+                    color: Colors.black,
+                    fontWeight: FontWeight.normal,
+                    fontSize: 16),
+              ),
+              IconButton(
+                icon: const Icon(
+                  Icons.ios_share,
+                  color: Colors.black,
+                  size: 24,
+                ),
+                onPressed: () {
+                  print('Share pressed ...');
+                },
+              ),
+              Text(
+                '15',
+                style: GoogleFonts.poppins(
+                    color: Colors.black,
+                    fontWeight: FontWeight.normal,
+                    fontSize: 16),
+              ),
+            ],
+          ))
+        ],
+      ),
+    );
+  }
+
+  Widget _postCaption() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 8,
+        vertical: 4,
+      ),
+      child: Text(
+        'Caption',
+        style: GoogleFonts.poppins(
+          color: Colors.black,
+          fontWeight: FontWeight.normal,
+          fontSize: 16,
         ),
       ),
     );
