@@ -150,6 +150,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _postActions() {
+    bool _isLiked = false;
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
       child: Row(
@@ -162,13 +163,15 @@ class _HomePageState extends State<HomePage> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               IconButton(
-                icon: const Icon(
-                  Icons.favorite_border,
-                  color: Color(0xFFFF0000),
+                icon: Icon(
+                  _isLiked ? Icons.favorite : Icons.favorite_border,
+                  color: _isLiked ? Colors.red : Colors.black,
                   size: 24,
                 ),
                 onPressed: () {
-                  print('Like pressed ...');
+                  setState(() {
+                    _isLiked = !_isLiked;
+                  });
                 },
               ),
               Text(
