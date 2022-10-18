@@ -1,12 +1,6 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-
 import '../../controllers/navigation_controller.dart';
-import '../authentication/login_page.dart';
 
 class SplashScreen extends StatefulWidget {
   @override

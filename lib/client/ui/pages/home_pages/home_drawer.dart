@@ -124,12 +124,20 @@ class _HomeDrawerState extends State<HomeDrawer> {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
-                  child: Text(
-                    'Emparéjame',
-                    style: GoogleFonts.poppins(
-                      fontSize: 18,
-                      color: Colors.black,
-                    ),
+                  child: TextButton(
+                    child: Text('Emparéjame',
+                        style: GoogleFonts.poppins(
+                          fontSize: 18,
+                          color: Colors.black,
+                        )),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const _Matchmaking()),
+                      );
+                      print('Matchmaking start');
+                    },
                   ),
                 ),
               ),
@@ -168,6 +176,61 @@ class _HomeDrawerState extends State<HomeDrawer> {
               //   ),
               // ),
             ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class _Matchmaking extends StatelessWidget {
+  const _Matchmaking({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+                gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFF1B262C), Color(0xFF0F4C75), Color(0xFF3282B8)],
+            )),
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                flex: 2,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Transform.scale(
+                      scale: 0.5,
+                      child: Image.asset('assets/images/GammApp.png'),
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
+          Column(
+            children: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('Cancel Matchmaking',
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      color: Colors.blueGrey[50],
+                      fontWeight: FontWeight.bold,
+                    )),
+              )
+            ],
           )
         ],
       ),
