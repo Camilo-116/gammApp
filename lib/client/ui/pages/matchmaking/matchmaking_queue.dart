@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../controllers/navigation_controller.dart';
 
-class SplashScreen extends StatefulWidget {
+class MatchMakingQueue extends StatefulWidget {
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  State<MatchMakingQueue> createState() => _MatchMakingQueueState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _MatchMakingQueueState extends State<MatchMakingQueue> {
   NavigationController navigation = Get.find();
 
   @override
@@ -30,12 +31,15 @@ class _SplashScreenState extends State<SplashScreen> {
         fit: StackFit.expand,
         children: [
           Container(
-            decoration: const BoxDecoration(
-                gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color(0xFF1B262C), Color(0xFF0F4C75), Color(0xFF3282B8)],
-            )),
+            // decoration: const BoxDecoration(
+            //   gradient: RadialGradient(
+            //     radius: 20,
+            //     colors: [
+            //       Color.fromARGB(57, 44, 61, 70),
+            //       Color.fromRGBO(81, 103, 117, 0.171),
+            //     ],
+            //   ),
+            color: const Color.fromARGB(176, 57, 53, 70),
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -52,6 +56,21 @@ class _SplashScreenState extends State<SplashScreen> {
                   ],
                 ),
               ),
+            ],
+          ),
+          Column(
+            children: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('Cancel Matchmaking',
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      color: Colors.blueGrey[50],
+                      fontWeight: FontWeight.bold,
+                    )),
+              )
             ],
           )
         ],

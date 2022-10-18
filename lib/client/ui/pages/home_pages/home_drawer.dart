@@ -3,12 +3,13 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:gamma/client/ui/controllers/authentication_controller.dart';
 import 'package:gamma/client/ui/controllers/navigation_controller.dart';
+import 'package:gamma/client/ui/pages/matchmaking/matchmaking_queue.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../server/data/models/user_model.dart';
 import '../../controllers/user_controller.dart';
-import '../views/user.dart';
-import '../views/friends.dart';
+import '../views/user_page.dart';
+import '../views/friends_page.dart';
 import '../../pages/authentication/login_page.dart';
 import 'discover.dart';
 import 'home.dart';
@@ -40,7 +41,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    UserModel user = user_controller.users[0];
+    UserModel user = user_controller.users[1];
     return Drawer(
       child: Column(
         children: [
@@ -121,7 +122,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    FriendsPage()),
+                                                    FriendsPage(user: user)),
                                           )
                                         : (index - 1 == 4)
                                             ? authentication_controller.logged =
@@ -151,11 +152,11 @@ class _HomeDrawerState extends State<HomeDrawer> {
                           color: Colors.black,
                         )),
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const _Matchmaking()),
-                      );
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //       builder: (context) => MatchMakingQueue()),
+                      // );
                       print('Matchmaking start');
                     },
                   ),

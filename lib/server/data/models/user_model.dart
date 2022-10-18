@@ -12,6 +12,7 @@ class UserModel {
   String name;
   String username;
   String email;
+  String status = "";
   String password = "password";
   List<UserModel> _friends = [];
   String profilePhoto = 'assets/images/user.png';
@@ -35,10 +36,10 @@ class UserModel {
     };
   }
 
-  @override
-  String toString() {
-    return 'Dog{id: $id, name: $name, username: $username, email: $email, profilePhoto : $profilePhoto}';
-  }
+  // @override
+  // String toString() {
+  //   return 'User{id: $id, name: $name, username: $username, email: $email, profilePhoto : $profilePhoto}';
+  // }
 
   // factory UserModel.fromRemote(UserRemoteModel remoteModel) => UserModel(
   //       gender: remoteModel.gender,

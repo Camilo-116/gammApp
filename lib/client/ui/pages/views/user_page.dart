@@ -27,7 +27,7 @@ class _UserPageState extends State<UserPage> {
         backgroundColor: const Color(0xFFB2B2B2),
         iconTheme: const IconThemeData(color: Colors.black),
         title: Text(
-          'Usuario',
+          'Perfil de Usuario',
           style: GoogleFonts.poppins(
               color: Colors.black, fontWeight: FontWeight.bold, fontSize: 22),
         ),
@@ -121,7 +121,8 @@ class _UserPageState extends State<UserPage> {
                   print('Follow Button Pressed');
                 },
                 style: TextButton.styleFrom(
-                  padding: EdgeInsets.zero,
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                   backgroundColor: Colors.grey.shade300,
                   minimumSize: const Size(100, 40),
                   shape: const RoundedRectangleBorder(
@@ -129,7 +130,7 @@ class _UserPageState extends State<UserPage> {
                   ),
                 ),
                 child: Text(
-                  'Seguir',
+                  'Editar perfil',
                   style: GoogleFonts.poppins(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,

@@ -1,8 +1,12 @@
+import 'dart:developer';
+import 'dart:math';
+
 import 'package:get/get.dart';
 
 import '../../../server/data/models/user_model.dart';
 
 class UserController extends GetxController {
+  var status = ['Online', 'Offline', 'Busy', 'Away', 'Invisible'];
   // ignore: prefer_final_fields
   var _users = [
     UserModel(
@@ -34,15 +38,22 @@ class UserController extends GetxController {
   @override
   onInit() {
     super.onInit();
-    // _addFriends();
+    _addFriends();
+    _setStatus();
   }
 
   void _addFriends() {
     for (var user in _users) {
-      user.friends = _users;
+      user.friends.addAll(_users);
       user.friends.remove(user);
     }
   }
 
   RxList<UserModel> get users => _users;
+
+  void _setStatus() {
+    for (var user in _users) {
+      user.status = status[Random().nextInt(status.length)];
+    }
+  }
 }

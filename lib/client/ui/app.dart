@@ -8,7 +8,7 @@ import 'controllers/authentication_controller.dart';
 import 'controllers/navigation_controller.dart';
 import 'pages/authentication/login_page.dart';
 import 'pages/home_pages/home.dart';
-import 'pages/loading/splash_screen.dart';
+import 'pages/matchmaking/matchmaking_queue.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

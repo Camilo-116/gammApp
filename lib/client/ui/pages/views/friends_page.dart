@@ -1,13 +1,18 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:gamma/client/ui/controllers/user_controller.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'user.dart';
+import '../../../../server/data/models/user_model.dart';
+import 'user_page.dart';
 import '../../pages/home_pages/home.dart';
 import '../../pages/home_pages/discover.dart';
 
 class FriendsPage extends StatefulWidget {
-  const FriendsPage({Key? key}) : super(key: key);
+  const FriendsPage({Key? key, required this.user}) : super(key: key);
+
+  final UserModel user;
 
   @override
   _FriendsPageState createState() => _FriendsPageState();
@@ -21,7 +26,7 @@ class _FriendsPageState extends State<FriendsPage> {
         backgroundColor: const Color(0xFFB2B2B2),
         iconTheme: const IconThemeData(color: Colors.black),
         title: Text(
-          'User',
+          'Tus amigos',
           style: GoogleFonts.poppins(
               color: Colors.black, fontWeight: FontWeight.bold, fontSize: 22),
         ),
@@ -49,34 +54,29 @@ class _FriendsPageState extends State<FriendsPage> {
         centerTitle: true,
         elevation: 2,
       ),
-      body: ListView(
-        children: [
-          buildFriends('DjMariio'),
-          buildFriends('El3mpaladorssj'),
-          buildFriends('Galoryzen'),
-          buildFriends('Booker T'),
-          buildFriends('Sameles')
-        ],
+      body: ListView.builder(
+        itemCount: widget.user.friends.length,
+        itemBuilder: (context, index) =>
+            buildFriends(widget.user.friends[index]),
       ),
     );
   }
 }
 
-Widget buildFriends(String Username) => ListTile(
+Widget buildFriends(UserModel user) => ListTile(
       title: Text(
-        Username,
+        user.username,
         style: GoogleFonts.poppins(
             color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20),
       ),
       subtitle: Text(
-        'Status',
+        user.status,
         style: GoogleFonts.poppins(
             color: Colors.black, fontWeight: FontWeight.normal, fontSize: 16),
       ),
-      trailing: Icon(Icons.arrow_forward_ios),
-      leading: Image.network(
-          'https://cdn-icons-png.flaticon.com/512/149/149071.png'),
+      trailing: const Icon(Icons.arrow_forward_ios),
+      leading: Image.network(user.profilePhoto),
       onTap: () {
-        print(Username + ' was tapped');
+        print(user.username + ' was tapped');
       },
     );
