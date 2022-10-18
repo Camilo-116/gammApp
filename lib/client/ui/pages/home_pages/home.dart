@@ -1,7 +1,11 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:gamma/client/ui/controllers/user_controller.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../../server/data/models/post_model.dart';
+import '../../../../server/data/models/user_model.dart';
 import '../views/user.dart';
 import 'discover.dart';
 import 'home_drawer.dart';
@@ -15,9 +19,47 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  UserController user_controller = Get.find();
 
   @override
   Widget build(BuildContext context) {
+    List<PostModel> posts = [
+      PostModel(
+          id: 0,
+          user: user_controller.users[0],
+          picture: 'https://picsum.photos/seed/901/600',
+          caption: "I'm a Dahmer fan",
+          likes: 100000,
+          comments: 4700,
+          shares: 1500),
+      PostModel(
+          id: 1,
+          user: user_controller.users[2],
+          picture:
+              'https://i.picsum.photos/id/413/400/400.jpg?hmac=-4Fi-wezu1Vi5MiN26ZcAqlCXNbyBGezeISVWgPAhQc',
+          caption: "OSU lover 'til the end of my days",
+          likes: 2,
+          comments: 0,
+          shares: 1),
+      PostModel(
+          id: 2,
+          user: user_controller.users[1],
+          picture:
+              'https://i.picsum.photos/id/270/400/400.jpg?hmac=7wcLGHIwFHGv56-7wUIKXv99dcj4KfcYIsewlE1SmfA',
+          caption: "Treino",
+          likes: 40000,
+          comments: 420,
+          shares: 0),
+      PostModel(
+          id: 3,
+          user: user_controller.users[3],
+          picture:
+              'https://i.picsum.photos/id/166/400/400.jpg?hmac=cHBjLdAgtcrf9aydJi-KSu0n2BfKLNe2LcJ0WpJoso0',
+          caption: "Panamá es mío",
+          likes: 305948,
+          comments: 6969,
+          shares: 3)
+    ];
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: Colors.white,
@@ -33,7 +75,7 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: const Color(0xFFB2B2B2),
         iconTheme: const IconThemeData(color: Colors.black),
         title: Text(
-          'Feed',
+          'GammApp',
           style: GoogleFonts.poppins(
               color: Colors.black, fontWeight: FontWeight.bold, fontSize: 22),
         ),
@@ -61,31 +103,48 @@ class _HomePageState extends State<HomePage> {
         centerTitle: true,
         elevation: 2,
       ),
-      body: _postListView(),
+      body: _postListView(posts),
     );
   }
 
-  Widget _postListView() {
+  Widget _postListView(List<PostModel> posts) {
     return ListView.builder(
-        itemCount: 5,
+        itemCount: posts.length,
         itemBuilder: (context, index) {
-          return _postView();
+          return Column(
+            children: [
+              _postView(posts[index]),
+              (index < posts.length - 1)
+                  ? const Padding(
+                      padding: EdgeInsets.only(bottom: 8.0),
+                      child: Divider(
+                        thickness: 1,
+                        indent: 15,
+                        endIndent: 15,
+                        color: Colors.black,
+                      ),
+                    )
+                  : const SizedBox(
+                      height: 15,
+                    ),
+            ],
+          );
         });
   }
 
-  Widget _postView() {
+  Widget _postView(PostModel post) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _postAuthor(),
-        _postImage(),
-        _postActions(),
-        _postCaption(),
+        _postAuthor(post.user),
+        _postImage(post.picture),
+        _postActions(post.likes, post.comments, post.shares),
+        _postCaption(post.caption),
       ],
     );
   }
 
-  Widget _postAuthor() {
+  Widget _postAuthor(UserModel user) {
     const double _imageSize = 44;
     return Column(
       mainAxisSize: MainAxisSize.max,
@@ -99,11 +158,10 @@ class _HomePageState extends State<HomePage> {
               width: _imageSize,
               height: _imageSize,
               clipBehavior: Clip.antiAlias,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 shape: BoxShape.circle,
               ),
-              child: Image.network(
-                  'https://cdn-icons-png.flaticon.com/512/149/149071.png'),
+              child: Image.network(user.profilePhoto),
             ),
             Padding(
               padding: const EdgeInsetsDirectional.fromSTEB(6, 0, 0, 0),
@@ -111,11 +169,14 @@ class _HomePageState extends State<HomePage> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const UserPage()),
+                    MaterialPageRoute(
+                        builder: (context) => UserPage(
+                              user: user,
+                            )),
                   );
                 },
                 child: Text(
-                  'User',
+                  user.username,
                   style: GoogleFonts.poppins(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
@@ -124,7 +185,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            Expanded(
+            const Expanded(
               child: Align(
                 alignment: AlignmentDirectional(1, 0),
                 child:
@@ -137,19 +198,19 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _postImage() {
+  Widget _postImage(String picture) {
     return AspectRatio(
       aspectRatio: 1,
       child: Image.network(
-        'https://picsum.photos/seed/901/600',
+        picture,
         width: 100,
         height: 300,
-        fit: BoxFit.cover,
+        fit: BoxFit.fill,
       ),
     );
   }
 
-  Widget _postActions() {
+  Widget _postActions(int likes, int comments, int shares) {
     bool _isLiked = false;
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
@@ -175,7 +236,11 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               Text(
-                '1.2 K',
+                (likes > 1000000)
+                    ? '${num.parse((likes / 1000000).toStringAsFixed(1))} M'
+                    : (likes > 1000)
+                        ? '${num.parse((likes / 1000).toStringAsFixed(1))} k'
+                        : '$likes',
                 style: GoogleFonts.poppins(
                     color: Colors.black,
                     fontWeight: FontWeight.normal,
@@ -192,7 +257,11 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               Text(
-                '120',
+                (comments > 1000000)
+                    ? '${num.parse((comments / 1000000).toStringAsFixed(1))} M'
+                    : (comments > 1000)
+                        ? '${num.parse((comments / 1000).toStringAsFixed(1))} k'
+                        : '$comments',
                 style: GoogleFonts.poppins(
                     color: Colors.black,
                     fontWeight: FontWeight.normal,
@@ -209,7 +278,11 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               Text(
-                '15',
+                (shares > 1000000)
+                    ? '${num.parse((shares / 1000000).toStringAsFixed(1))} M'
+                    : (shares > 1000)
+                        ? '${num.parse((shares / 1000).toStringAsFixed(1))} k'
+                        : '$shares',
                 style: GoogleFonts.poppins(
                     color: Colors.black,
                     fontWeight: FontWeight.normal,
@@ -222,14 +295,11 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _postCaption() {
+  Widget _postCaption(String caption) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 8,
-        vertical: 4,
-      ),
+      padding: const EdgeInsets.fromLTRB(8, 0, 12, 8),
       child: Text(
-        'Caption',
+        caption,
         style: GoogleFonts.poppins(
           color: Colors.black,
           fontWeight: FontWeight.normal,

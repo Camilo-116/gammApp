@@ -2,12 +2,16 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../../server/data/models/user_model.dart';
 import '../../pages/home_pages/home.dart';
 import '../../pages/home_pages/discover.dart';
 
 class UserPage extends StatefulWidget {
-  const UserPage({Key? key}) : super(key: key);
-
+  UserPage({
+    Key? key,
+    required this.user,
+  }) : super(key: key);
+  UserModel user;
   @override
   _UserPageState createState() => _UserPageState();
 }
@@ -23,7 +27,7 @@ class _UserPageState extends State<UserPage> {
         backgroundColor: const Color(0xFFB2B2B2),
         iconTheme: const IconThemeData(color: Colors.black),
         title: Text(
-          'User',
+          'Usuario',
           style: GoogleFonts.poppins(
               color: Colors.black, fontWeight: FontWeight.bold, fontSize: 22),
         ),
@@ -80,7 +84,7 @@ class _UserPageState extends State<UserPage> {
   Widget buildCover() => Container(
       color: Colors.grey,
       child: Image.network(
-        "https://t4.ftcdn.net/jpg/04/09/70/87/360_F_409708782_HxuxOH8f7xSmj5p4ygbAbuJE74vGGj2N.jpg",
+        widget.user.coverPhoto,
         width: double.infinity,
         height: coverHeight,
         fit: BoxFit.cover,
@@ -90,7 +94,7 @@ class _UserPageState extends State<UserPage> {
         radius: profileHeight / 2,
         backgroundColor: Colors.grey.shade800,
         backgroundImage: NetworkImage(
-          "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+          widget.user.profilePhoto,
         ),
       );
 
@@ -98,7 +102,7 @@ class _UserPageState extends State<UserPage> {
         children: [
           const SizedBox(height: 8),
           Text(
-            'Username',
+            widget.user.username,
             style: GoogleFonts.poppins(
                 color: Colors.black, fontWeight: FontWeight.bold, fontSize: 28),
           ),
@@ -111,25 +115,25 @@ class _UserPageState extends State<UserPage> {
                 fontSize: 20),
           ),
           Container(
-              padding: EdgeInsets.only(top: 2.0),
+              padding: const EdgeInsets.only(top: 2.0),
               child: TextButton(
                 onPressed: () {
                   print('Follow Button Pressed');
                 },
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  backgroundColor: Colors.grey.shade300,
+                  minimumSize: const Size(100, 40),
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
+                ),
                 child: Text(
-                  'Follow',
+                  'Seguir',
                   style: GoogleFonts.poppins(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
                       fontSize: 16),
-                ),
-                style: TextButton.styleFrom(
-                  padding: EdgeInsets.zero,
-                  backgroundColor: Colors.grey.shade300,
-                  minimumSize: Size(100, 40),
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                  ),
                 ),
               )),
           const SizedBox(height: 16),
@@ -168,13 +172,13 @@ class _UserPageState extends State<UserPage> {
           Divider(),
           const SizedBox(height: 16),
           Text(
-            'Acerca de Username',
+            'Acerca de ${widget.user.username}',
             style: GoogleFonts.poppins(
                 color: Colors.black, fontWeight: FontWeight.bold, fontSize: 28),
           ),
           const SizedBox(height: 8),
           Text(
-            'Juegos favoritos: \nRocket League\nFIFA 23\nValorant\nLeague of Legends\nAmong Us',
+            widget.user.about,
             style: GoogleFonts.poppins(
                 color: Colors.black,
                 fontWeight: FontWeight.normal,

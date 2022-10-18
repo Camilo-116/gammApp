@@ -87,8 +87,8 @@ class _HomeDrawerState extends State<HomeDrawer> {
                             () => ListTile(
                               selected:
                                   navigation_controller.drawerTiles[index - 1],
-                              selectedTileColor:
-                                  const Color.fromARGB(166, 41, 15, 171),
+                              selectedTileColor: Colors.grey,
+                              // const Color.fromARGB(166, 41, 15, 171),
                               leading: Icon(
                                 _icons[index - 1],
                                 color: Colors.black,
@@ -116,42 +116,58 @@ class _HomeDrawerState extends State<HomeDrawer> {
           Align(
             alignment: FractionalOffset.bottomCenter,
             child: Padding(
-                padding: const EdgeInsets.fromLTRB(50, 10.0, 50, 30),
-                child: GestureDetector(
-                  onTap: () {
-                    log('Start matchmaking...');
-                  },
-                  child: Container(
-                    width: 180,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Color(0xFF2D15AB),
-                          spreadRadius: 3,
-                          blurRadius: 8,
-                        ),
-                      ],
-                      image: const DecorationImage(
-                        image: AssetImage("assets/images/matchmaking.png"),
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                    child: Center(
-                      child: Text(
-                        'Emparéjame',
-                        style: TextStyle(
-                          fontSize: 22,
-                          foreground: Paint()
-                            ..style = PaintingStyle.stroke
-                            ..strokeWidth = 1
-                            ..color = Colors.white,
-                        ),
-                      ),
+              padding: const EdgeInsets.fromLTRB(50, 10.0, 50, 40),
+              child: ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.grey,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Text(
+                    'Emparéjame',
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      color: Colors.black,
                     ),
                   ),
-                )),
+                ),
+              ),
+              // child: GestureDetector(
+              //   onTap: () {
+              //     log('Start matchmaking...');
+              //   },
+              //   child: Container(
+              //     width: 150,
+              //     height: 60,
+              //     decoration: BoxDecoration(
+              //       borderRadius: BorderRadius.circular(10),
+              //       boxShadow: const [
+              //         BoxShadow(
+              //           color: Color(0xFF2D15AB),
+              //           spreadRadius: 3,
+              //         ),
+              //       ],
+              //       image: const DecorationImage(
+              //         image: AssetImage("assets/images/matchmaking.png"),
+              //         fit: BoxFit.fill,
+              //       ),
+              //     ),
+              //     child: Center(
+              //       child: Text(
+              //         'Emparéjame',
+              //         style: TextStyle(
+              //           fontSize: 22,
+              //           foreground: Paint()
+              //             ..style = PaintingStyle.stroke
+              //             ..strokeWidth = 1
+              //             ..color = Colors.white,
+              //         ),
+              //       ),
+              //     ),
+              //   ),
+              // ),
+            ),
           )
         ],
       ),
