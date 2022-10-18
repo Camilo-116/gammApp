@@ -161,7 +161,7 @@ class _HomePageState extends State<HomePage> {
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
               ),
-              child: Image.network(user.profilePhoto),
+              child: Image.asset(user.profilePhoto),
             ),
             Padding(
               padding: const EdgeInsetsDirectional.fromSTEB(6, 0, 0, 0),

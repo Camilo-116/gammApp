@@ -5,6 +5,8 @@ import 'package:gamma/client/ui/controllers/authentication_controller.dart';
 import 'package:gamma/client/ui/controllers/navigation_controller.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../../server/data/models/user_model.dart';
+import '../../controllers/user_controller.dart';
 import '../views/user.dart';
 import '../views/friends.dart';
 import '../../pages/authentication/login_page.dart';
@@ -20,6 +22,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
   // ignore: prefer_final_fields
   NavigationController navigation_controller = Get.find();
   AuthenticationController authentication_controller = Get.find();
+  UserController user_controller = Get.find();
   final List<IconData> _icons = [
     Icons.home,
     Icons.person,
@@ -37,6 +40,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    UserModel user = user_controller.users[0];
     return Drawer(
       child: Column(
         children: [
@@ -50,7 +54,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                     return (index == 0)
                         ? UserAccountsDrawerHeader(
                             accountName: Text(
-                              'Username',
+                              user.username,
                               style: GoogleFonts.poppins(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -58,7 +62,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                               ),
                             ),
                             accountEmail: Text(
-                              'username@user.com',
+                              user.email,
                               style: GoogleFonts.poppins(
                                 fontSize: 14,
                                 fontWeight: FontWeight.normal,
@@ -104,9 +108,25 @@ class _HomeDrawerState extends State<HomeDrawer> {
                               onTap: () {
                                 navigation_controller.selectTile = index - 1;
                                 Navigator.pop(context);
-                                (index - 1 == 4)
-                                    ? authentication_controller.logged = false
-                                    : {};
+                                (index == 2)
+                                    ? Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => UserPage(
+                                                  user: user,
+                                                )),
+                                      )
+                                    : (index == 3)
+                                        ? Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    FriendsPage()),
+                                          )
+                                        : (index - 1 == 4)
+                                            ? authentication_controller.logged =
+                                                false
+                                            : {};
                               },
                             ),
                           );

@@ -93,7 +93,7 @@ class _UserPageState extends State<UserPage> {
   Widget buildProfileImage() => CircleAvatar(
         radius: profileHeight / 2,
         backgroundColor: Colors.grey.shade800,
-        backgroundImage: NetworkImage(
+        backgroundImage: AssetImage(
           widget.user.profilePhoto,
         ),
       );
