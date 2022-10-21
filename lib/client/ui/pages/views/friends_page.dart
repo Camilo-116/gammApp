@@ -75,7 +75,7 @@ Widget buildFriends(UserModel user) => ListTile(
             color: Colors.black, fontWeight: FontWeight.normal, fontSize: 16),
       ),
       trailing: const Icon(Icons.arrow_forward_ios),
-      leading: Image.network(user.profilePhoto),
+      leading: Image.asset(user.profilePhoto),
       onTap: () {
         print(user.username + ' was tapped');
       },
