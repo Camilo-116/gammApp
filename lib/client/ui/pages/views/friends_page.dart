@@ -22,38 +22,6 @@ class _FriendsPageState extends State<FriendsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFB2B2B2),
-        iconTheme: const IconThemeData(color: Colors.black),
-        title: Text(
-          'Tus amigos',
-          style: GoogleFonts.poppins(
-              color: Colors.black, fontWeight: FontWeight.bold, fontSize: 22),
-        ),
-        actions: [
-          IconButton(
-              icon: const Icon(
-                Icons.radar,
-              ),
-              splashRadius: 17,
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const DiscoverGamers()),
-                );
-              }),
-          IconButton(
-            icon: const Icon(
-              Icons.notifications,
-            ),
-            splashRadius: 17,
-            onPressed: () {},
-          ),
-        ],
-        centerTitle: true,
-        elevation: 2,
-      ),
       body: ListView.builder(
         itemCount: widget.user.friends.length,
         itemBuilder: (context, index) =>

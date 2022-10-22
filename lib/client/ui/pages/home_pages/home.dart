@@ -24,8 +24,8 @@ class _HomePageState extends State<HomePage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   UserController user_controller = Get.find();
   PostController post_controller = Get.find();
-
-  final PageStorageBucket bucket = PageStorageBucket();
+  int _currentIndex = 0;
+  String _title = 'GammApp';
 
   @override
   Widget build(BuildContext context) {
@@ -66,21 +66,27 @@ class _HomePageState extends State<HomePage> {
         comments: 6969,
         shares: 3));
 
+    final screens = [
+      _postListView(post_controller.posts),
+      UserPage(user: user),
+      FriendsPage(user: user),
+      Setting(),
+    ];
+
     return Scaffold(
       key: scaffoldKey,
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        toolbarHeight: 40,
-        backgroundColor: Colors.white,
+        toolbarHeight: 56,
+        backgroundColor: Colors.white70,
         title: Text(
-          'GammApp',
+          _title,
           style: GoogleFonts.poppins(
               color: Colors.black, fontWeight: FontWeight.bold, fontSize: 22),
         ),
         centerTitle: true,
         elevation: 0,
       ),
-      body: _postListView(post_controller.posts),
+      body: screens[_currentIndex],
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
@@ -105,25 +111,17 @@ class _HomePageState extends State<HomePage> {
                 gap: 10,
                 onTabChange: (index) {
                   if (index == 0) {
-                    print('Home');
+                    _title = 'GammApp';
                   } else if (index == 1) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => UserPage(user: user)),
-                    );
+                    _title = 'Profile';
                   } else if (index == 2) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => FriendsPage(user: user)),
-                    );
+                    _title = 'Friends';
                   } else if (index == 3) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const Setting()),
-                    );
+                    _title = 'Settings';
                   }
+                  setState(() {
+                    _currentIndex = index;
+                  });
                 },
                 tabs: [
                   GButton(icon: Icons.home, text: 'Home'),

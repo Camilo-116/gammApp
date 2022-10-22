@@ -11,7 +11,6 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-  bool _rememberMe = false;
   bool _isObscure = true;
 
   @override
@@ -96,18 +95,6 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
-  Widget _buildRowTF(String nCampo1, TextInputType type1, String nCampo2,
-      TextInputType type2, bool obscure) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        _buildTF(nCampo1, type1, obscure),
-        const SizedBox(height: 20.0),
-        _buildTF(nCampo2, type2, obscure),
-      ],
-    );
-  }
-
   Widget _buildTF(String nCampo, TextInputType type, bool obscure) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,7 +103,7 @@ class _SignupScreenState extends State<SignupScreen> {
           nCampo,
           style: GoogleFonts.openSans(
             color: Colors.white,
-            fontSize: 12.0,
+            fontSize: 14.0,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -149,30 +136,10 @@ class _SignupScreenState extends State<SignupScreen> {
               hintStyle: GoogleFonts.openSans(
                 color: Colors.white,
                 fontWeight: FontWeight.normal,
-                fontSize: 10,
+                fontSize: 14,
               ),
             ),
           ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildForgotBtn() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        TextButton(
-          onPressed: () {
-            log('To login page');
-            Navigator.pop(context);
-          },
-          child: const Text('¿Olvidaste tu contraseña o usuario?',
-              style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 10,
-                  fontFamily: 'Montserrat')),
         ),
       ],
     );
@@ -232,37 +199,5 @@ class _SignupScreenState extends State<SignupScreen> {
                 )),
           ),
         ));
-  }
-
-  Widget _buildSignWith() {
-    return Column(
-      children: <Widget>[
-        Text(
-          '- O bien -',
-          style: GoogleFonts.openSans(
-              color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            RichText(
-              text: const TextSpan(
-                text: '¿No tienes una cuenta? ',
-              ),
-            ),
-            TextButton(
-                onPressed: () {
-                  log('Register button pressed');
-                },
-                child: const Text('Registrate aquí',
-                    style: TextStyle(
-                      decoration: TextDecoration.underline,
-                      fontFamily: 'Montserrat',
-                      color: Colors.white,
-                    ))),
-          ],
-        )
-      ],
-    );
   }
 }

@@ -106,7 +106,11 @@ class _LoginScreenState extends State<LoginScreen> {
             obscureText: obscure,
             controller: controller,
             keyboardType: TextInputType.emailAddress,
-            style: const TextStyle(color: Colors.white),
+            style: GoogleFonts.poppins(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.normal,
+            ),
             decoration: InputDecoration(
               border: InputBorder.none,
               // contentPadding: const EdgeInsets.only(top: 14.0),
@@ -119,7 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
               hintStyle: GoogleFonts.openSans(
                   color: Colors.white,
                   fontWeight: FontWeight.normal,
-                  fontSize: 12),
+                  fontSize: 16),
             ),
           ),
         ),
@@ -138,12 +142,12 @@ class _LoginScreenState extends State<LoginScreen> {
               controller.clear();
             }
           },
-          child: const Text('¿Olvidaste tu contraseña o usuario?',
-              style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 10,
-                  fontFamily: 'Montserrat')),
+          child: Text('¿Olvidaste tu contraseña o usuario?',
+              style: GoogleFonts.openSans(
+                color: Colors.white,
+                fontSize: 12,
+                fontWeight: FontWeight.normal,
+              )),
         ),
       ],
     );
@@ -171,6 +175,7 @@ class _LoginScreenState extends State<LoginScreen> {
             style: GoogleFonts.openSans(
               color: Colors.white,
               fontWeight: FontWeight.normal,
+              fontSize: 14,
             ))
       ]),
     );
@@ -219,14 +224,19 @@ class _LoginScreenState extends State<LoginScreen> {
         Text(
           '- O bien -',
           style: GoogleFonts.openSans(
-              color: Colors.white, fontWeight: FontWeight.bold),
+              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             RichText(
-              text: const TextSpan(
+              text: TextSpan(
                 text: '¿No tienes una cuenta? ',
+                style: GoogleFonts.openSans(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.normal,
+                ),
               ),
             ),
             TextButton(
@@ -241,11 +251,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     }
                   });
                 },
-                child: const Text('Registrate aquí',
-                    style: TextStyle(
-                      decoration: TextDecoration.underline,
-                      fontFamily: 'Montserrat',
+                child: Text('Registrate aquí',
+                    style: GoogleFonts.openSans(
                       color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
                     ))),
             // const Text('¿No tienes una cuenta? ',
             //     style: TextStyle(
