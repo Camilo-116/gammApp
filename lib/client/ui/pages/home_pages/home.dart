@@ -68,9 +68,9 @@ class _HomePageState extends State<HomePage> {
 
     final screens = [
       _postListView(post_controller.posts),
-      UserPage(user: user),
       FriendsPage(user: user),
-      Setting(),
+      DiscoverGamers(),
+      UserPage(user: user),
     ];
 
     return Scaffold(
@@ -87,18 +87,6 @@ class _HomePageState extends State<HomePage> {
         elevation: 0,
       ),
       body: screens[_currentIndex],
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const DiscoverGamers()),
-          );
-        },
-        child: const Icon(Icons.radar),
-        backgroundColor: Colors.black,
-        elevation: 2,
-        hoverColor: Colors.grey[700],
-      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: Container(
           color: Colors.black,
@@ -113,11 +101,11 @@ class _HomePageState extends State<HomePage> {
                   if (index == 0) {
                     _title = 'GammApp';
                   } else if (index == 1) {
-                    _title = 'Profile';
-                  } else if (index == 2) {
                     _title = 'Friends';
+                  } else if (index == 2) {
+                    _title = 'Discover';
                   } else if (index == 3) {
-                    _title = 'Settings';
+                    _title = 'Profile';
                   }
                   setState(() {
                     _currentIndex = index;
@@ -125,9 +113,9 @@ class _HomePageState extends State<HomePage> {
                 },
                 tabs: [
                   GButton(icon: Icons.home, text: 'Home'),
-                  GButton(icon: Icons.person, text: 'Profile'),
                   GButton(icon: Icons.people, text: 'Friends'),
-                  GButton(icon: Icons.settings, text: 'Settings'),
+                  GButton(icon: Icons.radar, text: 'Discover'),
+                  GButton(icon: Icons.person, text: 'Profile'),
                 ]),
           )),
     );

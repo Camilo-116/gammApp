@@ -25,32 +25,6 @@ class _DiscoverGamersState extends State<DiscoverGamers> {
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        automaticallyImplyLeading: false,
-        leading: Padding(
-          padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 0, 0),
-          child: IconButton(
-            icon: const Icon(
-              Icons.arrow_back,
-              color: Colors.black,
-              size: 26,
-            ),
-            onPressed: () {
-              print('Back home ...');
-              Navigator.pop(context);
-            },
-          ),
-        ),
-        title: Text(
-          'Descubre',
-          style: GoogleFonts.poppins(
-              color: Colors.black, fontWeight: FontWeight.bold, fontSize: 22),
-        ),
-        actions: [],
-        centerTitle: true,
-        elevation: 2,
-      ),
       body: SafeArea(
         child: GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(),
