@@ -1,15 +1,15 @@
-import 'dart:developer';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:gamma/client/ui/controllers/post_controller.dart';
 import 'package:gamma/client/ui/controllers/user_controller.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../server/data/models/post_model.dart';
 import '../../../../server/data/models/user_model.dart';
+import '../views/friends_page.dart';
 import '../views/user_page.dart';
+import '../views/settings.dart';
 import 'discover.dart';
 import 'home_drawer.dart';
 
@@ -25,8 +25,11 @@ class _HomePageState extends State<HomePage> {
   UserController user_controller = Get.find();
   PostController post_controller = Get.find();
 
+  final PageStorageBucket bucket = PageStorageBucket();
+
   @override
   Widget build(BuildContext context) {
+    UserModel user = user_controller.users[0];
     post_controller.addPost(PostModel(
         id: 0,
         user: user_controller.users[0],
@@ -66,47 +69,69 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: Colors.white,
-      drawer: Drawer(
-        child: Container(
-          color: Colors.grey,
-          child: HomeDrawer(),
-        ),
-      ),
-      drawerDragStartBehavior: DragStartBehavior.start,
-      drawerEdgeDragWidth: 40,
       appBar: AppBar(
-        backgroundColor: const Color(0xFFB2B2B2),
-        iconTheme: const IconThemeData(color: Colors.black),
+        toolbarHeight: 40,
+        backgroundColor: Colors.white,
         title: Text(
           'GammApp',
           style: GoogleFonts.poppins(
               color: Colors.black, fontWeight: FontWeight.bold, fontSize: 22),
         ),
-        actions: [
-          IconButton(
-              icon: const Icon(
-                Icons.radar,
-              ),
-              splashRadius: 17,
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const DiscoverGamers()),
-                );
-              }),
-          IconButton(
-            icon: const Icon(
-              Icons.notifications,
-            ),
-            splashRadius: 17,
-            onPressed: () {},
-          ),
-        ],
         centerTitle: true,
-        elevation: 2,
+        elevation: 0,
       ),
       body: _postListView(post_controller.posts),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const DiscoverGamers()),
+          );
+        },
+        child: const Icon(Icons.radar),
+        backgroundColor: Colors.black,
+        elevation: 2,
+        hoverColor: Colors.grey[700],
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: Container(
+          color: Colors.black,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            child: GNav(
+                backgroundColor: Colors.black,
+                activeColor: Colors.white,
+                color: Colors.grey,
+                gap: 10,
+                onTabChange: (index) {
+                  if (index == 0) {
+                    print('Home');
+                  } else if (index == 1) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => UserPage(user: user)),
+                    );
+                  } else if (index == 2) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => FriendsPage(user: user)),
+                    );
+                  } else if (index == 3) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const Setting()),
+                    );
+                  }
+                },
+                tabs: [
+                  GButton(icon: Icons.home, text: 'Home'),
+                  GButton(icon: Icons.person, text: 'Profile'),
+                  GButton(icon: Icons.people, text: 'Friends'),
+                  GButton(icon: Icons.settings, text: 'Settings'),
+                ]),
+          )),
     );
   }
 
