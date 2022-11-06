@@ -24,7 +24,7 @@ class _DiscoverGamersState extends State<DiscoverGamers> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
-      backgroundColor: Colors.white,
+      backgroundColor: Color.fromARGB(255, 34, 15, 57),
       body: SafeArea(
         child: GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(),
@@ -34,7 +34,7 @@ class _DiscoverGamersState extends State<DiscoverGamers> {
               Expanded(
                 child: Card(
                   clipBehavior: Clip.antiAliasWithSaveLayer,
-                  color: const Color(0xFFF5F5F5),
+                  color: Color.fromARGB(255, 34, 15, 57),
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [
@@ -58,7 +58,7 @@ class _DiscoverGamersState extends State<DiscoverGamers> {
                           IconButton(
                             icon: const Icon(
                               Icons.chevron_left,
-                              color: Colors.black,
+                              color: Colors.white,
                               size: 30,
                             ),
                             onPressed: () {
@@ -68,7 +68,7 @@ class _DiscoverGamersState extends State<DiscoverGamers> {
                           IconButton(
                             icon: const Icon(
                               Icons.add,
-                              color: Colors.black,
+                              color: Colors.white,
                               size: 30,
                             ),
                             onPressed: () {
@@ -78,7 +78,7 @@ class _DiscoverGamersState extends State<DiscoverGamers> {
                           IconButton(
                             icon: const Icon(
                               Icons.chevron_right,
-                              color: Colors.black,
+                              color: Colors.white,
                               size: 30,
                             ),
                             onPressed: () {
@@ -92,8 +92,8 @@ class _DiscoverGamersState extends State<DiscoverGamers> {
                         child: Text(
                           'Nombre de Usuario',
                           textAlign: TextAlign.start,
-                          style: GoogleFonts.poppins(
-                              color: Colors.black,
+                          style: GoogleFonts.hind(
+                              color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: 18),
                         ),
@@ -102,8 +102,8 @@ class _DiscoverGamersState extends State<DiscoverGamers> {
                         alignment: AlignmentDirectional(-0.8, 0),
                         child: Text(
                           'Juego favorito:  Rocket League\nRango: Supersonic Legend\nPlataforma: PlayStation 5',
-                          style: GoogleFonts.poppins(
-                              fontSize: 14, color: Colors.black),
+                          style: GoogleFonts.hind(
+                              fontSize: 14, color: Colors.white),
                         ),
                       ),
                     ],

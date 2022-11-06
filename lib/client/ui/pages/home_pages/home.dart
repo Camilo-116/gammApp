@@ -68,57 +68,96 @@ class _HomePageState extends State<HomePage> {
 
     final screens = [
       _postListView(post_controller.posts),
-      FriendsPage(user: user),
+      UserPage(user: user),
       DiscoverGamers(),
+      FriendsPage(user: user),
       UserPage(user: user),
     ];
 
+    var padding = EdgeInsets.symmetric(horizontal: 18, vertical: 5);
+
     return Scaffold(
-      key: scaffoldKey,
-      appBar: AppBar(
-        toolbarHeight: 56,
-        backgroundColor: Colors.white70,
-        title: Text(
-          _title,
-          style: GoogleFonts.poppins(
-              color: Colors.black, fontWeight: FontWeight.bold, fontSize: 22),
+        key: scaffoldKey,
+        extendBody: true,
+        backgroundColor: Color.fromARGB(255, 34, 15, 57),
+        appBar: AppBar(
+          toolbarHeight: 56,
+          backgroundColor: Color.fromARGB(255, 37, 19, 60),
+          shadowColor: Color.fromARGB(255, 80, 41, 131),
+          title: Text(
+            _title,
+            style: GoogleFonts.hind(
+                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 24),
+          ),
+          centerTitle: true,
+          elevation: 0,
         ),
-        centerTitle: true,
-        elevation: 0,
-      ),
-      body: screens[_currentIndex],
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: Container(
-          color: Colors.black,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-            child: GNav(
-                backgroundColor: Colors.black,
-                activeColor: Colors.white,
-                color: Colors.grey,
-                gap: 10,
-                onTabChange: (index) {
-                  if (index == 0) {
-                    _title = 'GammApp';
-                  } else if (index == 1) {
-                    _title = 'Friends';
-                  } else if (index == 2) {
-                    _title = 'Discover';
-                  } else if (index == 3) {
-                    _title = 'Profile';
-                  }
-                  setState(() {
-                    _currentIndex = index;
-                  });
-                },
-                tabs: [
-                  GButton(icon: Icons.home, text: 'Home'),
-                  GButton(icon: Icons.people, text: 'Friends'),
-                  GButton(icon: Icons.radar, text: 'Discover'),
-                  GButton(icon: Icons.person, text: 'Profile'),
-                ]),
-          )),
-    );
+        body: screens[_currentIndex],
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        bottomNavigationBar: SafeArea(
+          child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 26, 8, 25),
+                borderRadius: BorderRadius.all(Radius.circular(100)),
+                boxShadow: [
+                  BoxShadow(
+                    spreadRadius: -10,
+                    blurRadius: 60,
+                    color: Colors.black.withOpacity(.20),
+                    offset: Offset(0, 25),
+                  )
+                ],
+              ),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 3, vertical: 10),
+                child: GNav(
+                    curve: Curves.fastOutSlowIn,
+                    duration: Duration(milliseconds: 900),
+                    iconSize: 48,
+                    activeColor: Color.fromARGB(255, 235, 65, 229),
+                    color: Color.fromARGB(255, 129, 117, 139),
+                    onTabChange: (index) {
+                      if (index == 0) {
+                        _title = 'GammApp';
+                      } else if (index == 1) {
+                        _title = 'Create Post';
+                      } else if (index == 2) {
+                        _title = 'Discover';
+                      } else if (index == 3) {
+                        _title = 'Friends';
+                      } else if (index == 4) {
+                        _title = 'Profile';
+                      }
+                      setState(() {
+                        _currentIndex = index;
+                      });
+                    },
+                    tabs: [
+                      GButton(
+                        icon: Icons.home,
+                        padding: padding,
+                      ),
+                      GButton(
+                        icon: Icons.add_box_rounded,
+                        padding: padding,
+                      ),
+                      GButton(
+                        icon: Icons.location_on,
+                        padding: padding,
+                      ),
+                      GButton(
+                        icon: Icons.people_alt,
+                        padding: padding,
+                      ),
+                      GButton(
+                        icon: Icons.person,
+                        padding: padding,
+                      ),
+                    ]),
+              )),
+        ));
   }
 
   Widget _postListView(List<PostModel> posts) {
@@ -135,7 +174,7 @@ class _HomePageState extends State<HomePage> {
                         thickness: 1,
                         indent: 15,
                         endIndent: 15,
-                        color: Colors.black,
+                        color: Colors.white,
                       ),
                     )
                   : const SizedBox(
@@ -192,8 +231,8 @@ class _HomePageState extends State<HomePage> {
                 },
                 child: Text(
                   post_controller.posts[index].user.username,
-                  style: GoogleFonts.poppins(
-                    color: Colors.black,
+                  style: GoogleFonts.hind(
+                    color: Colors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
@@ -204,7 +243,7 @@ class _HomePageState extends State<HomePage> {
               child: Align(
                 alignment: AlignmentDirectional(1, 0),
                 child:
-                    Icon(Icons.keyboard_control, color: Colors.black, size: 24),
+                    Icon(Icons.keyboard_control, color: Colors.white, size: 24),
               ),
             )
           ]),
@@ -249,8 +288,8 @@ class _HomePageState extends State<HomePage> {
                         ? Icons.favorite
                         : Icons.favorite_border,
                     color: post_controller.likes[index]
-                        ? Colors.red
-                        : Colors.black,
+                        ? Color.fromARGB(255, 235, 65, 229)
+                        : Colors.white,
                     size: 24,
                   ),
                 ),
@@ -265,8 +304,8 @@ class _HomePageState extends State<HomePage> {
                       : (post_controller.posts[index].likes > 1000)
                           ? '${num.parse((post_controller.posts[index].likes / 1000).toStringAsFixed(1))} k'
                           : '${post_controller.posts[index].likes}',
-                  style: GoogleFonts.poppins(
-                      color: Colors.black,
+                  style: GoogleFonts.hind(
+                      color: Colors.white,
                       fontWeight: FontWeight.normal,
                       fontSize: 16),
                 ),
@@ -274,7 +313,7 @@ class _HomePageState extends State<HomePage> {
               IconButton(
                 icon: const Icon(
                   Icons.comment_outlined,
-                  color: Colors.black,
+                  color: Colors.white,
                   size: 24,
                 ),
                 onPressed: () {
@@ -287,15 +326,15 @@ class _HomePageState extends State<HomePage> {
                     : (post_controller.posts[index].comments > 1000)
                         ? '${num.parse((post_controller.posts[index].comments / 1000).toStringAsFixed(1))} k'
                         : '${post_controller.posts[index].comments}',
-                style: GoogleFonts.poppins(
-                    color: Colors.black,
+                style: GoogleFonts.hind(
+                    color: Colors.white,
                     fontWeight: FontWeight.normal,
                     fontSize: 16),
               ),
               IconButton(
                 icon: const Icon(
-                  Icons.ios_share,
-                  color: Colors.black,
+                  Icons.share,
+                  color: Colors.white,
                   size: 24,
                 ),
                 onPressed: () {
@@ -308,8 +347,8 @@ class _HomePageState extends State<HomePage> {
                     : (post_controller.posts[index].shares > 1000)
                         ? '${num.parse((post_controller.posts[index].shares / 1000).toStringAsFixed(1))} k'
                         : '${post_controller.posts[index].shares}',
-                style: GoogleFonts.poppins(
-                    color: Colors.black,
+                style: GoogleFonts.hind(
+                    color: Colors.white,
                     fontWeight: FontWeight.normal,
                     fontSize: 16),
               ),
@@ -325,8 +364,8 @@ class _HomePageState extends State<HomePage> {
       padding: const EdgeInsets.fromLTRB(8, 0, 12, 8),
       child: Text(
         post_controller.posts[index].caption,
-        style: GoogleFonts.poppins(
-          color: Colors.black,
+        style: GoogleFonts.hind(
+          color: Colors.white,
           fontWeight: FontWeight.normal,
           fontSize: 16,
         ),

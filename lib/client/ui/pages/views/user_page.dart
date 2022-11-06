@@ -20,6 +20,7 @@ class _UserPageState extends State<UserPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromARGB(255, 34, 15, 57),
       body: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
@@ -68,14 +69,16 @@ class _UserPageState extends State<UserPage> {
           const SizedBox(height: 8),
           Text(
             widget.user.username,
-            style: GoogleFonts.poppins(
-                color: Colors.black, fontWeight: FontWeight.bold, fontSize: 28),
+            style: GoogleFonts.hind(
+                color: Color.fromARGB(255, 241, 219, 255),
+                fontWeight: FontWeight.bold,
+                fontSize: 28),
           ),
           const SizedBox(height: 8),
           Text(
             'Plataformas de juego',
-            style: GoogleFonts.poppins(
-                color: Colors.black,
+            style: GoogleFonts.hind(
+                color: Color.fromARGB(255, 241, 219, 255),
                 fontWeight: FontWeight.normal,
                 fontSize: 20),
           ),
@@ -88,7 +91,7 @@ class _UserPageState extends State<UserPage> {
                 style: TextButton.styleFrom(
                   padding:
                       const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                  backgroundColor: Colors.grey.shade300,
+                  backgroundColor: Color.fromARGB(255, 54, 9, 91),
                   minimumSize: const Size(100, 40),
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -96,8 +99,8 @@ class _UserPageState extends State<UserPage> {
                 ),
                 child: Text(
                   'Editar perfil',
-                  style: GoogleFonts.poppins(
-                      color: Colors.black,
+                  style: GoogleFonts.hind(
+                      color: Color.fromARGB(255, 241, 219, 255),
                       fontWeight: FontWeight.bold,
                       fontSize: 16),
                 ),
@@ -111,24 +114,24 @@ class _UserPageState extends State<UserPage> {
               const SizedBox(width: 16),
               Text(
                 'Amigos:',
-                style: GoogleFonts.poppins(
-                    color: Colors.black,
+                style: GoogleFonts.hind(
+                    color: Color.fromARGB(255, 241, 219, 255),
                     fontWeight: FontWeight.bold,
                     fontSize: 22),
               ),
               const SizedBox(width: 16),
               Text(
                 'Posts:',
-                style: GoogleFonts.poppins(
-                    color: Colors.black,
+                style: GoogleFonts.hind(
+                    color: Color.fromARGB(255, 241, 219, 255),
                     fontWeight: FontWeight.bold,
                     fontSize: 22),
               ),
               const SizedBox(width: 16),
               Text(
                 'Likes:',
-                style: GoogleFonts.poppins(
-                    color: Colors.black,
+                style: GoogleFonts.hind(
+                    color: Color.fromARGB(255, 241, 219, 255),
                     fontWeight: FontWeight.bold,
                     fontSize: 22),
               ),
@@ -139,14 +142,16 @@ class _UserPageState extends State<UserPage> {
           const SizedBox(height: 16),
           Text(
             'Acerca de ${widget.user.username}',
-            style: GoogleFonts.poppins(
-                color: Colors.black, fontWeight: FontWeight.bold, fontSize: 28),
+            style: GoogleFonts.hind(
+                color: Color.fromARGB(255, 241, 219, 255),
+                fontWeight: FontWeight.bold,
+                fontSize: 28),
           ),
           const SizedBox(height: 8),
           Text(
             widget.user.about,
-            style: GoogleFonts.poppins(
-                color: Colors.black,
+            style: GoogleFonts.hind(
+                color: Color.fromARGB(255, 241, 219, 255),
                 fontWeight: FontWeight.normal,
                 fontSize: 20),
           ),

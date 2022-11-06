@@ -21,17 +21,7 @@ class _SignupScreenState extends State<SignupScreen> {
           height: double.infinity,
           width: double.infinity,
           decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color.fromARGB(255, 89, 147, 218),
-                Color.fromARGB(255, 78, 140, 212),
-                Color.fromARGB(255, 55, 117, 192),
-                Color.fromARGB(255, 37, 103, 177),
-              ],
-              stops: [0.1, 0.4, 0.7, 0.9],
-            ),
+            color: Color.fromARGB(255, 34, 15, 57),
           ),
         ),
         Center(
@@ -44,10 +34,10 @@ class _SignupScreenState extends State<SignupScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(
-                        'Registro de Usuario',
+                        '\n¡Bienvenido a la mejor comunidad de gamers!',
                         textAlign: TextAlign.center,
-                        style: GoogleFonts.openSans(
-                          color: Colors.white,
+                        style: GoogleFonts.hind(
+                          color: Color.fromARGB(255, 254, 244, 255),
                           fontSize: 20.0,
                           fontWeight: FontWeight.bold,
                         ),
@@ -101,7 +91,7 @@ class _SignupScreenState extends State<SignupScreen> {
       children: <Widget>[
         Text(
           nCampo,
-          style: GoogleFonts.openSans(
+          style: GoogleFonts.hind(
             color: Colors.white,
             fontSize: 14.0,
             fontWeight: FontWeight.bold,
@@ -133,7 +123,7 @@ class _SignupScreenState extends State<SignupScreen> {
               hintText: (nCampo == 'Confirmar Contraseña')
                   ? 'Ingresa nuevamente tu contraseña'
                   : 'Ingresa tu ${nCampo.toLowerCase()}',
-              hintStyle: GoogleFonts.openSans(
+              hintStyle: GoogleFonts.hind(
                 color: Colors.white,
                 fontWeight: FontWeight.normal,
                 fontSize: 14,
@@ -156,7 +146,7 @@ class _SignupScreenState extends State<SignupScreen> {
               height: 30,
               child: Checkbox(
                 value: !_isObscure,
-                checkColor: Colors.green,
+                checkColor: Color.fromARGB(255, 116, 31, 185),
                 activeColor: Colors.white,
                 onChanged: (value) {
                   setState(() {
@@ -166,7 +156,7 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
             )),
         Text('Mostrar contraseñas',
-            style: GoogleFonts.openSans(
+            style: GoogleFonts.hind(
               color: Colors.white,
               fontWeight: FontWeight.normal,
             ))
@@ -189,11 +179,11 @@ class _SignupScreenState extends State<SignupScreen> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30.0),
               ),
-              backgroundColor: Colors.white,
+              backgroundColor: Color.fromARGB(255, 116, 31, 185),
             ),
             child: Text('Registrar',
-                style: GoogleFonts.openSans(
-                  color: Colors.blueAccent,
+                style: GoogleFonts.hind(
+                  color: Color.fromARGB(255, 254, 244, 255),
                   fontSize: 18.0,
                   fontWeight: FontWeight.bold,
                 )),

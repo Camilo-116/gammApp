@@ -27,17 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
             height: double.infinity,
             width: double.infinity,
             decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Color.fromARGB(255, 89, 147, 218),
-                  Color.fromARGB(255, 78, 140, 212),
-                  Color.fromARGB(255, 55, 117, 192),
-                  Color.fromARGB(255, 37, 103, 177),
-                ],
-                stops: [0.1, 0.4, 0.7, 0.9],
-              ),
+              color: Color.fromARGB(255, 34, 15, 57),
             ),
           ),
           SizedBox(
@@ -49,8 +39,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(
-                        'Inicio de sesión',
-                        style: GoogleFonts.openSans(
+                        'Conéctate y juega con\ngamers de tu misma ciudad',
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.hind(
                           color: Colors.white,
                           fontSize: 30.0,
                           fontWeight: FontWeight.bold,
@@ -80,8 +71,8 @@ class _LoginScreenState extends State<LoginScreen> {
       children: <Widget>[
         Text(
           nCampo,
-          style: GoogleFonts.openSans(
-            color: Colors.white,
+          style: GoogleFonts.hind(
+            color: Color.fromARGB(255, 254, 244, 255),
             fontWeight: FontWeight.bold,
             fontSize: 18,
           ),
@@ -90,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
         Container(
           alignment: Alignment.centerLeft,
           decoration: BoxDecoration(
-            color: const Color.fromARGB(69, 255, 255, 255),
+            color: Color.fromARGB(255, 129, 117, 139),
             borderRadius: BorderRadius.circular(10.0),
             boxShadow: const [
               BoxShadow(
@@ -106,8 +97,8 @@ class _LoginScreenState extends State<LoginScreen> {
             obscureText: obscure,
             controller: controller,
             keyboardType: TextInputType.emailAddress,
-            style: GoogleFonts.poppins(
-              color: Colors.white,
+            style: GoogleFonts.hind(
+              color: Color.fromARGB(255, 254, 244, 255),
               fontSize: 16,
               fontWeight: FontWeight.normal,
             ),
@@ -116,11 +107,11 @@ class _LoginScreenState extends State<LoginScreen> {
               // contentPadding: const EdgeInsets.only(top: 14.0),
               prefixIcon: Icon(
                 icon,
-                color: Colors.white,
+                color: Color.fromARGB(255, 254, 244, 255),
                 size: 25,
               ),
               hintText: 'Ingresa tu ${nCampo.toLowerCase()}',
-              hintStyle: GoogleFonts.openSans(
+              hintStyle: GoogleFonts.hind(
                   color: Colors.white,
                   fontWeight: FontWeight.normal,
                   fontSize: 16),
@@ -143,8 +134,8 @@ class _LoginScreenState extends State<LoginScreen> {
             }
           },
           child: Text('¿Olvidaste tu contraseña o usuario?',
-              style: GoogleFonts.openSans(
-                color: Colors.white,
+              style: GoogleFonts.hind(
+                color: Color.fromARGB(255, 129, 117, 139),
                 fontSize: 12,
                 fontWeight: FontWeight.normal,
               )),
@@ -162,7 +153,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: SizedBox(
               child: Checkbox(
                 value: _rememberMe,
-                checkColor: Colors.green,
+                checkColor: Color.fromARGB(255, 116, 31, 185),
                 activeColor: Colors.white,
                 onChanged: (value) {
                   setState(() {
@@ -172,7 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             )),
         Text('Mantener sesión iniciada',
-            style: GoogleFonts.openSans(
+            style: GoogleFonts.hind(
               color: Colors.white,
               fontWeight: FontWeight.normal,
               fontSize: 14,
@@ -206,11 +197,11 @@ class _LoginScreenState extends State<LoginScreen> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30.0),
               ),
-              backgroundColor: Colors.white,
+              backgroundColor: Color.fromARGB(255, 116, 31, 185),
             ),
             child: Text('Ingresar',
-                style: GoogleFonts.openSans(
-                  color: Colors.blueAccent,
+                style: GoogleFonts.hind(
+                  color: Color.fromARGB(255, 254, 244, 255),
                   fontSize: 18.0,
                   fontWeight: FontWeight.bold,
                 )),
@@ -223,7 +214,7 @@ class _LoginScreenState extends State<LoginScreen> {
       children: <Widget>[
         Text(
           '- O bien -',
-          style: GoogleFonts.openSans(
+          style: GoogleFonts.hind(
               color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
         ),
         Row(
@@ -232,8 +223,8 @@ class _LoginScreenState extends State<LoginScreen> {
             RichText(
               text: TextSpan(
                 text: '¿No tienes una cuenta? ',
-                style: GoogleFonts.openSans(
-                  color: Colors.white,
+                style: GoogleFonts.hind(
+                  color: Color.fromARGB(255, 129, 117, 139),
                   fontSize: 14,
                   fontWeight: FontWeight.normal,
                 ),
@@ -251,9 +242,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     }
                   });
                 },
-                child: Text('Registrate aquí',
-                    style: GoogleFonts.openSans(
-                      color: Colors.white,
+                child: Text('Registrate',
+                    style: GoogleFonts.hind(
+                      color: Color.fromARGB(255, 235, 65, 229),
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
                     ))),

@@ -65,7 +65,7 @@ class _MatchMakingQueueState extends State<MatchMakingQueue> {
                   Navigator.pop(context);
                 },
                 child: Text('Cancel Matchmaking',
-                    style: GoogleFonts.poppins(
+                    style: GoogleFonts.hind(
                       fontSize: 18,
                       color: Colors.blueGrey[50],
                       fontWeight: FontWeight.bold,

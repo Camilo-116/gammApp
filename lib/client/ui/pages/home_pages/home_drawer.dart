@@ -56,7 +56,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                         ? UserAccountsDrawerHeader(
                             accountName: Text(
                               user.username,
-                              style: GoogleFonts.poppins(
+                              style: GoogleFonts.hind(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
@@ -64,7 +64,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                             ),
                             accountEmail: Text(
                               user.email,
-                              style: GoogleFonts.poppins(
+                              style: GoogleFonts.hind(
                                 fontSize: 14,
                                 fontWeight: FontWeight.normal,
                                 color: Colors.white,
@@ -100,7 +100,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                               ),
                               title: Text(
                                 _titles[index - 1],
-                                style: GoogleFonts.poppins(
+                                style: GoogleFonts.hind(
                                   fontSize: 16,
                                   fontWeight: FontWeight.normal,
                                   color: Colors.black,
@@ -147,7 +147,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                   padding: const EdgeInsets.all(10.0),
                   child: TextButton(
                     child: Text('Emparéjame',
-                        style: GoogleFonts.poppins(
+                        style: GoogleFonts.hind(
                           fontSize: 18,
                           color: Colors.black,
                         )),
@@ -245,7 +245,7 @@ class _Matchmaking extends StatelessWidget {
                   Navigator.pop(context);
                 },
                 child: Text('Cancel Matchmaking',
-                    style: GoogleFonts.poppins(
+                    style: GoogleFonts.hind(
                       fontSize: 18,
                       color: Colors.blueGrey[50],
                       fontWeight: FontWeight.bold,

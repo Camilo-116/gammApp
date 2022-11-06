@@ -22,6 +22,7 @@ class _FriendsPageState extends State<FriendsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromARGB(255, 34, 15, 57),
       body: ListView.builder(
         itemCount: widget.user.friends.length,
         itemBuilder: (context, index) =>
@@ -34,13 +35,13 @@ class _FriendsPageState extends State<FriendsPage> {
 Widget buildFriends(UserModel user) => ListTile(
       title: Text(
         user.username,
-        style: GoogleFonts.poppins(
-            color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20),
+        style: GoogleFonts.hind(
+            color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
       ),
       subtitle: Text(
         user.status,
-        style: GoogleFonts.poppins(
-            color: Colors.black, fontWeight: FontWeight.normal, fontSize: 16),
+        style: GoogleFonts.hind(
+            color: Colors.white, fontWeight: FontWeight.normal, fontSize: 16),
       ),
       trailing: const Icon(Icons.arrow_forward_ios),
       leading: Image.asset(user.profilePhoto),
