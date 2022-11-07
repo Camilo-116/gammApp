@@ -74,10 +74,10 @@ class _HomePageState extends State<HomePage> {
 
     final screens = [
       _postListView(post_controller.posts, width, height),
-      UserPage(user: user),
+      Obx(() => UserPage(user: user_controller.users[0])),
       const DiscoverGamers(),
-      FriendsPage(user: user),
-      UserPage(user: user),
+      FriendsPage(user: user_controller.users[0]),
+      Obx(() => UserPage(user: user_controller.users[0])),
     ];
 
     var padding = EdgeInsets.symmetric(horizontal: width * 0.015, vertical: 0);
