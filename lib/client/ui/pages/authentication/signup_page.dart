@@ -15,6 +15,9 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+
     return Scaffold(
       body: Stack(children: <Widget>[
         Container(
@@ -29,7 +32,12 @@ class _SignupScreenState extends State<SignupScreen> {
               height: double.infinity,
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(40.0, 40, 40, 10.0),
+                padding: EdgeInsets.fromLTRB(
+                  (40.0 / 360) * width,
+                  (40 / 756) * height,
+                  (40 / 360) * width,
+                  (10.0 / 756) * height,
+                ),
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
@@ -37,42 +45,38 @@ class _SignupScreenState extends State<SignupScreen> {
                         '\n¡Bienvenido a la mejor comunidad de gamers!',
                         textAlign: TextAlign.center,
                         style: GoogleFonts.hind(
-                          color: Color.fromARGB(255, 254, 244, 255),
-                          fontSize: 20.0,
+                          color: const Color.fromARGB(255, 254, 244, 255),
+                          fontSize: (20.0 / 360) * width,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 20.0),
-                      // Row(
-                      //   children: [
-                      //     Column(
-                      //       children: [
-                      //         _buildTF('Nombre', TextInputType.name, false),
-                      //       ],
-                      //     ),
-                      //     Text('Adios')
-                      //   ],
-                      // ),
-                      _buildTF('Nombre', TextInputType.name, false),
-                      const SizedBox(height: 15.0),
-                      _buildTF('Nombre de Usuario', TextInputType.name, false),
-                      const SizedBox(height: 15.0),
+                      SizedBox(height: (20.0 / 756) * height),
+                      _buildTF(
+                          'Nombre', TextInputType.name, false, width, height),
+                      SizedBox(height: (15.0 / 756) * height),
+                      _buildTF('Nombre de Usuario', TextInputType.name, false,
+                          width, height),
+                      SizedBox(height: (15.0 / 756) * height),
                       _buildTF('Correo Electrónico', TextInputType.emailAddress,
-                          false),
-                      const SizedBox(height: 15.0),
+                          false, width, height),
+                      SizedBox(height: (15.0 / 756) * height),
                       _buildTF('Contraseña', TextInputType.visiblePassword,
-                          _isObscure),
-                      const SizedBox(height: 15.0),
-                      _buildTF('Confirmar Contraseña',
-                          TextInputType.visiblePassword, _isObscure),
-                      _buildRememberMeBtn(),
-                      _buildRegisterBtn(),
+                          _isObscure, width, height),
+                      SizedBox(height: (15.0 / 756) * height),
+                      _buildTF(
+                          'Confirmar Contraseña',
+                          TextInputType.visiblePassword,
+                          _isObscure,
+                          width,
+                          height),
+                      _buildRememberMeBtn(width, height),
+                      _buildRegisterBtn(width, height),
                     ]),
               )),
         ),
         Positioned(
-          left: 28,
-          top: 30,
+          left: (28 / 360) * width,
+          top: (30 / 756) * height,
           child: IconButton(
             icon: const Icon(Icons.arrow_back),
             color: Colors.white,
@@ -85,7 +89,8 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
-  Widget _buildTF(String nCampo, TextInputType type, bool obscure) {
+  Widget _buildTF(String nCampo, TextInputType type, bool obscure, double width,
+      double height) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -93,11 +98,11 @@ class _SignupScreenState extends State<SignupScreen> {
           nCampo,
           style: GoogleFonts.hind(
             color: Colors.white,
-            fontSize: 14.0,
+            fontSize: (14.0 / 360) * width,
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: 5.0),
+        SizedBox(height: (5.0 / 756) * height),
         Container(
           alignment: Alignment.centerLeft,
           decoration: BoxDecoration(
@@ -119,14 +124,14 @@ class _SignupScreenState extends State<SignupScreen> {
             style: const TextStyle(color: Colors.white),
             decoration: InputDecoration(
               border: InputBorder.none,
-              contentPadding: const EdgeInsets.only(left: 15.0),
+              contentPadding: EdgeInsets.only(left: (15.0 / 360) * width),
               hintText: (nCampo == 'Confirmar Contraseña')
                   ? 'Ingresa nuevamente tu contraseña'
                   : 'Ingresa tu ${nCampo.toLowerCase()}',
               hintStyle: GoogleFonts.hind(
                 color: Colors.white,
                 fontWeight: FontWeight.normal,
-                fontSize: 14,
+                fontSize: (14 / 360) * width,
               ),
             ),
           ),
@@ -135,18 +140,19 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
-  Widget _buildRememberMeBtn() {
+  Widget _buildRememberMeBtn(double width, double height) {
     return Padding(
-      padding: const EdgeInsets.only(top: 5, bottom: 20),
+      padding:
+          EdgeInsets.only(top: (5 / 756) * height, bottom: (20 / 756) * height),
       child: Row(children: <Widget>[
         Theme(
             data: ThemeData(unselectedWidgetColor: Colors.white),
             child: SizedBox(
-              width: 30,
-              height: 30,
+              width: (30 / 360) * width,
+              height: (30 / 756) * height,
               child: Checkbox(
                 value: !_isObscure,
-                checkColor: Color.fromARGB(255, 116, 31, 185),
+                checkColor: const Color.fromARGB(255, 116, 31, 185),
                 activeColor: Colors.white,
                 onChanged: (value) {
                   setState(() {
@@ -164,27 +170,30 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
-  Widget _buildRegisterBtn() {
+  Widget _buildRegisterBtn(double width, double height) {
     return Container(
         padding: const EdgeInsets.only(top: 0, bottom: 0),
         child: SizedBox(
           width: double.infinity,
           child: ElevatedButton(
             onPressed: (() {
-              print('Register Button Pressed');
+              log('Register Button Pressed');
               Navigator.pop(context);
             }),
             style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.all(15.0),
+              padding: EdgeInsets.symmetric(
+                horizontal: (15.0 / 360) * width,
+                vertical: (15 / 756) * height,
+              ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30.0),
               ),
-              backgroundColor: Color.fromARGB(255, 116, 31, 185),
+              backgroundColor: const Color.fromARGB(255, 116, 31, 185),
             ),
             child: Text('Registrar',
                 style: GoogleFonts.hind(
-                  color: Color.fromARGB(255, 254, 244, 255),
-                  fontSize: 18.0,
+                  color: const Color.fromARGB(255, 254, 244, 255),
+                  fontSize: (18.0 / 360) * width,
                   fontWeight: FontWeight.bold,
                 )),
           ),

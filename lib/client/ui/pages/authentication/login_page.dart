@@ -20,6 +20,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+
     return Scaffold(
       body: Center(
         child: Stack(children: <Widget>[
@@ -34,29 +37,34 @@ class _LoginScreenState extends State<LoginScreen> {
               height: double.infinity,
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(40.0, 70, 40, 30.0),
+                padding: EdgeInsets.fromLTRB(
+                  (40.0 / 360) * width,
+                  (70 / 756) * height,
+                  (40 / 360) * width,
+                  (30.0 / 756) * height,
+                ),
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(
-                        'Conéctate y juega con\ngamers de tu misma ciudad',
+                        'Conéctate y juega con\ngamers cerca de tí',
                         textAlign: TextAlign.center,
                         style: GoogleFonts.hind(
                           color: Colors.white,
-                          fontSize: 30.0,
+                          fontSize: width * (28 / 360),
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 30.0),
+                      SizedBox(height: (30.0 / 756) * height),
                       _buildTF('Nombre de Usuario', Icons.person, false,
-                          textControllers[0]),
-                      const SizedBox(height: 20.0),
+                          textControllers[0], width, height),
+                      SizedBox(height: (20.0 / 756) * height),
                       _buildTF('Contraseña', Icons.lock, _isObscure,
-                          textControllers[1]),
-                      _buildForgotBtn(textControllers),
-                      _buildRememberMeBtn(),
-                      _buildLoginBtn(textControllers),
-                      _buildSignWith(textControllers),
+                          textControllers[1], width, height),
+                      _buildForgotBtn(textControllers, width),
+                      _buildRememberMeBtn(width, height),
+                      _buildLoginBtn(textControllers, width, height),
+                      _buildSignWith(textControllers, width),
                     ]),
               ))
         ]),
@@ -65,23 +73,23 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildTF(String nCampo, IconData icon, bool obscure,
-      TextEditingController controller) {
+      TextEditingController controller, double width, double height) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
           nCampo,
           style: GoogleFonts.hind(
-            color: Color.fromARGB(255, 254, 244, 255),
+            color: const Color.fromARGB(255, 254, 244, 255),
             fontWeight: FontWeight.bold,
-            fontSize: 18,
+            fontSize: (18 / 360) * width,
           ),
         ),
-        const SizedBox(height: 10.0),
+        SizedBox(height: (10.0 / 756) * height),
         Container(
           alignment: Alignment.centerLeft,
           decoration: BoxDecoration(
-            color: Color.fromARGB(255, 129, 117, 139),
+            color: const Color.fromARGB(255, 129, 117, 139),
             borderRadius: BorderRadius.circular(10.0),
             boxShadow: const [
               BoxShadow(
@@ -98,8 +106,8 @@ class _LoginScreenState extends State<LoginScreen> {
             controller: controller,
             keyboardType: TextInputType.emailAddress,
             style: GoogleFonts.hind(
-              color: Color.fromARGB(255, 254, 244, 255),
-              fontSize: 16,
+              color: const Color.fromARGB(255, 254, 244, 255),
+              fontSize: (16 / 360) * width,
               fontWeight: FontWeight.normal,
             ),
             decoration: InputDecoration(
@@ -107,14 +115,14 @@ class _LoginScreenState extends State<LoginScreen> {
               // contentPadding: const EdgeInsets.only(top: 14.0),
               prefixIcon: Icon(
                 icon,
-                color: Color.fromARGB(255, 254, 244, 255),
-                size: 25,
+                color: const Color.fromARGB(255, 254, 244, 255),
+                size: (25 / 360) * width,
               ),
               hintText: 'Ingresa tu ${nCampo.toLowerCase()}',
               hintStyle: GoogleFonts.hind(
                   color: Colors.white,
                   fontWeight: FontWeight.normal,
-                  fontSize: 16),
+                  fontSize: (16 / 360) * width),
             ),
           ),
         ),
@@ -122,7 +130,8 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildForgotBtn(List<TextEditingController> controllers) {
+  Widget _buildForgotBtn(
+      List<TextEditingController> controllers, double width) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -135,8 +144,8 @@ class _LoginScreenState extends State<LoginScreen> {
           },
           child: Text('¿Olvidaste tu contraseña o usuario?',
               style: GoogleFonts.hind(
-                color: Color.fromARGB(255, 129, 117, 139),
-                fontSize: 12,
+                color: const Color.fromARGB(255, 129, 117, 139),
+                fontSize: (12 / 360) * width,
                 fontWeight: FontWeight.normal,
               )),
         ),
@@ -144,16 +153,16 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildRememberMeBtn() {
+  Widget _buildRememberMeBtn(double width, double height) {
     return SizedBox(
-      height: 20.0,
+      height: (20.0 / 756) * height,
       child: Row(children: <Widget>[
         Theme(
             data: ThemeData(unselectedWidgetColor: Colors.white),
             child: SizedBox(
               child: Checkbox(
                 value: _rememberMe,
-                checkColor: Color.fromARGB(255, 116, 31, 185),
+                checkColor: const Color.fromARGB(255, 116, 31, 185),
                 activeColor: Colors.white,
                 onChanged: (value) {
                   setState(() {
@@ -166,15 +175,17 @@ class _LoginScreenState extends State<LoginScreen> {
             style: GoogleFonts.hind(
               color: Colors.white,
               fontWeight: FontWeight.normal,
-              fontSize: 14,
+              fontSize: (14 / 360) * width,
             ))
       ]),
     );
   }
 
-  Widget _buildLoginBtn(List<TextEditingController> controllers) {
+  Widget _buildLoginBtn(
+      List<TextEditingController> controllers, double width, double height) {
     return Container(
-        padding: const EdgeInsets.only(top: 25.0, bottom: 10),
+        padding: EdgeInsets.only(
+            top: (25.0 / 756) * height, bottom: (10 / 756) * height),
         child: SizedBox(
           width: double.infinity,
           child: ElevatedButton(
@@ -185,31 +196,25 @@ class _LoginScreenState extends State<LoginScreen> {
                   controller.clear();
                 }
               }
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => const HomePage()),
-              // ).then((value) {
-
-              // });
             },
             style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.all(15.0),
+              padding: const EdgeInsets.all((15.0)),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30.0),
               ),
-              backgroundColor: Color.fromARGB(255, 116, 31, 185),
+              backgroundColor: const Color.fromARGB(255, 116, 31, 185),
             ),
             child: Text('Ingresar',
                 style: GoogleFonts.hind(
-                  color: Color.fromARGB(255, 254, 244, 255),
-                  fontSize: 18.0,
+                  color: const Color.fromARGB(255, 254, 244, 255),
+                  fontSize: (18.0 / 360) * width,
                   fontWeight: FontWeight.bold,
                 )),
           ),
         ));
   }
 
-  Widget _buildSignWith(List<TextEditingController> controllers) {
+  Widget _buildSignWith(List<TextEditingController> controllers, double width) {
     return Column(
       children: <Widget>[
         Text(
@@ -224,36 +229,33 @@ class _LoginScreenState extends State<LoginScreen> {
               text: TextSpan(
                 text: '¿No tienes una cuenta? ',
                 style: GoogleFonts.hind(
-                  color: Color.fromARGB(255, 129, 117, 139),
-                  fontSize: 14,
+                  color: const Color.fromARGB(255, 129, 117, 139),
+                  fontSize: (14 / 360) * width,
                   fontWeight: FontWeight.normal,
                 ),
               ),
             ),
             TextButton(
-                onPressed: () {
-                  log('To signup page');
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SignupScreen()),
-                  ).then((value) {
-                    for (var controller in controllers) {
-                      controller.clear();
-                    }
-                  });
-                },
-                child: Text('Registrate',
-                    style: GoogleFonts.hind(
-                      color: Color.fromARGB(255, 235, 65, 229),
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    ))),
-            // const Text('¿No tienes una cuenta? ',
-            //     style: TextStyle(
-            //         color: Colors.white,
-            //         fontSize: 12.0,
-            //         fontWeight: FontWeight.bold,
-            //         fontFamily: 'Montserrat')),
+              onPressed: () {
+                log('To signup page');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SignupScreen()),
+                ).then((value) {
+                  for (var controller in controllers) {
+                    controller.clear();
+                  }
+                });
+              },
+              child: Text(
+                'Registrate',
+                style: GoogleFonts.hind(
+                  color: const Color.fromARGB(255, 235, 65, 229),
+                  fontSize: (14 / 360) * width,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
           ],
         )
       ],

@@ -1,5 +1,7 @@
-import 'package:flutter/gestures.dart';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:gamma/client/ui/controllers/authentication_controller.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:gamma/client/ui/controllers/post_controller.dart';
 import 'package:gamma/client/ui/controllers/user_controller.dart';
@@ -9,9 +11,7 @@ import '../../../../server/data/models/post_model.dart';
 import '../../../../server/data/models/user_model.dart';
 import '../views/friends_page.dart';
 import '../views/user_page.dart';
-import '../views/settings.dart';
 import 'discover.dart';
-import 'home_drawer.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -24,12 +24,18 @@ class _HomePageState extends State<HomePage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   UserController user_controller = Get.find();
   PostController post_controller = Get.find();
+  AuthenticationController auth_controller = Get.find();
   int _currentIndex = 0;
   String _title = 'GammApp';
 
   @override
   Widget build(BuildContext context) {
     UserModel user = user_controller.users[0];
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+    log('Height: $height');
+    log('Width: $width');
+
     post_controller.addPost(PostModel(
         id: 0,
         user: user_controller.users[0],
@@ -67,27 +73,42 @@ class _HomePageState extends State<HomePage> {
         shares: 3));
 
     final screens = [
-      _postListView(post_controller.posts),
+      _postListView(post_controller.posts, width, height),
       UserPage(user: user),
-      DiscoverGamers(),
+      const DiscoverGamers(),
       FriendsPage(user: user),
       UserPage(user: user),
     ];
 
-    var padding = EdgeInsets.symmetric(horizontal: 18, vertical: 5);
+    var padding = EdgeInsets.symmetric(horizontal: width * 0.015, vertical: 0);
 
     return Scaffold(
         key: scaffoldKey,
         extendBody: true,
-        backgroundColor: Color.fromARGB(255, 34, 15, 57),
+        backgroundColor: const Color.fromARGB(255, 34, 15, 57),
         appBar: AppBar(
-          toolbarHeight: 56,
-          backgroundColor: Color.fromARGB(255, 37, 19, 60),
-          shadowColor: Color.fromARGB(255, 80, 41, 131),
+          actions: [
+            IconButton(
+              onPressed: () {
+                auth_controller.logOut();
+                log('Logout button pressed');
+              },
+              icon: const Icon(
+                Icons.logout,
+                color: Colors.white,
+              ),
+            ),
+          ],
+          toolbarHeight: (56 / 756) * height,
+          backgroundColor: const Color.fromARGB(255, 37, 19, 60),
+          shadowColor: const Color.fromARGB(255, 80, 41, 131),
           title: Text(
             _title,
             style: GoogleFonts.hind(
-                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 24),
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: (24 / 360) * width,
+            ),
           ),
           centerTitle: true,
           elevation: 0,
@@ -96,28 +117,34 @@ class _HomePageState extends State<HomePage> {
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: SafeArea(
           child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+              height: height * 0.08,
+              margin: EdgeInsets.symmetric(
+                horizontal: (20 / 360) * width,
+                vertical: (5 / 756) * height,
+              ),
               decoration: BoxDecoration(
-                color: Color.fromARGB(255, 26, 8, 25),
-                borderRadius: BorderRadius.all(Radius.circular(100)),
+                color: const Color.fromARGB(255, 26, 8, 25),
+                borderRadius: const BorderRadius.all(Radius.circular(100)),
                 boxShadow: [
                   BoxShadow(
                     spreadRadius: -10,
                     blurRadius: 60,
                     color: Colors.black.withOpacity(.20),
-                    offset: Offset(0, 25),
+                    offset: const Offset(0, 25),
                   )
                 ],
               ),
               child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 3, vertical: 10),
+                padding: EdgeInsets.symmetric(
+                  horizontal: (3 / 360) * width,
+                  vertical: (10 / 756) * height,
+                ),
                 child: GNav(
                     curve: Curves.fastOutSlowIn,
-                    duration: Duration(milliseconds: 900),
-                    iconSize: 48,
-                    activeColor: Color.fromARGB(255, 235, 65, 229),
-                    color: Color.fromARGB(255, 129, 117, 139),
+                    duration: const Duration(milliseconds: 900),
+                    iconSize: width * 0.12,
+                    activeColor: const Color.fromARGB(255, 235, 65, 229),
+                    color: const Color.fromARGB(255, 129, 117, 139),
                     onTabChange: (index) {
                       if (index == 0) {
                         _title = 'GammApp';
@@ -160,52 +187,57 @@ class _HomePageState extends State<HomePage> {
         ));
   }
 
-  Widget _postListView(List<PostModel> posts) {
+  Widget _postListView(List<PostModel> posts, double width, double height) {
     return ListView.builder(
         itemCount: posts.length,
         itemBuilder: (context, index) {
           return Column(
             children: [
-              _postView(index),
+              _postView(index, width, height),
               (index < posts.length - 1)
-                  ? const Padding(
-                      padding: EdgeInsets.only(bottom: 8.0),
-                      child: Divider(
+                  ? Padding(
+                      padding: EdgeInsets.only(bottom: (8.0 / 756) * height),
+                      child: const Divider(
                         thickness: 1,
                         indent: 15,
                         endIndent: 15,
                         color: Colors.white,
                       ),
                     )
-                  : const SizedBox(
-                      height: 15,
+                  : SizedBox(
+                      height: (15 / 756) * height,
                     ),
             ],
           );
         });
   }
 
-  Widget _postView(int index) {
+  Widget _postView(int index, double width, double height) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _postAuthor(index),
-        _postImage(index),
-        _postActions(index),
-        _postCaption(index),
+        _postAuthor(index, width, height),
+        _postImage(index, width, height),
+        _postActions(index, width),
+        _postCaption(index, width, height),
       ],
     );
   }
 
-  Widget _postAuthor(int index) {
-    const double _imageSize = 44;
+  Widget _postAuthor(int index, double width, double height) {
+    double _imageSize = (44 / 360) * width;
     return Column(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Padding(
-          padding: const EdgeInsetsDirectional.fromSTEB(12, 5, 12, 2),
+          padding: EdgeInsetsDirectional.fromSTEB(
+            (12 / 360) * width,
+            (5 / 756) * height,
+            (12 / 360) * width,
+            (5 / 756) * height,
+          ),
           child: Row(mainAxisSize: MainAxisSize.max, children: [
             Container(
               width: _imageSize,
@@ -218,7 +250,8 @@ class _HomePageState extends State<HomePage> {
                   Image.asset(post_controller.posts[index].user.profilePhoto),
             ),
             Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(6, 0, 0, 0),
+              padding:
+                  EdgeInsetsDirectional.fromSTEB((6 / 360) * width, 0, 0, 0),
               child: TextButton(
                 onPressed: () {
                   Navigator.push(
@@ -234,16 +267,16 @@ class _HomePageState extends State<HomePage> {
                   style: GoogleFonts.hind(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                    fontSize: (16 / 360) * width,
                   ),
                 ),
               ),
             ),
-            const Expanded(
+            Expanded(
               child: Align(
-                alignment: AlignmentDirectional(1, 0),
-                child:
-                    Icon(Icons.keyboard_control, color: Colors.white, size: 24),
+                alignment: const AlignmentDirectional(1, 0),
+                child: Icon(Icons.keyboard_control,
+                    color: Colors.white, size: (24 / 360) * width),
               ),
             )
           ]),
@@ -252,7 +285,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _postImage(int index) {
+  Widget _postImage(int index, double width, double height) {
     return AspectRatio(
       aspectRatio: 1,
       child: GestureDetector(
@@ -261,17 +294,18 @@ class _HomePageState extends State<HomePage> {
         },
         child: Image.network(
           post_controller.posts[index].picture,
-          width: 100,
-          height: 300,
+          width: (100 / 360) * width,
+          height: (300 / 756) * height,
           fit: BoxFit.fill,
         ),
       ),
     );
   }
 
-  Widget _postActions(int index) {
+  Widget _postActions(int index, double width) {
     return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
+      padding: EdgeInsetsDirectional.fromSTEB(
+          (16 / 360) * width, 0, (16 / 360) * width, 0),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -288,9 +322,9 @@ class _HomePageState extends State<HomePage> {
                         ? Icons.favorite
                         : Icons.favorite_border,
                     color: post_controller.likes[index]
-                        ? Color.fromARGB(255, 235, 65, 229)
+                        ? const Color.fromARGB(255, 235, 65, 229)
                         : Colors.white,
-                    size: 24,
+                    size: (24 / 360) * width,
                   ),
                 ),
                 onPressed: () {
@@ -307,17 +341,17 @@ class _HomePageState extends State<HomePage> {
                   style: GoogleFonts.hind(
                       color: Colors.white,
                       fontWeight: FontWeight.normal,
-                      fontSize: 16),
+                      fontSize: (16 / 360) * width),
                 ),
               ),
               IconButton(
-                icon: const Icon(
+                icon: Icon(
                   Icons.comment_outlined,
                   color: Colors.white,
-                  size: 24,
+                  size: (24 / 360) * width,
                 ),
                 onPressed: () {
-                  print('Make a comment...');
+                  log('Make a comment...');
                 },
               ),
               Text(
@@ -329,16 +363,16 @@ class _HomePageState extends State<HomePage> {
                 style: GoogleFonts.hind(
                     color: Colors.white,
                     fontWeight: FontWeight.normal,
-                    fontSize: 16),
+                    fontSize: (16 / 360) * width),
               ),
               IconButton(
-                icon: const Icon(
+                icon: Icon(
                   Icons.share,
                   color: Colors.white,
-                  size: 24,
+                  size: (24 / 360) * width,
                 ),
                 onPressed: () {
-                  print('Share pressed ...');
+                  log('Share pressed ...');
                 },
               ),
               Text(
@@ -350,7 +384,7 @@ class _HomePageState extends State<HomePage> {
                 style: GoogleFonts.hind(
                     color: Colors.white,
                     fontWeight: FontWeight.normal,
-                    fontSize: 16),
+                    fontSize: (16 / 360) * width),
               ),
             ],
           ))
@@ -359,15 +393,20 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _postCaption(int index) {
+  Widget _postCaption(int index, double width, double height) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(8, 0, 12, 8),
+      padding: EdgeInsets.fromLTRB(
+        (8 / 360) * width,
+        0,
+        (12 / 756) * height,
+        (8 / 360) * width,
+      ),
       child: Text(
         post_controller.posts[index].caption,
         style: GoogleFonts.hind(
           color: Colors.white,
           fontWeight: FontWeight.normal,
-          fontSize: 16,
+          fontSize: (16 / 360) * width,
         ),
       ),
     );

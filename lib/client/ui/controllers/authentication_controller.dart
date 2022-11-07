@@ -14,4 +14,8 @@ class AuthenticationController extends GetxController {
     _logged.value = true;
     return _logged.value;
   }
+
+  void logOut() {
+    _logged.value = false;
+  }
 }
