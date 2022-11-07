@@ -86,8 +86,15 @@ class _UserPageState extends State<UserPage> {
                       ),
                       width: (20 / 360) * width,
                       height: (20 / 756) * height,
-                      decoration: const BoxDecoration(
-                        color: Colors.grey,
+                      decoration: BoxDecoration(
+                        color: (widget.user.status == 'Online')
+                            ? Colors.green
+                            : (widget.user.status == 'Offline' ||
+                                    widget.user.status == 'Invisible')
+                                ? Colors.grey
+                                : (widget.user.status == 'Busy')
+                                    ? Colors.red
+                                    : Colors.amber,
                         shape: BoxShape.circle,
                       )),
                   Container(
