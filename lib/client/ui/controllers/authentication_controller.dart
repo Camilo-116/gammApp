@@ -1,3 +1,8 @@
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
 
 class AuthenticationController extends GetxController {
@@ -10,9 +15,59 @@ class AuthenticationController extends GetxController {
     _logged.value = logged;
   }
 
-  bool login() {
-    _logged.value = true;
-    return _logged.value;
+  Future<int> login(String username, String password) async {
+    /*
+    0: Login successful
+    1: User not found
+    2: Wrong password
+    3: Unknown error
+    */
+    username = username.toLowerCase();
+    int credential = 0;
+    await FirebaseFirestore.instance
+        .collection('userBasic')
+        .where('username', isEqualTo: username)
+        .get()
+        .then((res) async => {
+              if (res.docs.isNotEmpty)
+                {
+                  await FirebaseAuth.instance
+                      .signInWithEmailAndPassword(
+                          email: res.docs[0].data()['email'],
+                          password: password)
+                      .then((value) => {credential = 0})
+                      .catchError((e) => {
+                            if (e.code == 'user-not-found')
+                              credential = 1
+                            else if (e.code == 'wrong-password')
+                              credential = 2
+                            else
+                              credential = 3
+                          })
+                }
+              else
+                credential = 1
+            });
+    return credential;
+  }
+
+  Future<bool> signIn(
+      String email, String password, Map extra_information) async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        print("The password provided is too weak.");
+      } else if (e.code == 'email-already-in-use') {
+        print("The account already exists for that email.");
+      }
+      return false;
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+    return true;
   }
 
   void logOut() {

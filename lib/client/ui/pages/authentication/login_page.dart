@@ -189,12 +189,21 @@ class _LoginScreenState extends State<LoginScreen> {
         child: SizedBox(
           width: double.infinity,
           child: ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               log('To Home page');
-              if (authentication_controller.login()) {
+              int userExist = await authentication_controller.login(
+                  'isaacAlejandro', 'Isaac123_');
+              if (userExist == 0) {
                 for (var controller in controllers) {
                   controller.clear();
                 }
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomePage()),
+                );
+              } else {
+                log(userExist.toString());
+                log('ERROR');
               }
             },
             style: ElevatedButton.styleFrom(

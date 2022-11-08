@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
 
+import '../../controllers/authentication_controller.dart';
+
 class SignupScreen extends StatefulWidget {
   @override
   _SignupScreenState createState() => _SignupScreenState();
@@ -12,6 +14,8 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   bool _isObscure = true;
+
+  AuthenticationController authentication_controller = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -176,9 +180,15 @@ class _SignupScreenState extends State<SignupScreen> {
         child: SizedBox(
           width: double.infinity,
           child: ElevatedButton(
-            onPressed: (() {
+            onPressed: (() async {
               log('Register Button Pressed');
-              Navigator.pop(context);
+              bool userCredentials = await authentication_controller
+                  .signIn("elpapitodelbackend@gmail.com", "Isaac123_", {});
+              if (userCredentials) {
+                Navigator.pop(context);
+              } else {
+                log('Error');
+              }
             }),
             style: ElevatedButton.styleFrom(
               padding: EdgeInsets.symmetric(
