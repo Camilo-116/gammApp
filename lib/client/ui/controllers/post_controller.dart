@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:get/get.dart';
 
-import '../../../server/data/models/post_model.dart';
+import '../../../server/models/post_model.dart';
 
 class PostController extends GetxController {
   var status = ['Online', 'Offline', 'Busy', 'Away', 'Invisible'];

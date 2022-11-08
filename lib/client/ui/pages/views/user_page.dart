@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gamma/client/ui/controllers/user_controller.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../../server/data/models/user_model.dart';
+import '../../../../server/models/user_model.dart';
 
 class UserPage extends StatefulWidget {
   UserPage({

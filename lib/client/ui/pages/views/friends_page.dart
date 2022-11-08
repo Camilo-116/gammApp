@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../../server/data/models/user_model.dart';
+import '../../../../server/models/user_model.dart';
 
 class FriendsPage extends StatefulWidget {
   const FriendsPage({Key? key, required this.user}) : super(key: key);

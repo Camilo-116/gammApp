@@ -6,7 +6,7 @@ import 'package:gamma/client/ui/controllers/navigation_controller.dart';
 import 'package:gamma/client/ui/pages/matchmaking/matchmaking_queue.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../../server/data/models/user_model.dart';
+import '../../../../server/models/user_model.dart';
 import '../../controllers/user_controller.dart';
 import '../views/user_page.dart';
 import '../views/friends_page.dart';

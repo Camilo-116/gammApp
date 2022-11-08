@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:get/get.dart';
 
-import '../../../server/data/models/user_model.dart';
+import '../../../server/models/user_model.dart';
 
 class UserController extends GetxController {
   var status = ['Online', 'Offline', 'Busy', 'Away', 'Invisible'];

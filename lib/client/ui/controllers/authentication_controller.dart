@@ -3,11 +3,18 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:gamma/server/services/UserBasicService.dart';
+import 'package:gamma/server/services/UserExtendedService.dart';
 import 'package:get/get.dart';
+
+import '../../../server/models/user_model.dart';
 
 class AuthenticationController extends GetxController {
   // ignore: prefer_final_fields
   var _logged = false.obs;
+
+  UserBasicService userBasicService = UserBasicService();
+  UserExtendedService userExtendedService = UserExtendedService();
 
   bool get logged => _logged.value;
 
@@ -86,6 +93,15 @@ class AuthenticationController extends GetxController {
       print(e.toString());
       return 3;
     }
+    UserModel user = UserModel(
+        name: 'Isaac Blanco',
+        email: email,
+        username: 'elpapitodelbackend',
+        profilePhoto: '');
+    String? id = await userBasicService.addUserBasic(user);
+    String? idExtended =
+        await userExtendedService.addUserExtended(id, extra_information);
+    await userBasicService.LinkUserBasicExtended(id, idExtended);
     return 0;
   }
 
