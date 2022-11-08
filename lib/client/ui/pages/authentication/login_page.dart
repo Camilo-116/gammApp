@@ -192,7 +192,7 @@ class _LoginScreenState extends State<LoginScreen> {
             onPressed: () async {
               log('To Home page');
               int userExist = await authentication_controller.login(
-                  'isaacAlejandro', 'Isaac123_');
+                  'elpapitodelbackend', 'Isaac123_');
               if (userExist == 0) {
                 for (var controller in controllers) {
                   controller.clear();

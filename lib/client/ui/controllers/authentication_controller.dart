@@ -15,6 +15,12 @@ class AuthenticationController extends GetxController {
     _logged.value = logged;
   }
 
+  /*
+  * This method is used to sign in with email and password
+  * @param username: Username associated with the account
+  * @param password: password of the user
+  * @return: 0 if the user is logged in, other number otherwise
+  */
   Future<int> login(String username, String password) async {
     /*
     0: Login successful
@@ -51,23 +57,36 @@ class AuthenticationController extends GetxController {
     return credential;
   }
 
-  Future<bool> signIn(
+  /*
+  * This method is used to sign up with email and password
+  * @param email: Email associated with the account
+  * @param password: password of the user
+  * @param extraInformation: Extra information about the user such as username, bio...
+  * @return: 0 if the user is sign in, other number otherwise
+  */
+  Future<int> signIn(
       String email, String password, Map extra_information) async {
+    /**
+   * 0: Sign in successful
+   * 1: Email already in use
+   * 2: Password is too weak
+   * 3: Unknown error
+   */
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        print("The password provided is too weak.");
+        return 2;
       } else if (e.code == 'email-already-in-use') {
-        print("The account already exists for that email.");
+        return 1;
       }
-      return false;
+      return 3;
     } catch (e) {
       print(e.toString());
-      return false;
+      return 3;
     }
-    return true;
+    return 0;
   }
 
   void logOut() {

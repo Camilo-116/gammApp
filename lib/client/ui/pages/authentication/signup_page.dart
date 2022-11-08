@@ -182,9 +182,9 @@ class _SignupScreenState extends State<SignupScreen> {
           child: ElevatedButton(
             onPressed: (() async {
               log('Register Button Pressed');
-              bool userCredentials = await authentication_controller
+              int userCredentials = await authentication_controller
                   .signIn("elpapitodelbackend@gmail.com", "Isaac123_", {});
-              if (userCredentials) {
+              if (userCredentials == 0) {
                 Navigator.pop(context);
               } else {
                 log('Error');
