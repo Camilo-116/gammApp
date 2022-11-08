@@ -6,6 +6,7 @@ class UserModel {
     required this.name,
     required this.username,
     required this.email,
+    required this.profilePhoto,
   });
 
   final int? id;
@@ -15,7 +16,7 @@ class UserModel {
   String status = "";
   String password = "password";
   List<UserModel> _friends = [];
-  String profilePhoto = 'assets/images/user.png';
+  String profilePhoto;
   String about =
       'Juegos favoritos: \nRocket League\nFIFA 23\nValorant\nLeague of Legends\nAmong Us';
   String coverPhoto =

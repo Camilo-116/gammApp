@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:math';
 
 import 'package:get/get.dart';
@@ -10,36 +9,36 @@ class UserController extends GetxController {
   // ignore: prefer_final_fields
   var _users = [
     UserModel(
-      id: 0,
-      name: "Camilo",
-      username: "Boorgir",
-      email: "cc@un.co",
-    ),
+        id: 0,
+        name: "Camilo",
+        username: "Boorgir",
+        email: "cc@un.co",
+        profilePhoto: 'assets/images/user.png'),
     UserModel(
-      id: 1,
-      name: "Sebastian",
-      username: "Sen2Kbron",
-      email: "sg@un.co",
-    ),
+        id: 1,
+        name: "Sebastian",
+        username: "Sen2Kbron",
+        email: "sg@un.co",
+        profilePhoto: 'assets/images/user.png'),
     UserModel(
-      id: 2,
-      name: "Isaac",
-      username: "NuclearHands",
-      email: "ib@un.co",
-    ),
+        id: 2,
+        name: "Isaac",
+        username: "NuclearHands",
+        email: "ib@un.co",
+        profilePhoto: 'assets/images/user.png'),
     UserModel(
-      id: 3,
-      name: "Raul",
-      username: "Galoryzen",
-      email: "rl@un.co",
-    ),
+        id: 3,
+        name: "Raul",
+        username: "Galoryzen",
+        email: "rl@un.co",
+        profilePhoto: 'assets/images/user.png'),
   ].obs;
 
   @override
   onInit() {
     super.onInit();
     _addFriends();
-    _setStatus();
+    _initStatus();
   }
 
   void _addFriends() {
@@ -51,9 +50,15 @@ class UserController extends GetxController {
 
   RxList<UserModel> get users => _users;
 
-  void _setStatus() {
+  void _initStatus() {
     for (var user in _users) {
       user.status = status[Random().nextInt(status.length)];
     }
+  }
+
+  void changeStatus(int id, String status) {
+    UserModel user = _users[id];
+    user.status = status;
+    _users[id] = user;
   }
 }
