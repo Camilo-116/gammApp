@@ -1,10 +1,21 @@
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 
 import '../../../server/models/user_model.dart';
+import '../../../server/services/UserBasicService.dart';
+import '../../../server/services/UserExtendedService.dart';
 
 class UserController extends GetxController {
+  var _loggedUsername = "".obs;
+  var _loggedUser;
+
+  UserBasicService userBasicService = UserBasicService();
+  UserExtendedService userExtendedService = UserExtendedService();
+
+  get loggedUsername => _loggedUsername.value;
+
   var status = ['Online', 'Offline', 'Busy', 'Away', 'Invisible'];
   // ignore: prefer_final_fields
   var _users = [
@@ -41,10 +52,23 @@ class UserController extends GetxController {
     _initStatus();
   }
 
+  Future<void> logUser(String username) async {
+    _loggedUsername.value = username;
+    UserModel user = await userBasicService.getUserByUsername(username);
+    await FirebaseFirestore.instance
+        .collection('userExtended')
+        .doc(user.extendedId)
+        .get()
+        .then((res) {
+      user.setValues(res.data()!);
+    });
+    print(user.toMap());
+  }
+
   void _addFriends() {
     for (var user in _users) {
-      user.friends.addAll(_users);
-      user.friends.remove(user);
+      //user.friends.addAll(_users);
+      //user.friends.remove(user);
     }
   }
 

@@ -93,11 +93,12 @@ class AuthenticationController extends GetxController {
       print(e.toString());
       return 3;
     }
-    UserModel user = UserModel(
-        name: 'Isaac Blanco',
-        email: email,
-        username: 'elpapitodelbackend',
-        profilePhoto: '');
+    Map user = {
+      'name': 'Isaac Blanco',
+      'email': email,
+      'username': 'elpapitodelbackend',
+      'profilePhoto': ''
+    };
     String? id = await userBasicService.addUserBasic(user);
     String? idExtended =
         await userExtendedService.addUserExtended(id, extra_information);
