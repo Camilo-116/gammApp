@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'dart:math';
 
 import 'package:gamma/client/ui/controllers/user_controller.dart';
 import 'package:gamma/server/services/PostService.dart';
@@ -7,7 +6,6 @@ import 'package:get/get.dart';
 
 import '../../../../../server/models/post_model.dart';
 import '../../../server/models/post_model.dart';
-import '../../../server/services/FeedService.dart';
 
 class PostController extends GetxController {
   var status = ['Online', 'Offline', 'Busy', 'Away', 'Invisible'];
@@ -15,7 +13,6 @@ class PostController extends GetxController {
   var _posts = <PostModel>[].obs;
   var _likes = <bool>[].obs;
 
-  FeedService feedService = FeedService();
   PostService postService = PostService();
   UserController userController = Get.find<UserController>();
 
@@ -34,9 +31,19 @@ class PostController extends GetxController {
   RxList<PostModel> get posts => _posts;
 
   void addPost(PostModel post) {
-    postService.addPost(post.toMap());
-    _posts.add(post);
-    _likes.add(false);
+    //postService.addPost(post.toMap());
+    //_posts.add(post);
+    //_likes.add(false);
+  }
+
+  /*
+   * This method is used to get the feed of the user
+  */
+  Future<void> createFeed() async {
+    log('Geeting feed');
+    log('The user ${userController.loggedUser.username} request the feed');
+    var feed = await postService.getFeed(userController.loggedUser.extendedId);
+    log('Got feed');
   }
 
   void likePost(int index) {

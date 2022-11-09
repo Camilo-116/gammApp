@@ -8,14 +8,33 @@ class PostService {
   * @param uuidUser: uuid of the user
   * @return List: Feed of the username
   */
-  Future<List> getFeed(String uuidUser) async {
+  Future<List?> getFeed(String uuidUser) async {
     List feed = [];
     await FirebaseFirestore.instance
         .collection('userExtended')
         .doc(uuidUser)
         .get()
-        .then((res) {
-      log(res.data()!['friends'].toString());
+        .then((res) async {
+      var friends = res.data()!['friends'];
+      await Future.forEach(friends, (friendUUID) async {
+        Map dataUser = {};
+        String id = friendUUID.toString().trim();
+        await FirebaseFirestore.instance
+            .collection('userBasic')
+            .doc(id)
+            .get()
+            .then((res) async {
+          dataUser['username'] = res.data()!['username'];
+          await FirebaseFirestore.instance
+              .collection('posts')
+              .where('uuidUser', isEqualTo: id)
+              .get()
+              .then((res) async {
+            dataUser['posts'] = res.docs;
+            feed.add(dataUser);
+          });
+        });
+      });
     });
     return feed;
   }

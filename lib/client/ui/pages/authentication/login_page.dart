@@ -201,13 +201,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 for (var controller in controllers) {
                   controller.clear();
                 }
-                user_controller.logUser(username);
+                await user_controller.logUser(username);
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => HomePage()),
                 );
               } else {
-                log(userExist.toString());
+                log("${userExist}");
                 log('ERROR');
               }
             },

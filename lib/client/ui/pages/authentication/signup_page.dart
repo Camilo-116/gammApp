@@ -183,7 +183,7 @@ class _SignupScreenState extends State<SignupScreen> {
             onPressed: (() async {
               log('Register Button Pressed');
               int userCreated = await authentication_controller.signIn(
-                  "elpapitodelbackend@gmail.com", "Isaac123_", {
+                  "lamamacitadelfrontened@gmail.com", "Isaac123_", {
                 "name": "El Manguito dulce",
                 "profilePhoto": "Una foto de un mango"
               });

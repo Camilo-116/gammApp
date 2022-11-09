@@ -5,6 +5,7 @@ class UserModel {
     required this.username,
     required this.email,
     this.extendedId,
+    this.basicId = "",
     this.profilePhoto = "",
     this.id,
     this.name = "",
@@ -16,7 +17,8 @@ class UserModel {
     this.friends = const [],
   });
 
-  final String? extendedId;
+  String? extendedId;
+  String basicId;
   final int? id;
   String name;
   String username;
@@ -49,6 +51,7 @@ class UserModel {
   }
 
   void setValues(Map values) {
+    basicId = values['user_uuid'] ?? "";
     name = values['name'] ?? "";
     friends = values['friends'] ?? [];
     profilePhoto = values['profilePhoto'] ?? "";

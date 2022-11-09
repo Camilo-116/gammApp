@@ -36,6 +36,8 @@ class _HomePageState extends State<HomePage> {
     log('Height: $height');
     log('Width: $width');
 
+    post_controller.createFeed();
+    /*
     post_controller.addPost(PostModel(
         id: 0,
         user: user_controller.users[0],
@@ -71,6 +73,7 @@ class _HomePageState extends State<HomePage> {
         likes: 305948,
         comments: 6969,
         shares: 3));
+        */
 
     final screens = [
       _postListView(post_controller.posts, width, height),
