@@ -13,6 +13,7 @@ class PostModel {
   final int? id;
   final UserModel user;
   final String picture;
+  String userUUID = "";
   String caption;
   int likes; // Cambiar a Lista de id's de usuario que hayan dado like
   int comments; // Cambiar a lista de comentarios, con el usuario asociado
@@ -20,7 +21,6 @@ class PostModel {
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
       'user': user,
       'picture': picture,
       'caption': caption,

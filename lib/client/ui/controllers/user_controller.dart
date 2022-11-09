@@ -15,6 +15,7 @@ class UserController extends GetxController {
   UserExtendedService userExtendedService = UserExtendedService();
 
   get loggedUsername => _loggedUsername.value;
+  get loggedUser => _loggedUser;
 
   var status = ['Online', 'Offline', 'Busy', 'Away', 'Invisible'];
   // ignore: prefer_final_fields
@@ -62,7 +63,7 @@ class UserController extends GetxController {
         .then((res) {
       user.setValues(res.data()!);
     });
-    print(user.toMap());
+    _loggedUser = user;
   }
 
   void _addFriends() {

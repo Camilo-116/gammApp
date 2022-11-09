@@ -11,7 +11,6 @@ class UserBasicService {
 
   Future<UserModel> getUserByUsername(String username) async {
     Map dataUserBasic = {};
-    String extendedId = "";
     await FirebaseFirestore.instance
         .collection("userBasic")
         .where("username", isEqualTo: username)
