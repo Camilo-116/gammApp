@@ -35,32 +35,32 @@ class AuthenticationController extends GetxController {
     2: Wrong password
     3: Unknown error
     */
-    username = username.toLowerCase();
     int credential = 0;
+    log('username: $username');
+    log('password: $password');
     await FirebaseFirestore.instance
         .collection('userBasic')
         .where('username', isEqualTo: username)
         .get()
-        .then((res) async => {
-              if (res.docs.isNotEmpty)
-                {
-                  await FirebaseAuth.instance
-                      .signInWithEmailAndPassword(
-                          email: res.docs[0].data()['email'],
-                          password: password)
-                      .then((value) => {credential = 0})
-                      .catchError((e) => {
-                            if (e.code == 'user-not-found')
-                              credential = 1
-                            else if (e.code == 'wrong-password')
-                              credential = 2
-                            else
-                              credential = 3
-                          })
-                }
-              else
-                credential = 1
-            });
+        .then((res) async {
+      if (res.docs.isNotEmpty) {
+        await FirebaseAuth.instance
+            .signInWithEmailAndPassword(
+                email: res.docs[0].data()['email'], password: password)
+            .then((value) => {credential = 0})
+            .catchError((e) => {
+                  if (e.code == 'user-not-found')
+                    credential = 1
+                  else if (e.code == 'wrong-password')
+                    credential = 2
+                  else
+                    credential = 3
+                });
+      } else {
+        credential = 1;
+      }
+    });
+    (credential == 0) ? logged = true : logged = false;
     return credential;
   }
 
@@ -72,7 +72,7 @@ class AuthenticationController extends GetxController {
   * @return: 0 if the user is sign in, other number otherwise
   */
   Future<int> signIn(
-      String email, String password, Map extra_information) async {
+      String email, String password, Map extraInformation) async {
     /**
    * 0: Sign in successful
    * 1: Email already in use
@@ -90,18 +90,18 @@ class AuthenticationController extends GetxController {
       }
       return 3;
     } catch (e) {
-      print(e.toString());
+      log(e.toString());
       return 3;
     }
     Map user = {
-      'name': 'Isaac Blanco',
+      'name': extraInformation['name'],
       'email': email,
-      'username': 'elpapitodelbackend',
-      'profilePhoto': ''
+      'username': extraInformation['username'],
+      'profilePhoto': 'assets/images/user.png'
     };
     String? id = await userBasicService.addUserBasic(user);
     String? idExtended =
-        await userExtendedService.addUserExtended(id, extra_information);
+        await userExtendedService.addUserExtended(id, extraInformation);
     await userBasicService.LinkUserBasicExtended(id, idExtended);
     return 0;
   }

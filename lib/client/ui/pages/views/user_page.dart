@@ -187,7 +187,7 @@ class _UserPageState extends State<UserPage> {
             style: GoogleFonts.hind(
                 color: const Color.fromARGB(255, 241, 219, 255),
                 fontWeight: FontWeight.bold,
-                fontSize: width * 0.044),
+                fontSize: width * 0.042),
           ),
         ));
   }

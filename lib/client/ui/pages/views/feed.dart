@@ -9,8 +9,8 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../server/models/post_model.dart';
 import '../../../../server/models/user_model.dart';
-import '../views/friends_page.dart';
-import '../views/user_page.dart';
+import 'friends_page.dart';
+import 'user_page.dart';
 import 'discover.dart';
 
 class HomePage extends StatefulWidget {

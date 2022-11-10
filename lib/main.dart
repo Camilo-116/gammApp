@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:gamma/client/ui/controllers/authentication_controller.dart';
 import 'package:gamma/client/ui/controllers/navigation_controller.dart';
@@ -20,9 +22,9 @@ Future<void> main() async {
             messagingSenderId: Configuration.messagingSenderId,
             projectId: Configuration.projectId,
             storageBucket: Configuration.storageBucket));
-    print("Firebase initialized");
+    log("Firebase initialized");
   } catch (e) {
-    print(e);
+    log(e.toString());
   }
   Get.put(NavigationController());
   Get.put(AuthenticationController());
