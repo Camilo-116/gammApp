@@ -83,31 +83,34 @@ class _UserPageState extends State<UserPage> {
             ),
             Row(
               children: [
-                Container(
-                    margin: EdgeInsets.only(
-                      left: (20 / 360) * width,
-                      right: (5 / 360) * width,
-                    ),
-                    width: (20 / 360) * width,
-                    height: (20 / 756) * height,
-                    decoration: BoxDecoration(
-                      color: (widget.user.status == 'Online')
-                          ? Colors.green
-                          : (widget.user.status == 'Offline' ||
-                                  widget.user.status == 'Invisible')
-                              ? Colors.grey
-                              : (widget.user.status == 'Busy')
-                                  ? Colors.red
-                                  : Colors.amber,
-                      shape: BoxShape.circle,
-                    )),
+                Obx(
+                  () => Container(
+                      margin: EdgeInsets.only(
+                        left: (20 / 360) * width,
+                        right: (5 / 360) * width,
+                      ),
+                      width: (20 / 360) * width,
+                      height: (20 / 756) * height,
+                      decoration: BoxDecoration(
+                        color: (userController.loggedUserStatus == 'Online')
+                            ? Colors.green
+                            : (userController.loggedUserStatus == 'Offline' ||
+                                    userController.loggedUserStatus ==
+                                        'Invisible')
+                                ? Colors.grey
+                                : (userController.loggedUserStatus == 'Busy')
+                                    ? Colors.red
+                                    : Colors.amber,
+                        shape: BoxShape.circle,
+                      )),
+                ),
                 Container(
                   padding: EdgeInsets.only(top: (2.0 / 756) * height),
                   child: TextButton(
                     onPressed: () async {
-                      userController.changeStatus(widget.user.id!,
+                      userController.changeStatus(
                           await _dialogBuilder(context) ?? widget.user.status);
-                      log('Change status to: ${widget.user.status}');
+                      log('Change status to: ${userController.loggedUserStatus}');
                     },
                     style: TextButton.styleFrom(
                       padding: EdgeInsets.symmetric(
@@ -120,12 +123,14 @@ class _UserPageState extends State<UserPage> {
                         borderRadius: BorderRadius.all(Radius.circular(10)),
                       ),
                     ),
-                    child: Text(
-                      widget.user.status,
-                      style: GoogleFonts.hind(
-                          color: const Color.fromARGB(255, 241, 219, 255),
-                          fontWeight: FontWeight.bold,
-                          fontSize: (16 / 360) * width),
+                    child: Obx(
+                      () => Text(
+                        userController.loggedUserStatus,
+                        style: GoogleFonts.hind(
+                            color: const Color.fromARGB(255, 241, 219, 255),
+                            fontWeight: FontWeight.bold,
+                            fontSize: (16 / 360) * width),
+                      ),
                     ),
                   ),
                 ),

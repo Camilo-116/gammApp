@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:math' as m;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 
 import '../../../server/models/user_model.dart';
@@ -10,13 +11,15 @@ import '../../../server/services/UserExtendedService.dart';
 
 class UserController extends GetxController {
   var _loggedUsername = "".obs;
-  late Rx<UserModel> _loggedUser;
+  UserModel _loggedUser = UserModel(username: '', email: '');
+  var _loggedUserStatus = 'Offline'.obs;
 
   UserBasicService userBasicService = UserBasicService();
   UserExtendedService userExtendedService = UserExtendedService();
 
   get loggedUsername => _loggedUsername.value;
   get loggedUser => _loggedUser;
+  get loggedUserStatus => _loggedUserStatus.value;
 
   var status = ['Online', 'Offline', 'Busy', 'Away', 'Invisible'];
   // ignore: prefer_final_fields
@@ -65,7 +68,7 @@ class UserController extends GetxController {
     //     .doc(user.extendedId)
     //     .get()
     //     .then((res) => user.setValues(res.data()!));
-    _loggedUser = user as Rx<UserModel>;
+    _loggedUser = user;
   }
 
   void _addFriends() {
@@ -83,9 +86,10 @@ class UserController extends GetxController {
     }
   }
 
-  void changeStatus(int id, String status) {
-    UserModel user = _users[id];
+  void changeStatus(String status) {
+    UserModel user = _loggedUser;
     user.status = status;
-    _users[id] = user;
+    _loggedUser = user;
+    _loggedUserStatus.value = status;
   }
 }

@@ -60,7 +60,6 @@ class AuthenticationController extends GetxController {
         credential = 1;
       }
     });
-    (credential == 0) ? logged = true : logged = false;
     return credential;
   }
 
