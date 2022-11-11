@@ -15,6 +15,8 @@ class UserModel {
     this.coverPhoto =
         "https://t4.ftcdn.net/jpg/04/09/70/87/360_F_409708782_HxuxOH8f7xSmj5p4ygbAbuJE74vGGj2N.jpg",
     this.friends = const [],
+    this.games = const [],
+    this.platforms = const [],
   });
 
   String? extendedId;
@@ -25,6 +27,8 @@ class UserModel {
   String email;
   String status;
   List friends;
+  List games;
+  List platforms;
   String profilePhoto;
   String about;
   String coverPhoto;
@@ -47,6 +51,8 @@ class UserModel {
       'about': about,
       'extended': extendedId,
       'friends': friends,
+      'games': games,
+      'platforms': platforms,
     };
   }
 
@@ -54,6 +60,8 @@ class UserModel {
     basicId = values['user_uuid'] ?? "";
     name = values['name'] ?? "";
     friends = values['friends'] ?? [];
+    games = values['games'] ?? [];
+    platforms = values['platforms'] ?? [];
     profilePhoto = values['profilePhoto'] ?? "";
     about = values['about'] ?? "";
     coverPhoto = values['coverPhoto'] ?? "";

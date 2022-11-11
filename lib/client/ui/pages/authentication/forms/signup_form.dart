@@ -16,7 +16,7 @@ class _SignUpFormState extends State<SignUpForm> {
   bool _isObscure = true;
   bool _acceptTerms = false;
   String? _name;
-  String? _userName;
+  String? _username;
   String? _email;
   String? _password;
 
@@ -158,7 +158,7 @@ class _SignUpFormState extends State<SignUpForm> {
             if (_acceptTerms) {
               log('username: ${controllers[1].text}');
               _name = controllers[0].text;
-              _userName = controllers[1].text;
+              _username = controllers[1].text;
               _email = controllers[2].text;
               _password = controllers[3].text;
               for (var controller in controllers) {
@@ -168,7 +168,7 @@ class _SignUpFormState extends State<SignUpForm> {
               }
               widget.callback(_email, _password, {
                 'name': _name,
-                'userName': _userName,
+                'username': _username,
               });
             } else {
               _dialogBuilder(context);

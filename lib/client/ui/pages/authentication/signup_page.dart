@@ -19,15 +19,15 @@ class _SignupScreenState extends State<SignupScreen> {
       'password': password,
       'extraInformation': extraInformation,
     };
-    log(data.toString());
+    log('Sign up data: $data');
     int userCreated = await authenticationController.signIn(
         email, password, extraInformation);
-    log(userCreated.toString());
+    log('Usercreated: $userCreated');
     setState(() {
       if (userCreated == 0) {
         Navigator.pop(context);
       } else {
-        log('Error');
+        log('Error in creation');
       }
     });
   }

@@ -16,19 +16,19 @@ class _LoginScreenState extends State<LoginScreen> {
   AuthenticationController authenticationController = Get.find();
   UserController userController = Get.find();
 
-  void _login(String email, String password, bool rememberMe) async {
-    int userExist = await authenticationController.login(email, password);
+  void _login(String username, String password, bool rememberMe) async {
+    int userExist = await authenticationController.login(username, password);
     var data = {
-      'email': email,
+      'username': username,
       'password': password,
     };
     log(data.toString());
     log('userExist: $userExist');
     setState(() {
       if (userExist == 0) {
-        userController.logUser(email);
+        userController.logUser(username);
       } else {
-        log(userExist.toString());
+        log('UserExist: $userExist');
         log('ERROR');
       }
     });

@@ -32,7 +32,7 @@ class UserBasicService {
         .collection('userBasic')
         .add({
           'email': userBasic['email'],
-          'status': userBasic['profilePhoto'],
+          'status': userBasic['status'],
           'username': userBasic['username'],
         })
         .then((value) => id = value.id)

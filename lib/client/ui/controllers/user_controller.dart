@@ -1,5 +1,5 @@
 import 'dart:developer';
-import 'dart:math';
+import 'dart:math' as m;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
@@ -10,7 +10,7 @@ import '../../../server/services/UserExtendedService.dart';
 
 class UserController extends GetxController {
   var _loggedUsername = "".obs;
-  var _loggedUser;
+  late Rx<UserModel> _loggedUser;
 
   UserBasicService userBasicService = UserBasicService();
   UserExtendedService userExtendedService = UserExtendedService();
@@ -57,14 +57,15 @@ class UserController extends GetxController {
   Future<void> logUser(String username) async {
     _loggedUsername.value = username;
     UserModel user = await userBasicService.getUserByUsername(username);
-    await FirebaseFirestore.instance
-        .collection('userExtended')
-        .doc(user.extendedId)
-        .get()
-        .then((res) {
-      user.setValues(res.data()!);
-    });
-    _loggedUser = user;
+    log('logUser function User Basic retrieved: ${user.toMap()}');
+    user.setValues(await userExtendedService.getUserByUUID(user.extendedId!));
+    log('LogUser function User with Extended: ${user.toMap()}');
+    // await FirebaseFirestore.instance
+    //     .collection('userExtended')
+    //     .doc(user.extendedId)
+    //     .get()
+    //     .then((res) => user.setValues(res.data()!));
+    _loggedUser = user as Rx<UserModel>;
   }
 
   void _addFriends() {
@@ -78,7 +79,7 @@ class UserController extends GetxController {
 
   void _initStatus() {
     for (var user in _users) {
-      user.status = status[Random().nextInt(status.length)];
+      user.status = status[m.Random().nextInt(status.length)];
     }
   }
 

@@ -90,14 +90,14 @@ class AuthenticationController extends GetxController {
       }
       return 3;
     } catch (e) {
-      log(e.toString());
+      log('Firebase Auth exception: $e');
       return 3;
     }
     Map user = {
       'name': extraInformation['name'],
       'email': email,
       'username': extraInformation['username'],
-      'profilePhoto': 'assets/images/user.png'
+      'status': 'Offline'
     };
     String? id = await userBasicService.addUserBasic(user);
     String? idExtended =

@@ -41,7 +41,7 @@ class PostController extends GetxController {
   */
   Future<void> createFeed() async {
     log('Geeting feed');
-    log('The user ${userController.loggedUser.username} request the feed');
+    log('The user ${userController.loggedUser} request the feed');
     var feed = await postService.getFeed(userController.loggedUser.extendedId);
     log('Got feed');
   }

@@ -48,12 +48,9 @@ class UserExtendedService {
         .add({
           'user_uuid': document_user_id,
           'name': userDescription['name'],
-          'profilePhoto': userDescription['profilePhoto'],
+          'profilePhoto': 'assets/images/user.png',
           'about': userDescription['about'],
           'coverPhoto': userDescription['coverPhoto'],
-          'likes': 0,
-          'comments': 0,
-          'shares': 0,
           'games': [],
           'platforms': [],
           'friends': [],

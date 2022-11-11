@@ -30,13 +30,14 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    UserModel user = user_controller.users[0];
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-    log('Height: $height');
-    log('Width: $width');
 
-    post_controller.createFeed();
+    if (auth_controller.logged) {
+      setState(() {
+        post_controller.createFeed();
+      });
+    }
     /*
     post_controller.addPost(PostModel(
         id: 0,
