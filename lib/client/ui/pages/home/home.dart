@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:gamma/client/ui/pages/views/user_page.dart';
+import 'package:gamma/client/ui/pages/views/user/user_page.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
@@ -9,9 +9,9 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import '../../controllers/authentication_controller.dart';
 import '../../controllers/post_controller.dart';
 import '../../controllers/user_controller.dart';
-import 'discover.dart';
-import 'feed.dart';
-import 'friends_page.dart';
+import '../views/discover.dart';
+import '../views/feed/feed.dart';
+import '../views/friends_page.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -36,14 +36,8 @@ class _HomeState extends State<Home> {
 
     var padding = EdgeInsets.symmetric(horizontal: width * 0.015, vertical: 0);
 
-    if (auth_controller.logged) {
-      setState(() {
-        post_controller.createFeed();
-      });
-    }
-
     final screens = [
-      Feed(posts: post_controller.posts),
+      Feed(feed: post_controller.feed),
       UserPage(user: user_controller.loggedUser),
       const DiscoverGamers(),
       FriendsPage(user: user_controller.loggedUser),
@@ -115,16 +109,22 @@ class _HomeState extends State<Home> {
                     activeColor: const Color.fromARGB(255, 235, 65, 229),
                     color: const Color.fromARGB(255, 129, 117, 139),
                     onTabChange: (index) {
-                      if (index == 0) {
-                        _title = 'GammApp';
-                      } else if (index == 1) {
-                        _title = 'Create Post';
-                      } else if (index == 2) {
-                        _title = 'Discover';
-                      } else if (index == 3) {
-                        _title = 'Friends';
-                      } else if (index == 4) {
-                        _title = 'Profile';
+                      switch (index) {
+                        case 0:
+                          _title = 'GammApp';
+                          break;
+                        case 1:
+                          _title = 'Create Post';
+                          break;
+                        case 2:
+                          _title = 'Discover';
+                          break;
+                        case 3:
+                          _title = 'Friends';
+                          break;
+                        case 4:
+                          _title = 'Profile';
+                          break;
                       }
                       setState(() {
                         _currentIndex = index;

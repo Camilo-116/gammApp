@@ -1,5 +1,4 @@
-// import 'random_user_json_response_model.dart';
-
+/// This is the class that represents the structure of a user Extended object. (Not used for now)
 class UserDescription {
   UserDescription({
     required this.id,

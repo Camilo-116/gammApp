@@ -1,22 +1,26 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:gamma/client/ui/controllers/authentication_controller.dart';
 import 'package:gamma/client/ui/controllers/post_controller.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../../server/models/post_model.dart';
-import 'user_page.dart';
+import '../../../../../server/models/post_model.dart';
+import '../user/user_page.dart';
 
 class Feed extends StatefulWidget {
-  Feed({Key? key, required this.posts}) : super(key: key);
+  Feed({Key? key, required this.feed}) : super(key: key);
 
-  List<PostModel> posts;
+  List<PostModel> feed;
 
   @override
   _FeedState createState() => _FeedState();
 }
 
 class _FeedState extends State<Feed> {
+  AuthenticationController authenticationController = Get.find();
+  PostController postController = Get.find();
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -60,12 +64,12 @@ class _FeedState extends State<Feed> {
         */
 
     return ListView.builder(
-        itemCount: widget.posts.length,
+        itemCount: widget.feed.length,
         itemBuilder: (context, index) {
           return Column(
             children: [
               _postView(index, width, height),
-              (index < widget.posts.length - 1)
+              (index < widget.feed.length - 1)
                   ? Padding(
                       padding: EdgeInsets.only(bottom: (8.0 / 756) * height),
                       child: const Divider(
@@ -118,7 +122,7 @@ class _FeedState extends State<Feed> {
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
               ),
-              child: Image.asset(widget.posts[index].user.profilePhoto),
+              child: Image.asset(widget.feed[index].user.profilePhoto),
             ),
             Padding(
               padding:
@@ -129,12 +133,12 @@ class _FeedState extends State<Feed> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => UserPage(
-                              user: postController.posts[index].user,
+                              user: postController.feed[index].user,
                             )),
                   );
                 },
                 child: Text(
-                  postController.posts[index].user.username,
+                  postController.feed[index].user.username,
                   style: GoogleFonts.hind(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -165,7 +169,7 @@ class _FeedState extends State<Feed> {
           postController.likePost(index);
         },
         child: Image.network(
-          postController.posts[index].picture,
+          postController.feed[index].picture,
           width: (100 / 360) * width,
           height: (300 / 756) * height,
           fit: BoxFit.fill,
@@ -206,11 +210,11 @@ class _FeedState extends State<Feed> {
               ),
               Obx(
                 () => Text(
-                  (postController.posts[index].likes > 1000000)
-                      ? '${num.parse((postController.posts[index].likes / 1000000).toStringAsFixed(1))} M'
-                      : (postController.posts[index].likes > 1000)
-                          ? '${num.parse((postController.posts[index].likes / 1000).toStringAsFixed(1))} k'
-                          : '${postController.posts[index].likes}',
+                  (postController.feed[index].likes.length > 1000000)
+                      ? '${num.parse((postController.feed[index].likes.length / 1000000).toStringAsFixed(1))} M'
+                      : (postController.feed[index].likes.length > 1000)
+                          ? '${num.parse((postController.feed[index].likes.length / 1000).toStringAsFixed(1))} k'
+                          : '${postController.feed[index].likes.length}',
                   style: GoogleFonts.hind(
                       color: Colors.white,
                       fontWeight: FontWeight.normal,
@@ -228,11 +232,11 @@ class _FeedState extends State<Feed> {
                 },
               ),
               Text(
-                (postController.posts[index].comments > 1000000)
-                    ? '${num.parse((postController.posts[index].comments / 1000000).toStringAsFixed(1))} M'
-                    : (postController.posts[index].comments > 1000)
-                        ? '${num.parse((postController.posts[index].comments / 1000).toStringAsFixed(1))} k'
-                        : '${postController.posts[index].comments}',
+                (postController.feed[index].comments.length > 1000000)
+                    ? '${num.parse((postController.feed[index].comments.length / 1000000).toStringAsFixed(1))} M'
+                    : (postController.feed[index].comments.length > 1000)
+                        ? '${num.parse((postController.feed[index].comments.length / 1000).toStringAsFixed(1))} k'
+                        : '${postController.feed[index].comments.length}',
                 style: GoogleFonts.hind(
                     color: Colors.white,
                     fontWeight: FontWeight.normal,
@@ -249,11 +253,11 @@ class _FeedState extends State<Feed> {
                 },
               ),
               Text(
-                (postController.posts[index].shares > 1000000)
-                    ? '${num.parse((postController.posts[index].shares / 1000000).toStringAsFixed(1))} M'
-                    : (postController.posts[index].shares > 1000)
-                        ? '${num.parse((postController.posts[index].shares / 1000).toStringAsFixed(1))} k'
-                        : '${postController.posts[index].shares}',
+                (postController.feed[index].shares.length > 1000000)
+                    ? '${num.parse((postController.feed[index].shares.length / 1000000).toStringAsFixed(1))} M'
+                    : (postController.feed[index].shares.length > 1000)
+                        ? '${num.parse((postController.feed[index].shares.length / 1000).toStringAsFixed(1))} k'
+                        : '${postController.feed[index].shares.length}',
                 style: GoogleFonts.hind(
                     color: Colors.white,
                     fontWeight: FontWeight.normal,
@@ -277,7 +281,7 @@ class _FeedState extends State<Feed> {
         (8 / 360) * width,
       ),
       child: Text(
-        postController.posts[index].caption,
+        postController.feed[index].caption,
         style: GoogleFonts.hind(
           color: Colors.white,
           fontWeight: FontWeight.normal,

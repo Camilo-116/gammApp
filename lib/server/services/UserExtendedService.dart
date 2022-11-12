@@ -2,30 +2,32 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+/// This class represents the services that allows to interact with the userExtended collection.
+/// Which contains the extra information of a user.
 class UserExtendedService {
-  /*
-  * This method is used to get a username from the database
-  * @param username: Username of the user
-  * @return UserModel: user with the given username
-  */
+  /// This method is used to retrieve a specific user(userExtended) from the database.
+  ///
+  /// Receives a [String] with the uuid of the user(userExtended) to be retrieved.
+  /// Returns a [Future<Map>] with the data of the user(userExtended).
   Future<Map?> getUserByUUID(String uuid) async {
-    return await FirebaseFirestore.instance
+    Map<String, dynamic> dataUserExtended = {};
+    await FirebaseFirestore.instance
         .collection("userExtended")
         .doc(uuid)
         .get()
         .then((res) {
       if (res.exists && res.data()!.isNotEmpty) {
-        return res.data();
+        dataUserExtended = res.data()!;
+        dataUserExtended['id'] = res.id;
       }
     }).catchError((e) => {});
+    return dataUserExtended;
   }
 
-  /*
-  * This method is used to create a new userExtended in the database
-  * @param documentUserId: Id of the userBasic that is being extended
-  * @param userDescription: UserDescription object that contains the description of the user
-  * @return String: Id of the userExtended created
-   */
+  /// This method adds a new user(userExtended).
+  ///
+  /// Receives a [Map] with the extra data of the user to be added and a [String] with the uuid of the related userBasic.
+  /// Returns a [Future<String>] with the uuid of the user(userExtended) added.
   Future<String> addUserExtended(
       String documentUserId, Map userDescription) async {
     return await FirebaseFirestore.instance
@@ -44,22 +46,20 @@ class UserExtendedService {
         .catchError((onError) => "");
   }
 
-  /*
-  * This method is to add one friend to the userExtended friends field
-  * @param uuid: UUID of the username 
-  * @param friendUUID: UUID of the friend to be added
-  * @param friendUsername: Username of the friend to be added
-  * @return bool: true if the friend was added, false otherwise
-  */
+  /// This method adds a new friend to the friends list of a specific user(userExtended).
+  ///
+  /// Receives a [String] with the uuid of the user(userExtended),
+  /// a [String] with the uuid of the friend(userBasic) to be added and its [String] username.
+  /// Returns a [Future<bool>] indicating if the friend was succesfully added or not.
   Future<bool> addFriend(
-      String uuid, String friendUUID, String friendUsername) async {
+      String uuid, String extendedFriendUUID, String friendUsername) async {
     return await FirebaseFirestore.instance
         .collection('userExtended')
         .doc(uuid)
         .update({
           'friends': FieldValue.arrayUnion([
             {
-              "uuid": friendUUID,
+              "uuid": extendedFriendUUID,
               "username": friendUsername,
             }
           ])

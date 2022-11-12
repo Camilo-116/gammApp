@@ -1,15 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+/// This class represents the service that allows to interact with the notifications collection.
+/// Which contains the notifications stored in the database.
 class UserNotificationService {
   Map typeNotification = {'friendRequest': 0, 'friendRequestAccepted': 1};
 
-  /*
-   * This method is used to send a friend request and add to the notification pipeline
-   * @param sender: User who sent the request
-   * @param recieverUsername: Username who received the request
-   * @param recieverUUID: Id of the user who received the request
-   * @return bool: true if the request was sent, false otherwise
-   */
+  /// This method is used to send a friend request and add it to the notification pipeline
+  ///
+  /// Receives the [String] uuid of the user that sends the request,
+  /// and the [String] uuid of the user that receives the request, as well as his [String] username.
+  /// Returns a [Future<bool>] indicating whether the notification was sent or not.
   Future<bool> addUsernameNotification(
       String senderUUID, String recieverUsername, String recieverUUID) async {
     return FirebaseFirestore.instance
@@ -27,12 +27,11 @@ class UserNotificationService {
         });
   }
 
-  /*
-   * This method is used to send a friend request has been accepted and add to the notification pipeline
-   * @param senderUsername: Username who sent the request
-   * @param recieverUUID: Id of the user who sent the request to be accepted
-   * @return bool: true if the request was sent, false otherwise
-   */
+  /// This method is used to send a friend request has been accepted and add to the notification pipeline.
+  ///
+  /// Receives the [String] uuid of the user that sent the request,
+  /// and the [String] uuid of the user that received the request.
+  /// Returns a [Future<bool>] indicating whether the request was sent or not.
   Future<bool> requestAcceptedNotification(
       String senderUsername, String recieverUUID) async {
     return await FirebaseFirestore.instance

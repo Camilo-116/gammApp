@@ -1,15 +1,18 @@
 import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 
-import 'UserExtendedService.dart';
 import '../models/user_model.dart';
 
+/// This class represents the services that allows to interact with the userBasic collection.
+/// Which contains the basic information of a user.
 class UserBasicService {
   String id = "";
 
+  /// This method is used to get a specific user(userBasic) given its [String] username.
+  ///
+  /// Returns a [Future<UserModel>] of the user with the given [String] username.
   Future<UserModel> getUserByUsername(String username) async {
+    String uuid = "";
     Map dataUserBasic = {};
     await FirebaseFirestore.instance
         .collection("userBasic")
@@ -18,16 +21,21 @@ class UserBasicService {
         .then((res) {
       if (res.docs.isNotEmpty) {
         dataUserBasic = res.docs[0].data();
+        uuid = res.docs[0].id;
       }
     });
     return UserModel(
+        id: uuid,
         username: dataUserBasic['username'],
         email: dataUserBasic['email'],
         extendedId: dataUserBasic['user_extended_uuid']);
   }
 
+  /// This method adds a new user(userBasic).
+  ///
+  /// Receives a [Map] with the data of the user to be added.
+  /// Returns a [Future<String>] with the uuid of the user(userBasic) added.
   Future<String?> addUserBasic(Map userBasic) async {
-    log(userBasic['id'].toString());
     await FirebaseFirestore.instance
         .collection('userBasic')
         .add({
@@ -35,11 +43,15 @@ class UserBasicService {
           'status': userBasic['status'],
           'username': userBasic['username'],
         })
-        .then((value) => id = value.id)
+        .then((res) => id = res.id)
         .catchError((onError) => log(onError));
     return id;
   }
 
+  /// This method is used to link a user(userBasic) with a user(userExtended).
+  ///
+  /// Receives a [String] with the uuid of the user(userBasic) and a [String] with the uuid of the user(userExtended).
+  /// At the end, the property user_extended_uuid of the userBasic is filled with the uuid of the related userExtended.
   Future<void> linkUserBasicExtended(
       String? basicId, String? extendedId) async {
     log(basicId.toString());
@@ -49,7 +61,11 @@ class UserBasicService {
         .update({'user_extended_uuid': extendedId});
   }
 
-  Future<void> updateUserBasic(
+  /// This method is used to update the properties of a specific user(userBasic) given its [username].
+  ///
+  /// Receives a [Map] with the new data and the [username] of the user to be updated.
+  /// Returns the uuid of the updated user(userBasic).
+  Future<String?> updateUserBasic(
       String username, Map<String, dynamic> updateInfo) async {
     await FirebaseFirestore.instance
         .collection("userBasic")
@@ -64,6 +80,8 @@ class UserBasicService {
       } else {
         log("User not found");
       }
+      id = res.docs[0].id;
     });
+    return id;
   }
 }

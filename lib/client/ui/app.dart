@@ -3,13 +3,13 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gamma/client/ui/controllers/user_controller.dart';
-import 'package:gamma/client/ui/pages/views/home.dart';
+import 'package:gamma/client/ui/pages/home/home.dart';
 import 'package:get/get.dart';
 
 import 'controllers/authentication_controller.dart';
 import 'controllers/navigation_controller.dart';
 import 'pages/authentication/login_page.dart';
-import 'pages/views/feed.dart';
+import 'pages/views/feed/feed.dart';
 import 'pages/matchmaking/matchmaking_queue.dart';
 
 class MyApp extends StatefulWidget {
@@ -61,30 +61,27 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     var node = FocusNode();
-    return WillPopScope(
-      onWillPop: _beforeExitApp,
-      child: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).requestFocus(node);
-        },
-        child: GetMaterialApp(
-            title: 'Flutter Demo',
-            debugShowCheckedModeBanner: false,
-            theme: ThemeData(
-              primarySwatch: Colors.blue,
-            ),
-            home: GetX<AuthenticationController>(
-              builder: (controller) {
-                return AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 200),
-                    transitionBuilder:
-                        (Widget child, Animation<double> animation) {
-                      return ScaleTransition(scale: animation, child: child);
-                    },
-                    child: (!controller.logged) ? LoginScreen() : const Home());
-              },
-            )),
-      ),
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).requestFocus(node);
+      },
+      child: GetMaterialApp(
+          title: 'Flutter Demo',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+          ),
+          home: GetX<AuthenticationController>(
+            builder: (controller) {
+              return AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 200),
+                  transitionBuilder:
+                      (Widget child, Animation<double> animation) {
+                    return ScaleTransition(scale: animation, child: child);
+                  },
+                  child: (!controller.logged) ? LoginScreen() : const Home());
+            },
+          )),
     );
   }
 

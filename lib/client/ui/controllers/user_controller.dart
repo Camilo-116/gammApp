@@ -11,8 +11,9 @@ import '../../../server/services/UserExtendedService.dart';
 
 class UserController extends GetxController {
   var _loggedUsername = "".obs;
-  UserModel _loggedUser = UserModel(username: '', email: '');
+  UserModel _loggedUser = UserModel(id: '', username: '', email: '');
   var _loggedUserStatus = 'Offline'.obs;
+  var _users = <UserModel>[].obs;
 
   UserBasicService userBasicService = UserBasicService();
   UserExtendedService userExtendedService = UserExtendedService();
@@ -23,32 +24,32 @@ class UserController extends GetxController {
 
   var status = ['Online', 'Offline', 'Busy', 'Away', 'Invisible'];
   // ignore: prefer_final_fields
-  var _users = [
-    UserModel(
-        id: 0,
-        name: "Camilo",
-        username: "Boorgir",
-        email: "cc@un.co",
-        profilePhoto: 'assets/images/user.png'),
-    UserModel(
-        id: 1,
-        name: "Sebastian",
-        username: "Sen2Kbron",
-        email: "sg@un.co",
-        profilePhoto: 'assets/images/user.png'),
-    UserModel(
-        id: 2,
-        name: "Isaac",
-        username: "NuclearHands",
-        email: "ib@un.co",
-        profilePhoto: 'assets/images/user.png'),
-    UserModel(
-        id: 3,
-        name: "Raul",
-        username: "Galoryzen",
-        email: "rl@un.co",
-        profilePhoto: 'assets/images/user.png'),
-  ].obs;
+  // var _users = [
+  //   UserModel(
+  //       id: 0,
+  //       name: "Camilo",
+  //       username: "Boorgir",
+  //       email: "cc@un.co",
+  //       profilePhoto: 'assets/images/user.png'),
+  //   UserModel(
+  //       id: 1,
+  //       name: "Sebastian",
+  //       username: "Sen2Kbron",
+  //       email: "sg@un.co",
+  //       profilePhoto: 'assets/images/user.png'),
+  //   UserModel(
+  //       id: 2,
+  //       name: "Isaac",
+  //       username: "NuclearHands",
+  //       email: "ib@un.co",
+  //       profilePhoto: 'assets/images/user.png'),
+  //   UserModel(
+  //       id: 3,
+  //       name: "Raul",
+  //       username: "Galoryzen",
+  //       email: "rl@un.co",
+  //       profilePhoto: 'assets/images/user.png'),
+  // ].obs;
 
   @override
   onInit() {
@@ -72,7 +73,7 @@ class UserController extends GetxController {
   Future<void> logOutUser() async {
     await userBasicService
         .updateUserBasic(_loggedUser.username, {'status': 'Offline'});
-    _loggedUser = UserModel(username: '', email: '');
+    _loggedUser = UserModel(id: '', username: '', email: '');
     log('User logged out');
     _loggedUserStatus.value = 'Offline';
   }
