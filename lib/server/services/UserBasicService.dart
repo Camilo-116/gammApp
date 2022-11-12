@@ -40,12 +40,30 @@ class UserBasicService {
     return id;
   }
 
-  Future<void> LinkUserBasicExtended(
-      String? basic_id, String? extended_id) async {
-    log(basic_id.toString());
+  Future<void> linkUserBasicExtended(
+      String? basicId, String? extendedId) async {
+    log(basicId.toString());
     await FirebaseFirestore.instance
         .collection('userBasic')
-        .doc(basic_id)
-        .update({'user_extended_uuid': extended_id});
+        .doc(basicId)
+        .update({'user_extended_uuid': extendedId});
+  }
+
+  Future<void> updateUserBasic(
+      String username, Map<String, dynamic> updateInfo) async {
+    await FirebaseFirestore.instance
+        .collection("userBasic")
+        .where("username", isEqualTo: username)
+        .get()
+        .then((res) async {
+      if (res.docs.isNotEmpty) {
+        await FirebaseFirestore.instance
+            .collection("userBasic")
+            .doc(res.docs[0].id)
+            .update(updateInfo);
+      } else {
+        log("User not found");
+      }
+    });
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:gamma/client/ui/controllers/user_controller.dart';
 import 'package:get/get.dart';
@@ -108,7 +109,7 @@ class _UserPageState extends State<UserPage> {
                   padding: EdgeInsets.only(top: (2.0 / 756) * height),
                   child: TextButton(
                     onPressed: () async {
-                      userController.changeStatus(
+                      await userController.changeStatus(
                           await _dialogBuilder(context) ?? widget.user.status);
                       log('Change status to: ${userController.loggedUserStatus}');
                     },
@@ -143,8 +144,9 @@ class _UserPageState extends State<UserPage> {
                     left: (20 / 360) * width,
                     top: (10 / 756) * height,
                   ),
-                  child: Text(
+                  child: AutoSizeText(
                     widget.user.email,
+                    maxLines: 1,
                     style: GoogleFonts.hind(
                       color: Colors.white,
                       fontSize: (16 / 360) * width,

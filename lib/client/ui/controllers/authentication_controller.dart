@@ -101,7 +101,7 @@ class AuthenticationController extends GetxController {
     String? id = await userBasicService.addUserBasic(user);
     String? idExtended =
         await userExtendedService.addUserExtended(id, extraInformation);
-    await userBasicService.LinkUserBasicExtended(id, idExtended);
+    await userBasicService.linkUserBasicExtended(id, idExtended);
     return 0;
   }
 

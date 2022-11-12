@@ -60,15 +60,32 @@ class UserController extends GetxController {
   Future<void> logUser(String username) async {
     _loggedUsername.value = username;
     UserModel user = await userBasicService.getUserByUsername(username);
-    log('logUser function User Basic retrieved: ${user.toMap()}');
     user.setValues(await userExtendedService.getUserByUUID(user.extendedId!));
-    log('LogUser function User with Extended: ${user.toMap()}');
-    // await FirebaseFirestore.instance
-    //     .collection('userExtended')
-    //     .doc(user.extendedId)
-    //     .get()
-    //     .then((res) => user.setValues(res.data()!));
     _loggedUser = user;
+    if (user.status == 'Offline') {
+      await userBasicService.updateUserBasic(username, {'status': 'Online'});
+      _loggedUserStatus.value = 'Online';
+    }
+  }
+
+  Future<void> logOutUser() async {
+    await userBasicService
+        .updateUserBasic(_loggedUser.username, {'status': 'Offline'});
+    _loggedUser = UserModel(username: '', email: '');
+    log('User logged out');
+    _loggedUserStatus.value = 'Offline';
+  }
+
+  Future<void> userResumed() async {
+    await userBasicService
+        .updateUserBasic(_loggedUser.username, {'status': 'Online'});
+    _loggedUserStatus.value = 'Online';
+  }
+
+  Future<void> userInactive() async {
+    await userBasicService
+        .updateUserBasic(_loggedUser.username, {'status': 'Away'});
+    _loggedUserStatus.value = 'Away';
   }
 
   void _addFriends() {
@@ -86,10 +103,12 @@ class UserController extends GetxController {
     }
   }
 
-  void changeStatus(String status) {
+  Future<void> changeStatus(String status) async {
     UserModel user = _loggedUser;
     user.status = status;
     _loggedUser = user;
     _loggedUserStatus.value = status;
+    await userBasicService
+        .updateUserBasic(_loggedUser.username, {'status': status});
   }
 }
