@@ -60,7 +60,8 @@ class UserController extends GetxController {
   Future<void> logUser(String username) async {
     _loggedUsername.value = username;
     UserModel user = await userBasicService.getUserByUsername(username);
-    user.setValues(await userExtendedService.getUserByUUID(user.extendedId!));
+    user.setValues(
+        await userExtendedService.getUserByUUID(user.extendedId!) ?? {});
     _loggedUser = user;
     if (user.status == 'Offline') {
       await userBasicService.updateUserBasic(username, {'status': 'Online'});

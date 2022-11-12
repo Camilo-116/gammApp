@@ -2,12 +2,9 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:gamma/server/services/UserBasicService.dart';
 import 'package:gamma/server/services/UserExtendedService.dart';
 import 'package:get/get.dart';
-
-import '../../../server/models/user_model.dart';
 
 class AuthenticationController extends GetxController {
   // ignore: prefer_final_fields
@@ -78,31 +75,41 @@ class AuthenticationController extends GetxController {
    * 2: Password is too weak
    * 3: Unknown error
    */
-    try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password);
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        return 2;
-      } else if (e.code == 'email-already-in-use') {
-        return 1;
+    String username = extraInformation['username'];
+    return await FirebaseFirestore.instance
+        .collection('userBasic')
+        .where('username', isEqualTo: username)
+        .get()
+        .then((res) async {
+      if (res.docs.isEmpty) {
+        try {
+          await FirebaseAuth.instance
+              .createUserWithEmailAndPassword(email: email, password: password);
+        } on FirebaseAuthException catch (e) {
+          if (e.code == 'weak-password') {
+            return 2;
+          } else if (e.code == 'email-already-in-use') {
+            return 1;
+          }
+          return 3;
+        } catch (e) {
+          log('Firebase Auth exception: $e');
+          return 3;
+        }
+        Map user = {
+          'name': extraInformation['name'],
+          'email': email,
+          'username': extraInformation['username'],
+          'status': 'Offline'
+        };
+        String? id = await userBasicService.addUserBasic(user);
+        String? idExtended =
+            await userExtendedService.addUserExtended(id!, extraInformation);
+        await userBasicService.linkUserBasicExtended(id, idExtended);
+        return 0;
       }
-      return 3;
-    } catch (e) {
-      log('Firebase Auth exception: $e');
-      return 3;
-    }
-    Map user = {
-      'name': extraInformation['name'],
-      'email': email,
-      'username': extraInformation['username'],
-      'status': 'Offline'
-    };
-    String? id = await userBasicService.addUserBasic(user);
-    String? idExtended =
-        await userExtendedService.addUserExtended(id, extraInformation);
-    await userBasicService.linkUserBasicExtended(id, idExtended);
-    return 0;
+      return 1;
+    });
   }
 
   void logOut() {
