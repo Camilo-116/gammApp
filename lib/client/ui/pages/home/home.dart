@@ -9,6 +9,7 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import '../../controllers/authentication_controller.dart';
 import '../../controllers/post_controller.dart';
 import '../../controllers/user_controller.dart';
+import '../views/feed/create_post.dart';
 import '../views/discover.dart';
 import '../views/feed/feed.dart';
 import '../views/friends_page.dart';
@@ -38,7 +39,7 @@ class _HomeState extends State<Home> {
 
     final screens = [
       Feed(feed: post_controller.feed),
-      UserPage(user: user_controller.loggedUser),
+      CreatePost(user: user_controller.loggedUser,),
       const DiscoverGamers(),
       FriendsPage(user: user_controller.loggedUser),
       UserPage(user: user_controller.loggedUser),

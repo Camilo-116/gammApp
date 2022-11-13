@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:gamma/client/ui/controllers/user_controller.dart';
@@ -25,8 +24,6 @@ class _UserPageState extends State<UserPage> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-    log('Height: $height');
-    log('Width: $width');
 
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 34, 15, 57),
