@@ -9,6 +9,7 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import '../../controllers/authentication_controller.dart';
 import '../../controllers/post_controller.dart';
 import '../../controllers/user_controller.dart';
+import '../views/feed/create_post.dart';
 import '../views/discover.dart';
 import '../views/feed/feed.dart';
 import '../views/friends_page.dart';
