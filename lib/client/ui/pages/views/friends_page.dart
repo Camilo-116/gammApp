@@ -1,27 +1,31 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:gamma/client/ui/controllers/user_controller.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../server/models/user_model.dart';
 
 class FriendsPage extends StatefulWidget {
-  const FriendsPage({Key? key, required this.user}) : super(key: key);
+  const FriendsPage({Key? key, required this.friends}) : super(key: key);
 
-  final UserModel user;
+  final List<UserModel> friends;
 
   @override
   _FriendsPageState createState() => _FriendsPageState();
 }
 
 class _FriendsPageState extends State<FriendsPage> {
+  UserController userController = Get.find();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 34, 15, 57),
       body: ListView.builder(
-        itemCount: widget.user.friends.length,
+        itemCount: widget.friends.length,
         itemBuilder: (context, index) =>
-            buildFriends(widget.user.friends[index], context),
+            buildFriends(widget.friends[index], context),
       ),
     );
   }

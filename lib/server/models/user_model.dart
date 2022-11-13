@@ -39,7 +39,7 @@ class UserModel {
   String status;
 
   /// List of friends of the user.
-  List friends;
+  List<Map<String, String>> friends;
 
   /// List of games played frequently by the user.
   List games;
@@ -74,7 +74,7 @@ class UserModel {
     extendedId = values['id'];
     id = values['user_uuid'] ?? "";
     name = values['name'] ?? "";
-    friends = values['friends'] ?? [];
+    friends = List<Map<String, String>>.empty();
     games = values['games'] ?? [];
     platforms = values['platforms'] ?? [];
     profilePhoto = values['profilePhoto'] ?? "";

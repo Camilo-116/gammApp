@@ -9,7 +9,7 @@ class UserExtendedService {
   ///
   /// Receives a [String] with the uuid of the user(userExtended) to be retrieved.
   /// Returns a [Future<Map>] with the data of the user(userExtended).
-  Future<Map?> getUserByUUID(String uuid) async {
+  Future<Map> getUserByUUID(String uuid) async {
     Map<String, dynamic> dataUserExtended = {};
     await FirebaseFirestore.instance
         .collection("userExtended")
@@ -40,7 +40,7 @@ class UserExtendedService {
           'coverPhoto': userDescription['coverPhoto'],
           'games': [],
           'platforms': [],
-          'friends': [],
+          'friends': List<Map<String, String>>.empty(growable: true),
         })
         .then((value) => value.id)
         .catchError((onError) => "");
@@ -59,7 +59,7 @@ class UserExtendedService {
         .update({
           'friends': FieldValue.arrayUnion([
             {
-              "uuid": extendedFriendUUID,
+              "extended_uuid": extendedFriendUUID,
               "username": friendUsername,
             }
           ])

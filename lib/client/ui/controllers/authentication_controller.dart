@@ -103,7 +103,7 @@ class AuthenticationController extends GetxController {
           'status': 'Offline'
         };
         String? id = await userBasicService.addUserBasic(user);
-        String? idExtended =
+        String idExtended =
             await userExtendedService.addUserExtended(id!, extraInformation);
         await userBasicService.linkUserBasicExtended(id, idExtended);
         return 0;

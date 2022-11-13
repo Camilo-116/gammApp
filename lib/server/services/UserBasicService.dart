@@ -8,6 +8,24 @@ import '../models/user_model.dart';
 class UserBasicService {
   String id = "";
 
+  /// This method is used to retrieve the [String] uuid of the extendedUser related.
+  ///
+  /// Receives a [String] with the uuid of the user(userBasic) to be retrieved.
+  /// Returns a [Future<String>] with the uuid of the user(userExtended) related.
+  Future<String> getExtendedId(String uuid) async {
+    String extendedID = "";
+    await FirebaseFirestore.instance
+        .collection("userBasic")
+        .doc(uuid)
+        .get()
+        .then((res) {
+      if (res.exists && res.data()!.isNotEmpty) {
+        extendedID = res.data()!['user_extended_uuid'];
+      }
+    }).catchError((e) {});
+    return extendedID;
+  }
+
   /// This method is used to get a specific user(userBasic) given its [String] username.
   ///
   /// Returns a [Future<UserModel>] of the user with the given [String] username.
@@ -26,6 +44,29 @@ class UserBasicService {
     });
     return UserModel(
         id: uuid,
+        username: dataUserBasic['username'],
+        email: dataUserBasic['email'],
+        extendedId: dataUserBasic['user_extended_uuid']);
+  }
+
+  /// This method is used to get a specific user(userBasic) given its [String] username.
+  ///
+  /// Returns a [Future<UserModel>] of the user with the given [String] username.
+  Future<UserModel> getUserByUUID(String uuid) async {
+    Map dataUserBasic = {};
+    await FirebaseFirestore.instance
+        .collection("userBasic")
+        .doc(uuid)
+        .get()
+        .then((res) {
+      if (res.exists && res.data()!.isNotEmpty) {
+        dataUserBasic = res.data()!;
+        uuid = res.id;
+      }
+    });
+    return UserModel(
+        id: uuid,
+        status: dataUserBasic['status'],
         username: dataUserBasic['username'],
         email: dataUserBasic['email'],
         extendedId: dataUserBasic['user_extended_uuid']);
@@ -83,5 +124,22 @@ class UserBasicService {
       id = res.docs[0].id;
     });
     return id;
+  }
+
+  /// This is the method used to retrieve the [String] username of a user given its [String] uuid.
+  ///
+  /// Returns a [Future<String>] with the username of the user.
+  Future<String> getUsername(String uuid) async {
+    String username = "";
+    await FirebaseFirestore.instance
+        .collection("userBasic")
+        .doc(uuid)
+        .get()
+        .then((res) {
+      if (res.exists && res.data()!.isNotEmpty) {
+        username = res.data()!['username'];
+      }
+    }).catchError((e) => {});
+    return username;
   }
 }

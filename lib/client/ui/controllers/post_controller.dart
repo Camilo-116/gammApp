@@ -39,8 +39,6 @@ class PostController extends GetxController {
    * This method is used to get the feed of the user
   */
   Future<void> createFeed() async {
-    log('Geeting feed');
-    log('The user ${userController.loggedUser.username} request the feed');
     var getFeed =
         await postService.getFeed(userController.loggedUser.extendedId);
     for (var post in getFeed) {
@@ -53,7 +51,6 @@ class PostController extends GetxController {
           comments: post['comments'],
           shares: post['shares']));
     }
-    log('Got feed');
   }
 
   // CORREGIR, NO RESTAR A LOS LIKES, SINO ELIMINAR AL USUARIO DE LA LISTA
