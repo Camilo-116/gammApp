@@ -88,20 +88,26 @@ class _FeedState extends State<Feed> {
   }
 
   Widget _postView(int index, double width, double height) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _postAuthor(index, width, height),
-        _postImage(index, width, height),
-        _postActions(index, width),
-        _postCaption(index, width, height),
-      ],
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          _postAuthor(index, width, height),
+          _postCaption(index, width, height),
+          _postImage(index, width, height),
+          _postActions(index, width)
+        ],
+      ),
     );
   }
 
   Widget _postAuthor(int index, double width, double height) {
     PostController postController = Get.find();
-    double _imageSize = (44 / 360) * width;
+    double imageSize = (44 / 360) * width;
     return Column(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -116,8 +122,8 @@ class _FeedState extends State<Feed> {
           ),
           child: Row(mainAxisSize: MainAxisSize.max, children: [
             Container(
-              width: _imageSize,
-              height: _imageSize,
+              width: imageSize,
+              height: imageSize,
               clipBehavior: Clip.antiAlias,
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,

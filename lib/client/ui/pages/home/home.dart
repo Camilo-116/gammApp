@@ -1,15 +1,12 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:gamma/client/ui/pages/views/user/user_page.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-
 import '../../controllers/authentication_controller.dart';
 import '../../controllers/post_controller.dart';
 import '../../controllers/user_controller.dart';
-import '../views/feed/create_post.dart';
 import '../views/discover.dart';
 import '../views/feed/feed.dart';
 import '../views/friends_page.dart';
