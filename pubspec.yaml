@@ -39,6 +39,7 @@ dependencies:
   firebase_auth:
   cloud_firestore: ^4.0.4
   cupertino_icons: ^1.0.2
+  geolocator: ^8.2.1
   google_fonts: ^3.0.1
   get: ^4.6.5
   font_awesome_flutter: ^10.2.1

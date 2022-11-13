@@ -117,8 +117,7 @@ class UserController extends GetxController {
     var extendedUuid2 = await userBasicService.getExtendedId(uuid2);
 
     UserModel friend = await userBasicService.getUserByUUID(uuid2);
-    friend.setValues(
-        await userExtendedService.getUserByUUID(extendedUuid2) ?? {});
+    friend.setValues(await userExtendedService.getUserByUUID(extendedUuid2));
 
     var added2 = await userExtendedService.addFriend(
         uuid1, extendedUuid2, await userBasicService.getUsername(uuid2));
