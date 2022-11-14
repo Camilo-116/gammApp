@@ -72,11 +72,8 @@ class _FeedState extends State<Feed> {
               (index < widget.feed.length - 1)
                   ? Padding(
                       padding: EdgeInsets.only(bottom: (8.0 / 756) * height),
-                      child: const Divider(
-                        thickness: 1,
-                        indent: 15,
-                        endIndent: 15,
-                        color: Colors.white,
+                      child: SizedBox(
+                        height: (15 / 756) * height,
                       ),
                     )
                   : SizedBox(
@@ -90,11 +87,11 @@ class _FeedState extends State<Feed> {
   Widget _postView(int index, double width, double height) {
     return Card(
       clipBehavior: Clip.antiAlias,
+      color: const Color.fromARGB(255, 254, 244, 255),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24),
       ),
-      child: Stack(
-        alignment: Alignment.center,
+      child: Column(
         children: [
           _postAuthor(index, width, height),
           _postCaption(index, width, height),
@@ -146,7 +143,7 @@ class _FeedState extends State<Feed> {
                 child: Text(
                   postController.feed[index].userUsername,
                   style: GoogleFonts.hind(
-                    color: Colors.white,
+                    color: Colors.black,
                     fontWeight: FontWeight.bold,
                     fontSize: (16 / 360) * width,
                   ),
@@ -156,8 +153,13 @@ class _FeedState extends State<Feed> {
             Expanded(
               child: Align(
                 alignment: const AlignmentDirectional(1, 0),
-                child: Icon(Icons.keyboard_control,
-                    color: Colors.white, size: (24 / 360) * width),
+                child: IconButton(
+                  icon: Icon(Icons.keyboard_control,
+                      color: Colors.black, size: (24 / 360) * width),
+                  onPressed: () {
+                    log('Three');
+                  },
+                ),
               ),
             )
           ]),
@@ -168,18 +170,34 @@ class _FeedState extends State<Feed> {
 
   Widget _postImage(int index, double width, double height) {
     PostController postController = Get.find();
-    return AspectRatio(
-      aspectRatio: 1,
-      child: GestureDetector(
-        onDoubleTap: () {
-          postController.likePost(index);
-        },
-        child: Image.network(
-          postController.feed[index].picture,
-          width: (100 / 360) * width,
-          height: (300 / 756) * height,
-          fit: BoxFit.fill,
-        ),
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Column(
+        children: [
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              ClipRRect(
+                  borderRadius: BorderRadius.circular(24),
+                  child: AspectRatio(
+                    aspectRatio: 1,
+                    child: GestureDetector(
+                      onDoubleTap: () {
+                        postController.likePost(index);
+                      },
+                      child: Image.network(
+                        postController.feed[index].picture,
+                        width: (100 / 360) * width,
+                        height: (300 / 756) * height,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ))
+            ],
+          )
+        ],
       ),
     );
   }
@@ -189,7 +207,7 @@ class _FeedState extends State<Feed> {
     log('Like in index ${postController.likes[index]}');
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(
-          (16 / 360) * width, 0, (16 / 360) * width, 0),
+          (16 / 360) * width, 0, (16 / 360) * width, (10 / 360) * width),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -207,7 +225,7 @@ class _FeedState extends State<Feed> {
                         : Icons.favorite_border,
                     color: postController.likes[index]
                         ? const Color.fromARGB(255, 235, 65, 229)
-                        : Colors.white,
+                        : const Color.fromARGB(255, 129, 117, 139),
                     size: (24 / 360) * width,
                   ),
                 ),
@@ -223,16 +241,15 @@ class _FeedState extends State<Feed> {
                           ? '${num.parse((postController.feed[index].likes.length / 1000).toStringAsFixed(1))} k'
                           : '${postController.feed[index].likes.length}',
                   style: GoogleFonts.hind(
-                    color: Colors.white,
-                    fontWeight: FontWeight.normal,
-                    fontSize: (16 / 360) * width,
-                  ),
+                      color: const Color.fromARGB(255, 129, 117, 139),
+                      fontWeight: FontWeight.normal,
+                      fontSize: (16 / 360) * width),
                 ),
               ),
               IconButton(
                 icon: Icon(
-                  Icons.comment_outlined,
-                  color: Colors.white,
+                  Icons.chat_bubble,
+                  color: const Color.fromARGB(255, 129, 117, 139),
                   size: (24 / 360) * width,
                 ),
                 onPressed: () {
@@ -246,14 +263,14 @@ class _FeedState extends State<Feed> {
                         ? '${num.parse((postController.feed[index].comments.length / 1000).toStringAsFixed(1))} k'
                         : '${postController.feed[index].comments.length}',
                 style: GoogleFonts.hind(
-                    color: Colors.white,
+                    color: const Color.fromARGB(255, 129, 117, 139),
                     fontWeight: FontWeight.normal,
                     fontSize: (16 / 360) * width),
               ),
               IconButton(
                 icon: Icon(
-                  Icons.share,
-                  color: Colors.white,
+                  Icons.upload_rounded,
+                  color: const Color.fromARGB(255, 129, 117, 139),
                   size: (24 / 360) * width,
                 ),
                 onPressed: () {
@@ -267,7 +284,7 @@ class _FeedState extends State<Feed> {
                         ? '${num.parse((postController.feed[index].shares.length / 1000).toStringAsFixed(1))} k'
                         : '${postController.feed[index].shares.length}',
                 style: GoogleFonts.hind(
-                    color: Colors.white,
+                    color: const Color.fromARGB(255, 129, 117, 139),
                     fontWeight: FontWeight.normal,
                     fontSize: (16 / 360) * width),
               ),
@@ -286,12 +303,12 @@ class _FeedState extends State<Feed> {
         (8 / 360) * width,
         0,
         (12 / 756) * height,
-        (8 / 360) * width,
+        (5 / 360) * width,
       ),
       child: Text(
         postController.feed[index].caption,
         style: GoogleFonts.hind(
-          color: Colors.white,
+          color: const Color.fromARGB(255, 129, 117, 139),
           fontWeight: FontWeight.normal,
           fontSize: (16 / 360) * width,
         ),
