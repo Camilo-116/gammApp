@@ -15,6 +15,7 @@ class UserModel {
     this.friends = const [],
     this.games = const [],
     this.platforms = const [],
+    this.likedPosts = const [],
   });
 
   /// Id of the related userBasic.
@@ -41,6 +42,9 @@ class UserModel {
   /// List of friends of the user.
   List<Map<String, String>> friends;
 
+  /// List of liked posts of the user.
+  List<String> likedPosts;
+
   /// List of games played frequently by the user.
   List games;
 
@@ -61,6 +65,7 @@ class UserModel {
       'about': about,
       'extendedId': extendedId,
       'friends': friends,
+      'likedPosts': likedPosts,
       'games': games,
       'platforms': platforms,
     };
@@ -71,10 +76,15 @@ class UserModel {
   /// Receives a [Map] object containing the extra information of the user.
   /// At the end, the non-required attributes of the user will be filled.
   void setValues(Map values) {
+    List<Map<String, String>>? f = [];
+    for (var friend in values['friends']) {
+      f.add({'uuid': friend['uuid'], 'username': friend['username']});
+    }
     extendedId = values['id'];
-    id = values['user_uuid'] ?? "";
     name = values['name'] ?? "";
-    friends = List<Map<String, String>>.empty();
+    friends = f;
+    likedPosts = List<String>.from(
+        values['likedPosts'] ?? List<String>.empty(growable: true));
     games = values['games'] ?? [];
     platforms = values['platforms'] ?? [];
     profilePhoto = values['profilePhoto'] ?? "";

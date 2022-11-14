@@ -84,4 +84,21 @@ class PostService {
     });
     return posts;
   }
+
+  /// This method is used to get all the posts made by specific users.
+  ///
+  /// Receives a [List<String>] with the uuids of the users and returns a [List<Map>] with the posts.
+  Future<List<Map>> getPostsByUsers(List<String> uuids) async {
+    List<Map> posts = [];
+    await FirebaseFirestore.instance
+        .collection('posts')
+        .where('uuidUser', whereIn: uuids)
+        .get()
+        .then((res) {
+      for (var element in res.docs) {
+        posts.add(element.data());
+      }
+    }).catchError((onError) => log('Error getting posts: $onError'));
+    return posts;
+  }
 }

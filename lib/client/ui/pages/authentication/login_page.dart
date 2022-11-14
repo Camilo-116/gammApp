@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:gamma/client/ui/controllers/authentication_controller.dart';
+import 'package:gamma/client/ui/controllers/post_controller.dart';
 import 'package:gamma/client/ui/controllers/user_controller.dart';
 import 'package:gamma/client/ui/pages/authentication/forms/login_form.dart';
 import 'package:get/get.dart';
@@ -15,6 +16,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   AuthenticationController authenticationController = Get.find();
   UserController userController = Get.find();
+  PostController postController = Get.find();
 
   void _login(String username, String password, bool rememberMe) async {
     int userExist = await authenticationController.login(username, password);

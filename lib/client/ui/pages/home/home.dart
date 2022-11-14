@@ -1,5 +1,8 @@
 import 'dart:developer';
+import 'package:carousel_slider/carousel_controller.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:gamma/client/ui/pages/views/feed/create_post.dart';
 import 'package:gamma/client/ui/pages/views/user/user_page.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -21,11 +24,18 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
-  UserController user_controller = Get.find();
-  PostController post_controller = Get.find();
-  AuthenticationController auth_controller = Get.find();
-  int _currentIndex = 0;
-  String _title = 'GammApp';
+  UserController userController = Get.find();
+  PostController postController = Get.find();
+  AuthenticationController authController = Get.find();
+  int _currentIndex = 0, _prevIndex = 0;
+
+  final List<String> _titles = [
+    'GammApp',
+    'Hacer una Publicación',
+    'Descubre',
+    'Amigos',
+    'Perfil de Usuario'
+  ];
 
   var screens = [];
 
@@ -36,13 +46,15 @@ class _HomeState extends State<Home> {
 
     var padding = EdgeInsets.symmetric(horizontal: width * 0.015, vertical: 0);
 
+    var dragStart, dragEndVelocity, dragUpdatesMean;
+    var dragUpdates = [];
+
     var screens = _fillScreens();
 
     return FutureBuilder<List>(
         future: screens,
         builder: (context, snapshot) {
           if (snapshot.hasData && !snapshot.hasError) {
-            log('Snapshot: ${snapshot.data}');
             return Scaffold(
                 key: scaffoldKey,
                 extendBody: true,
@@ -51,8 +63,8 @@ class _HomeState extends State<Home> {
                   actions: [
                     IconButton(
                       onPressed: () async {
-                        auth_controller.logOut();
-                        await user_controller.logOutUser();
+                        authController.logOut();
+                        await userController.logOutUser();
                         log('Logout button pressed');
                       },
                       icon: const Icon(
@@ -65,7 +77,7 @@ class _HomeState extends State<Home> {
                   backgroundColor: const Color.fromARGB(255, 37, 19, 60),
                   shadowColor: const Color.fromARGB(255, 80, 41, 131),
                   title: Text(
-                    _title,
+                    _titles[_currentIndex],
                     style: GoogleFonts.hind(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -75,7 +87,26 @@ class _HomeState extends State<Home> {
                   centerTitle: true,
                   elevation: 0,
                 ),
-                body: snapshot.data![_currentIndex],
+                body: AnimatedSwitcher(
+                  switchInCurve: Curves.easeIn,
+                  switchOutCurve: Curves.easeOut,
+                  duration: const Duration(milliseconds: 200),
+                  transitionBuilder: (child, animation) => SlideTransition(
+                    // Make the child slide in from the right when it appears if _prevIndex > _currentIndex and from the left if _prevIndex < _currentIndex
+                    position: Tween<Offset>(
+                      begin: _prevIndex < _currentIndex
+                          ? const Offset(1, 0)
+                          : const Offset(-1, 0),
+                      end: const Offset(0, 0),
+                    ).animate(animation),
+                    child:
+                        _getPage(snapshot.data! as List<Widget>, _currentIndex),
+                  ),
+                  layoutBuilder: (currentChild, previousChildren) =>
+                      currentChild!,
+                  child:
+                      _getPage(snapshot.data! as List<Widget>, _currentIndex),
+                ),
                 floatingActionButtonLocation:
                     FloatingActionButtonLocation.centerDocked,
                 bottomNavigationBar: SafeArea(
@@ -110,25 +141,9 @@ class _HomeState extends State<Home> {
                             activeColor:
                                 const Color.fromARGB(255, 235, 65, 229),
                             color: const Color.fromARGB(255, 129, 117, 139),
-                            onTabChange: (index) {
-                              switch (index) {
-                                case 0:
-                                  _title = 'GammApp';
-                                  break;
-                                case 1:
-                                  _title = 'Create Post';
-                                  break;
-                                case 2:
-                                  _title = 'Discover';
-                                  break;
-                                case 3:
-                                  _title = 'Friends';
-                                  break;
-                                case 4:
-                                  _title = 'Profile';
-                                  break;
-                              }
+                            onTabChange: (index) async {
                               setState(() {
+                                _prevIndex = _currentIndex;
                                 _currentIndex = index;
                               });
                             },
@@ -171,21 +186,30 @@ class _HomeState extends State<Home> {
         });
   }
 
-  Future<List> _fillScreens() async {
-    // log('Logged User: ${user_controller.loggedUser.toMap()}');
-    var screens = [];
-    await user_controller
-        .getFriends(user_controller.loggedUser.id)
-        .then((friends) {
-      log('Friends: ${friends[0].toMap()}');
-      screens = [
-        Feed(feed: post_controller.feed),
-        UserPage(user: user_controller.loggedUser),
-        const DiscoverGamers(),
-        FriendsPage(friends: friends),
-        UserPage(user: user_controller.loggedUser)
-      ];
-    });
+  Future<List<Widget>> _fillScreens() async {
+    // log('Logged User: ${userController.loggedUser.toMap()}');
+    var screens = <Widget>[];
+    await userController
+        .getFriends(userController.loggedUser.id)
+        .then((res) async {
+      var friendsIDs =
+          userController.loggedUserFriends.map((e) => e.id).toList();
+      await postController.getFeed(friendsIDs).then((res) async {
+        postController.fillLikes(userController.loggedUser.likedPosts);
+        screens = <Widget>[
+          Feed(feed: postController.feed),
+          CreatePost(),
+          const DiscoverGamers(),
+          FriendsPage(friends: userController.loggedUserFriends),
+          UserPage()
+        ];
+      }).catchError((onError) => log('Error getting feed: $onError'));
+    }).catchError((onError) => log('Error getting friends: $onError'));
+
     return screens;
+  }
+
+  Widget _getPage(List<Widget> screens, int index) {
+    return screens[index];
   }
 }

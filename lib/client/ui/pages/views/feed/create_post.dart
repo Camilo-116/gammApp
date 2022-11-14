@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gamma/client/ui/controllers/user_controller.dart';
 import 'package:get/get.dart';
@@ -9,26 +10,26 @@ import '../../../../../server/models/user_model.dart';
 class CreatePost extends StatefulWidget {
   CreatePost({
     Key? key,
-    required this.user,
   }) : super(key: key);
-  UserModel user;
 
   @override
   State<CreatePost> createState() => _CreatePostState();
 }
 
 class _CreatePostState extends State<CreatePost> {
+  UserController userController = Get.find();
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    log(widget.user.profilePhoto);
+    log(userController.loggedUser.profilePhoto);
     return SafeArea(
         child: Scaffold(
       backgroundColor: const Color.fromARGB(255, 34, 15, 57),
       body: Column(
         children: [
-          _buildTextField(widget.user, width, height),
+          _buildTextField(width, height),
           _buildPostButton(width, height),
         ],
       ),
@@ -36,20 +37,20 @@ class _CreatePostState extends State<CreatePost> {
   }
 }
 
-Widget _buildTextField(UserModel user, double width, double height) {
+Widget _buildTextField(double width, double height) {
   UserController userController = Get.find();
   const maxLines = 15;
   return ListTile(
     leading: CircleAvatar(
-      backgroundImage: AssetImage(user.profilePhoto),
-      maxRadius: width * 0.0888,
+      backgroundImage: AssetImage(userController.loggedUser.profilePhoto),
+      radius: width * 0.0888,
     ),
     title: Container(
       margin: const EdgeInsets.all(12),
       height: maxLines * 24.0,
       alignment: Alignment.centerLeft,
       decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 34, 15, 57),
+        color: Color.fromARGB(109, 255, 255, 255),
         borderRadius: BorderRadius.circular(10.0),
         boxShadow: const [
           BoxShadow(
@@ -59,24 +60,27 @@ Widget _buildTextField(UserModel user, double width, double height) {
           ),
         ],
       ),
-      child: TextField(
-        maxLines: maxLines,
-        autocorrect: false,
-        enableSuggestions: false,
-        keyboardType: TextInputType.emailAddress,
-        style: GoogleFonts.hind(
-          color: const Color.fromARGB(255, 254, 244, 255),
-          fontSize: (16 / 360) * width,
-          fontWeight: FontWeight.normal,
-        ),
-        decoration: InputDecoration(
-          border: InputBorder.none,
-          // contentPadding: const EdgeInsets.only(top: 14.0),
-          hintText: '¿Qué quieres compartir?',
-          hintStyle: GoogleFonts.hind(
-              color: const Color.fromARGB(255, 254, 244, 255),
-              fontWeight: FontWeight.normal,
-              fontSize: (16 / 360) * width),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: (10.0 / 360) * width),
+        child: TextField(
+          maxLines: maxLines,
+          autocorrect: false,
+          enableSuggestions: false,
+          keyboardType: TextInputType.emailAddress,
+          style: GoogleFonts.hind(
+            color: const Color.fromARGB(255, 254, 244, 255),
+            fontSize: (16 / 360) * width,
+            fontWeight: FontWeight.normal,
+          ),
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            // contentPadding: const EdgeInsets.only(top: 14.0),
+            hintText: '¿Qué quieres compartir?',
+            hintStyle: GoogleFonts.hind(
+                color: Color.fromARGB(164, 254, 244, 255),
+                fontWeight: FontWeight.normal,
+                fontSize: (16 / 360) * width),
+          ),
         ),
       ),
     ),

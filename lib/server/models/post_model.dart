@@ -5,7 +5,9 @@ class PostModel {
   /// This is the constructor of the PostModel class.
   PostModel(
       {this.id,
-      required this.user,
+      required this.userID,
+      required this.userUsername,
+      required this.userProfilePicture,
       required this.picture,
       required this.caption,
       required this.postedTimeStamp,
@@ -17,7 +19,13 @@ class PostModel {
   final int? id;
 
   /// User that created the post.
-  final UserModel user;
+  final String userID;
+
+  /// User's username.
+  final String userUsername;
+
+  /// User's profile picture.
+  final String userProfilePicture;
 
   /// Picture shown in the post (can be empty).
   final String picture;
@@ -41,7 +49,7 @@ class PostModel {
   Map<String, dynamic> toMap() {
     return {
       'uiid': id,
-      'uuidUser': user.id,
+      'uuidUser': userID,
       'picture': picture,
       'caption': caption,
       'postedTimeStamp': postedTimeStamp,

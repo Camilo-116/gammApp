@@ -128,7 +128,7 @@ class _FeedState extends State<Feed> {
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
               ),
-              child: Image.asset(widget.feed[index].user.profilePhoto),
+              child: Image.asset(widget.feed[index].userProfilePicture),
             ),
             Padding(
               padding:
@@ -139,12 +139,12 @@ class _FeedState extends State<Feed> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => UserPage(
-                              user: postController.feed[index].user,
+                              userUUID: postController.feed[index].userID,
                             )),
                   );
                 },
                 child: Text(
-                  postController.feed[index].user.username,
+                  postController.feed[index].userUsername,
                   style: GoogleFonts.hind(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -186,6 +186,7 @@ class _FeedState extends State<Feed> {
 
   Widget _postActions(int index, double width) {
     PostController postController = Get.find();
+    log('Like in index ${postController.likes[index]}');
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(
           (16 / 360) * width, 0, (16 / 360) * width, 0),

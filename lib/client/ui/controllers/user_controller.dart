@@ -12,15 +12,29 @@ import '../../../server/services/UserBasicService.dart';
 import '../../../server/services/UserExtendedService.dart';
 
 class UserController extends GetxController {
-  UserModel _loggedUser = UserModel(id: '', username: '', email: '');
-  var _loggedUserStatus = 'Offline'.obs;
-  var _loggedUserFriends = <UserModel>[].obs;
-
   UserBasicService userBasicService = UserBasicService();
   UserExtendedService userExtendedService = UserExtendedService();
 
-  get loggedUser => _loggedUser;
-  get loggedUserStatus => _loggedUserStatus.value;
+  UserModel _loggedUser = UserModel(id: '', username: '', email: '');
+  var _loggedUserID = "".obs;
+  var _loggedUserUsername = "".obs;
+  var _loggedUserEmail = "".obs;
+  var _loggedUserStatus = 'Offline'.obs;
+  var _loggedUserPicture = "".obs;
+  var _loggedUserFriends = <UserModel>[].obs;
+
+  // Getter for the logged user
+  UserModel get loggedUser => _loggedUser;
+  // Getter for status
+  String get loggedUserStatus => _loggedUserStatus.value;
+  // Getter for email
+  String get loggedUserEmail => _loggedUserEmail.value;
+  // Getter for username
+  String get loggedUserUsername => _loggedUserUsername.value;
+  // Getter for picture
+  String get loggedUserPicture => _loggedUserPicture.value;
+  // Getter for friends
+  List<UserModel> get loggedUserFriends => _loggedUserFriends.value;
 
   var status = ['Online', 'Offline', 'Busy', 'Away', 'Invisible'];
   // ignore: prefer_final_fields
@@ -54,28 +68,47 @@ class UserController extends GetxController {
   @override
   onInit() {
     super.onInit();
-    var _timer = Timer.periodic(const Duration(seconds: 10), (timer) async {
-      await getFriends(_loggedUser.id);
-    });
+    // var _timer = Timer.periodic(const Duration(seconds: 10), (timer) async {
+    //   await getFriends(_loggedUser.id);
+    // });
+  }
+
+  /// This method is used to get a user from the database given its [String] uuid.
+  /// Returns a [UserModel] with the user data.
+  Future<UserModel> getUserbyUUID(String uuid) async {
+    UserModel user = UserModel(id: '', username: '', email: '');
+    await userBasicService.getUserByUUID(uuid).then((u) async {
+      u.setValues(await userExtendedService.getUserByUUID(u.extendedId!));
+      user = u;
+    }).catchError((onError) => log('Error getting user: $onError'));
+    return user;
   }
 
   Future<void> logUser(String username) async {
     UserModel user = await userBasicService.getUserByUsername(username);
     user.setValues(await userExtendedService.getUserByUUID(user.extendedId!));
     _loggedUser = user;
+    _loggedUserID.value = user.id;
+    _loggedUserUsername.value = user.username;
+    _loggedUserEmail.value = user.email;
     if (user.status == 'Offline') {
       await userBasicService.updateUserBasic(username, {'status': 'Online'});
       _loggedUserStatus.value = 'Online';
     }
+    _loggedUserFriends.value = await getFriends(_loggedUser.id);
   }
 
   Future<void> logOutUser() async {
     await userBasicService
-        .updateUserBasic(_loggedUser.username, {'status': 'Offline'});
-    _loggedUser = UserModel(id: '', username: '', email: '');
+        .updateUserBasic(loggedUserUsername, {'status': 'Offline'});
+    UserModel _loggedUser = UserModel(id: '', username: '', email: '');
+    var _loggedUserID = "".obs;
+    var _loggedUserUsername = "".obs;
+    var _loggedUserEmail = "".obs;
+    var _loggedUserStatus = 'Offline'.obs;
+    var _loggedUserPicture = "".obs;
+    var _loggedUserFriends = <UserModel>[].obs;
     log('User logged out');
-    _loggedUserStatus.value = 'Offline';
-    _loggedUserFriends = <UserModel>[].obs;
   }
 
   Future<void> userResumed() async {
