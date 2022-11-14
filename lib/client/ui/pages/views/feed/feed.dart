@@ -95,7 +95,11 @@ class _FeedState extends State<Feed> {
         children: [
           _postAuthor(index, width, height),
           _postCaption(index, width, height),
-          _postImage(index, width, height),
+          (postController.feed[index].picture.isNotEmpty)
+              ? _postImage(index, width, height)
+              : const SizedBox(
+                  height: 0,
+                ),
           _postActions(index, width)
         ],
       ),
@@ -204,7 +208,6 @@ class _FeedState extends State<Feed> {
 
   Widget _postActions(int index, double width) {
     PostController postController = Get.find();
-    log('Like in index ${postController.likes[index]}');
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(
           (16 / 360) * width, 0, (16 / 360) * width, (10 / 360) * width),
@@ -269,7 +272,7 @@ class _FeedState extends State<Feed> {
               ),
               IconButton(
                 icon: Icon(
-                  Icons.upload_rounded,
+                  Icons.share_rounded,
                   color: const Color.fromARGB(255, 129, 117, 139),
                   size: (24 / 360) * width,
                 ),

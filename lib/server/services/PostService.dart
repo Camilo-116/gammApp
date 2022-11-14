@@ -40,14 +40,21 @@ class PostService {
   }
 
   /// This method is used to get the [List<Post>] of a user with a given [String] username.
-  Future<List?> getUserPosts(String uuidUser) async {
-    return await FirebaseFirestore.instance
+  Future<List<Map>?> getUserPosts(String uuidUser) async {
+    List<Map> posts = [];
+    await FirebaseFirestore.instance
         .collection('posts')
         .where('uuidUser', isEqualTo: uuidUser)
         .get()
         .then((res) {
-      return res.docs;
-    });
+      for (var element in res.docs) {
+        var data = element.data();
+        data['id'] = element.id;
+        posts.add(data);
+      }
+    }).catchError((onError) =>
+            log('Error getting posts of user $uuidUser: $onError'));
+    return posts;
   }
 
   /// This is method is for deleting a [Post] given its [String] uuid.
@@ -70,6 +77,8 @@ class PostService {
     String postId = "";
     await FirebaseFirestore.instance.collection('posts').add(post).then((res) {
       postId = res.id;
+    }).catchError((onError) {
+      log('Error adding post to database: $onError');
     });
     return postId;
   }
@@ -96,7 +105,9 @@ class PostService {
         .get()
         .then((res) {
       for (var element in res.docs) {
-        posts.add(element.data());
+        var data = element.data();
+        data['id'] = element.id;
+        posts.add(data);
       }
     }).catchError((onError) => log('Error getting posts: $onError'));
     return posts;

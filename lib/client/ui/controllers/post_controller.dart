@@ -14,6 +14,7 @@ class PostController extends GetxController {
   // ignore: prefer_final_fields
   var _feed = <PostModel>[].obs;
   var _likes = <bool>[].obs;
+  var _userPosts = <PostModel>[].obs;
 
   PostService postService = PostService();
   UserExtendedService userExtendedService = UserExtendedService();
@@ -21,6 +22,7 @@ class PostController extends GetxController {
 
   RxList<bool> get likes => _likes;
   List<PostModel> get feed => _feed;
+  List<PostModel> get userPosts => _userPosts;
 
   @override
   onInit() {
@@ -32,10 +34,16 @@ class PostController extends GetxController {
     _likes = List.filled(_feed.length, false, growable: true).obs;
   }
 
-  void addPost(PostModel post) {
-    //postService.addPost(post.toMap());
-    //_posts.add(post);
-    //_likes.add(false);
+  Future<bool> createPost(PostModel post) async {
+    bool result = false;
+    await postService.addPost(post.toMap(true)).then((uuidPost) {
+      post.id = uuidPost;
+      _userPosts.add(post);
+      result = true;
+    }).catchError((onError) {
+      log('Error creating post: $onError');
+    });
+    return result;
   }
 
   /// This method is used to refresh the feed of the looged user.
@@ -45,11 +53,10 @@ class PostController extends GetxController {
     _feed.clear();
     _likes.clear();
     await postService.getPostsByUsers(friendsIDs).then((posts) {
-      log('Posts: $posts');
       for (var post in posts) {
-        log('Post added to feed: ${post['uuidUser']}');
         _feed.add(
           PostModel(
+            id: post['id'],
             userID: post['uuidUser'],
             userUsername: post['username'],
             userProfilePicture: post['profilePicture'],
@@ -84,7 +91,6 @@ class PostController extends GetxController {
   ///
   /// Receives the logged User likes list.
   void fillLikes(List<String> likes) {
-    log('Likes: $likes');
     for (var post in _feed) {
       if (likes.contains(post.userID)) {
         _likes.add(true);
@@ -92,8 +98,35 @@ class PostController extends GetxController {
         _likes.add(false);
       }
     }
-    log('_likes: $_likes');
   }
 
   set togglePostLike(int index) => _likes[index] = !_likes[index];
+
+  userLoggedOut() {
+    _feed.clear();
+    _likes.clear();
+    _userPosts.clear();
+  }
+
+  userLoggedIn(String uuid) async {
+    await postService.getUserPosts(uuid).then((posts) {
+      _userPosts.clear();
+      for (var post in posts!) {
+        _userPosts.add(
+          PostModel(
+            id: post['id'],
+            userID: post['uuidUser'],
+            userUsername: post['username'],
+            userProfilePicture: post['profilePicture'],
+            picture: post['picture'],
+            caption: post['caption'],
+            postedTimeStamp: post['postedTimeStamp'].toDate(),
+            likes: List<String>.from(post['likes']),
+            comments: List<Map<String, dynamic>>.from(post['comments']),
+            shares: List<String>.from(post['shares']),
+          ),
+        );
+      }
+    });
+  }
 }

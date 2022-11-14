@@ -16,7 +16,7 @@ class PostModel {
       required this.shares});
 
   /// Post's uuid.
-  final int? id;
+  String? id;
 
   /// User that created the post.
   final String userID;
@@ -46,10 +46,11 @@ class PostModel {
   List<String> shares;
 
   /// This method is used to convert a [PostModel] object to a [Map] object containing its attributes.
-  Map<String, dynamic> toMap() {
-    return {
-      'uiid': id,
+  Map<String, dynamic> toMap(bool forCreation) {
+    var postMap = {
       'uuidUser': userID,
+      'username': userUsername,
+      'profilePicture': userProfilePicture,
       'picture': picture,
       'caption': caption,
       'postedTimeStamp': postedTimeStamp,
@@ -57,5 +58,7 @@ class PostModel {
       'comments': comments,
       'shares': shares
     };
+    (forCreation) ? postMap['id'] = id ?? '' : {};
+    return postMap;
   }
 }

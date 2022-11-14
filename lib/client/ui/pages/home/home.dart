@@ -46,9 +46,6 @@ class _HomeState extends State<Home> {
 
     var padding = EdgeInsets.symmetric(horizontal: width * 0.015, vertical: 0);
 
-    var dragStart, dragEndVelocity, dragUpdatesMean;
-    var dragUpdates = [];
-
     var screens = _fillScreens();
 
     return FutureBuilder<List>(
