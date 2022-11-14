@@ -223,9 +223,10 @@ class _FeedState extends State<Feed> {
                           ? '${num.parse((postController.feed[index].likes.length / 1000).toStringAsFixed(1))} k'
                           : '${postController.feed[index].likes.length}',
                   style: GoogleFonts.hind(
-                      color: Colors.white,
-                      fontWeight: FontWeight.normal,
-                      fontSize: (16 / 360) * width),
+                    color: Colors.white,
+                    fontWeight: FontWeight.normal,
+                    fontSize: (16 / 360) * width,
+                  ),
                 ),
               ),
               IconButton(
