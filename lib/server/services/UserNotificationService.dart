@@ -32,19 +32,35 @@ class UserNotificationService {
   /// Receives the [String] uuid of the user that sent the request,
   /// and the [String] uuid of the user that received the request.
   /// Returns a [Future<bool>] indicating whether the request was sent or not.
-  Future<bool> requestAcceptedNotification(
+  Future<bool?> requestAcceptedNotification(
       String senderUsername, String recieverUUID) async {
-    return await FirebaseFirestore.instance
+    return await FirebaseFirestore.instance.collection('userNotification').add({
+      'senderUsername': senderUsername,
+      'recieverUUID': recieverUUID,
+      'typeNotification': typeNotification['friendRequestAccepted'],
+    }).then((value) async {
+      await FirebaseFirestore.instance
+          .collection('userExtended')
+          .doc(recieverUUID)
+          .update({
+            'friend': FieldValue.arrayUnion([senderUsername])
+          })
+          .then((res) => true)
+          .catchError((onError) => false);
+    }).catchError((onError) {
+      print(onError);
+      return false;
+    });
+  }
+
+  /// This method is used to get the notifications of a user.
+  ///
+  /// Receives the [String] uuid of the user.
+  /// Returns a [Stream<QuerySnapshot>] with the notifications of the user.
+  Future<Stream<QuerySnapshot>> getNotifications(String uuid) async {
+    return FirebaseFirestore.instance
         .collection('userNotification')
-        .add({
-          'senderUsername': senderUsername,
-          'recieverUUID': recieverUUID,
-          'typeNotification': typeNotification['friendRequestAccepted'],
-        })
-        .then((value) => true)
-        .catchError((onError) {
-          print(onError);
-          return false;
-        });
+        .where('recieverUUID', isEqualTo: uuid)
+        .snapshots();
   }
 }
