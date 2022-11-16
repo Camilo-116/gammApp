@@ -40,7 +40,7 @@ class UserExtendedService {
           'coverPhoto': userDescription['coverPhoto'],
           'games': [],
           'platforms': [],
-          'friends': List<Map<String, String>>.empty(growable: true),
+          'friends': Map<String, Map>.from({}),
         })
         .then((value) => value.id)
         .catchError((onError) => "");

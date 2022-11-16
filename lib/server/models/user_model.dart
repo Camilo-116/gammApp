@@ -12,7 +12,7 @@ class UserModel {
     this.status = "Offline",
     this.about =
         "Juegos favoritos: \nRocket League\nFIFA 23\nValorant\nLeague of Legends\nAmong Us",
-    this.friends = const [],
+    this.friends = const {},
     this.games = const [],
     this.platforms = const [],
     this.likedPosts = const [],
@@ -40,7 +40,7 @@ class UserModel {
   String status;
 
   /// List of friends of the user.
-  List<Map<String, String>> friends;
+  Map<String, Map> friends;
 
   /// List of liked posts of the user.
   List<String> likedPosts;
@@ -76,10 +76,10 @@ class UserModel {
   /// Receives a [Map] object containing the extra information of the user.
   /// At the end, the non-required attributes of the user will be filled.
   void setValues(Map values) {
-    List<Map<String, String>>? f = [];
-    for (var friend in values['friends']) {
-      f.add({'uuid': friend['uuid'], 'username': friend['username']});
-    }
+    Map<String, Map>? f = {};
+    f.forEach((key, value) {
+      f[key] = value;
+    });
     extendedId = values['id'];
     name = values['name'] ?? "";
     friends = f;

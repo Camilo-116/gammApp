@@ -2,8 +2,12 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:gamma/server/models/user_model.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:swipeable_card_stack/swipeable_card_stack.dart';
+import '../../../../server/services/UserNotificationService.dart';
+import '../../controllers/user_controller.dart';
 
 class DiscoverGamers extends StatefulWidget {
   const DiscoverGamers({Key? key}) : super(key: key);
@@ -15,6 +19,9 @@ class DiscoverGamers extends StatefulWidget {
 class _DiscoverGamersState extends State<DiscoverGamers> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   late SwipeableCardSectionController swipeableStackController;
+
+  UserController userController = Get.find();
+  UserNotificationService userNotificationService = UserNotificationService();
 
   @override
   void initState() {
@@ -76,8 +83,15 @@ class _DiscoverGamersState extends State<DiscoverGamers> {
                               color: Colors.white,
                               size: (30 / 360) * width,
                             ),
-                            onPressed: () {
+                            onPressed: () async {
+                              UserModel user = userController.loggedUser;
                               log('Add ...');
+                              await userNotificationService
+                                  .addUsernameNotification(
+                                      user.id,
+                                      user.extendedId,
+                                      'Dembouz',
+                                      'OeXZbU6zU455O9pjtLKs');
                             },
                           ),
                           IconButton(
