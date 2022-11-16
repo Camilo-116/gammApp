@@ -222,32 +222,54 @@ class _FeedState extends State<Feed> {
             children: <Widget>[
               IconButton(
                 icon: Obx(
-                  () => Icon(
-                    postController.likes[index]
-                        ? Icons.favorite
-                        : Icons.favorite_border,
-                    color: postController.likes[index]
-                        ? const Color.fromARGB(255, 235, 65, 229)
-                        : const Color.fromARGB(255, 129, 117, 139),
-                    size: (24 / 360) * width,
-                  ),
+                  () => (postController.likes.isNotEmpty)
+                      ? Icon(
+                          postController.likes[index]
+                              ? Icons.favorite
+                              : Icons.favorite_border,
+                          color: postController.likes[index]
+                              ? const Color.fromARGB(255, 235, 65, 229)
+                              : const Color.fromARGB(255, 129, 117, 139),
+                          size: (24 / 360) * width,
+                        )
+                      : Stack(children: [
+                          Container(
+                            color: const Color.fromARGB(255, 34, 15, 57),
+                          ),
+                          const Center(
+                            child: CircularProgressIndicator(
+                              color: Color.fromARGB(255, 99, 46, 162),
+                            ),
+                          ),
+                        ]),
                 ),
                 onPressed: () {
                   postController.likePost(index);
                 },
               ),
               Obx(
-                () => Text(
-                  (postController.feed[index].likes.length > 1000000)
-                      ? '${num.parse((postController.feed[index].likes.length / 1000000).toStringAsFixed(1))} M'
-                      : (postController.feed[index].likes.length > 1000)
-                          ? '${num.parse((postController.feed[index].likes.length / 1000).toStringAsFixed(1))} k'
-                          : '${postController.feed[index].likes.length}',
-                  style: GoogleFonts.hind(
-                      color: const Color.fromARGB(255, 129, 117, 139),
-                      fontWeight: FontWeight.normal,
-                      fontSize: (16 / 360) * width),
-                ),
+                () => (postController.feed.isNotEmpty)
+                    ? Text(
+                        (postController.feed[index].likes.length > 1000000)
+                            ? '${num.parse((postController.feed[index].likes.length / 1000000).toStringAsFixed(1))} M'
+                            : (postController.feed[index].likes.length > 1000)
+                                ? '${num.parse((postController.feed[index].likes.length / 1000).toStringAsFixed(1))} k'
+                                : '${postController.feed[index].likes.length}',
+                        style: GoogleFonts.hind(
+                            color: const Color.fromARGB(255, 129, 117, 139),
+                            fontWeight: FontWeight.normal,
+                            fontSize: (16 / 360) * width),
+                      )
+                    : Stack(children: [
+                        Container(
+                          color: const Color.fromARGB(255, 34, 15, 57),
+                        ),
+                        const Center(
+                          child: CircularProgressIndicator(
+                            color: Color.fromARGB(255, 99, 46, 162),
+                          ),
+                        ),
+                      ]),
               ),
               IconButton(
                 icon: Icon(
