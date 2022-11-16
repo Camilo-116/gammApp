@@ -56,22 +56,6 @@ class UserNotificationService {
   Future<bool> requestAcceptedNotification(String senderUsername,
       String senderUUID, String senderExtendedUUID, String recieverUUID) async {
     log('Request accepted notification ...');
-    await FirebaseFirestore.instance
-        .collection('userNotification')
-        .where('senderUUID', isEqualTo: recieverUUID)
-        .where('recieverUUID', isEqualTo: senderUUID)
-        .get()
-        .then((res) {
-      if (res.docs.isNotEmpty) {
-        Future.forEach(res.docs, (doc) {
-          FirebaseFirestore.instance
-              .collection('userNotification')
-              .doc(doc.id)
-              .delete();
-        });
-      }
-    });
-
     return await FirebaseFirestore.instance.collection('userNotification').add({
       'senderUsername': senderUsername,
       'recieverUUID': recieverUUID,
