@@ -7,9 +7,9 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../../server/models/user_model.dart';
 
 class FriendsPage extends StatefulWidget {
-  const FriendsPage({Key? key, required this.friends}) : super(key: key);
+  const FriendsPage({Key? key, this.friends}) : super(key: key);
 
-  final List<UserModel> friends;
+  final List<UserModel>? friends;
 
   @override
   _FriendsPageState createState() => _FriendsPageState();
@@ -23,9 +23,14 @@ class _FriendsPageState extends State<FriendsPage> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 34, 15, 57),
       body: ListView.builder(
-        itemCount: widget.friends.length,
-        itemBuilder: (context, index) =>
-            buildFriends(widget.friends[index], context),
+        itemCount: (widget.friends != null)
+            ? widget.friends!.length
+            : userController.loggedUserFriends.length,
+        itemBuilder: (context, index) => buildFriends(
+            (widget.friends != null)
+                ? widget.friends![index]
+                : userController.loggedUserFriends[index],
+            context),
       ),
     );
   }

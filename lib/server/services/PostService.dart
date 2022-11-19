@@ -99,17 +99,35 @@ class PostService {
   /// Receives a [List<String>] with the uuids of the users and returns a [List<Map>] with the posts.
   Future<List<Map>> getPostsByUsers(List<String> uuids) async {
     List<Map> posts = [];
-    await FirebaseFirestore.instance
-        .collection('posts')
-        .where('uuidUser', whereIn: uuids)
-        .get()
-        .then((res) {
-      for (var element in res.docs) {
-        var data = element.data();
-        data['id'] = element.id;
-        posts.add(data);
-      }
-    }).catchError((onError) => log('Error getting posts: $onError'));
+    if (uuids.isNotEmpty) {
+      await FirebaseFirestore.instance
+          .collection('posts')
+          .where('uuidUser', whereIn: uuids)
+          .orderBy('postedTimeStamp', descending: true)
+          .get()
+          .then((res) {
+        for (var element in res.docs) {
+          var data = element.data();
+          data['id'] = element.id;
+          posts.add(data);
+        }
+      }).catchError((onError) => print(onError));
+    } else {
+      log('No users to get posts');
+    }
     return posts;
+  }
+
+  Future<void> postLikeClicked(
+      String postId, String userID, bool newLikeStatus) async {
+    if (newLikeStatus) {
+      await FirebaseFirestore.instance.collection('posts').doc(postId).update({
+        'likes': FieldValue.arrayUnion([userID])
+      });
+    } else {
+      await FirebaseFirestore.instance.collection('posts').doc(postId).update({
+        'likes': FieldValue.arrayRemove([userID])
+      });
+    }
   }
 }

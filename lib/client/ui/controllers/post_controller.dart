@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 
 import '../../../../../server/models/post_model.dart';
 import '../../../server/models/post_model.dart';
+import '../../../server/models/user_model.dart';
 
 class PostController extends GetxController {
   var status = ['Online', 'Offline', 'Busy', 'Away', 'Invisible'];
@@ -18,7 +19,6 @@ class PostController extends GetxController {
 
   PostService postService = PostService();
   UserExtendedService userExtendedService = UserExtendedService();
-  UserController userController = Get.find<UserController>();
 
   RxList<bool> get likes => _likes;
   List<PostModel> get feed => _feed;
@@ -49,42 +49,66 @@ class PostController extends GetxController {
   /// This method is used to refresh the feed of the looged user.
   /// It receives a [List<String>] with the uuids of the logged user's friends
   /// and adds each friend's posts to the [List<PostModel>] _feed.
-  Future<void> getFeed(List<String> friendsIDs) async {
+  Future<bool> getFeed(List<String> friendsIDs) async {
     _feed.clear();
     _likes.clear();
     await postService.getPostsByUsers(friendsIDs).then((posts) {
-      for (var post in posts) {
-        _feed.add(
-          PostModel(
-            id: post['id'],
-            userID: post['uuidUser'],
-            userUsername: post['username'],
-            userProfilePicture: post['profilePicture'],
-            picture: post['picture'],
-            caption: post['caption'],
-            postedTimeStamp: post['postedTimeStamp'].toDate(),
-            likes: List<String>.from(post['likes']),
-            comments: List<Map<String, dynamic>>.from(post['comments']),
-            shares: List<String>.from(post['shares']),
-          ),
-        );
+      if (posts.isNotEmpty) {
+        for (var post in posts) {
+          _feed.add(
+            PostModel(
+              id: post['id'],
+              userID: post['uuidUser'],
+              userUsername: post['username'],
+              userProfilePicture: post['profilePicture'],
+              picture: post['picture'],
+              caption: post['caption'],
+              postedTimeStamp: post['postedTimeStamp'].toDate(),
+              likes: List<String>.from(post['likes']),
+              comments: List<Map<String, dynamic>>.from(post['comments']),
+              shares: List<String>.from(post['shares']),
+            ),
+          );
+        }
+        return true;
+      } else {
+        log('No posts found');
       }
-    }).catchError((onError) => log('Error getting posts: $onError'));
+    }).catchError(
+        (onError) => log('Error getting posts (Post controller): $onError'));
+    return false;
   }
 
   // CORREGIR, NO RESTAR A LOS LIKES, SINO ELIMINAR AL USUARIO DE LA LISTA
-  void likePost(int index) {
+  Future<bool> likePost(UserModel user, int index) async {
     if (_likes[index]) {
       togglePostLike = index;
       PostModel post = _feed[index];
-      // post.likes--;
+      post.likes.remove(user.id);
       _feed[index] = post;
     } else {
       togglePostLike = index;
       PostModel post = _feed[index];
-      // post.likes++;
+      post.likes.add(user.id);
       _feed[index] = post;
     }
+    await postService
+        .postLikeClicked(_feed[index].id!, user.id, likes[index])
+        .catchError((onError) {
+      if (_likes[index]) {
+        togglePostLike = index;
+        PostModel post = _feed[index];
+        post.likes.remove(user.id);
+        _feed[index] = post;
+      } else {
+        togglePostLike = index;
+        PostModel post = _feed[index];
+        post.likes.add(user.id);
+        _feed[index] = post;
+      }
+      log('Error liking post: $onError');
+    });
+    return likes[index];
   }
 
   /// This method fills the [List<bool>] _likes with the likes of the logged user.
@@ -92,7 +116,7 @@ class PostController extends GetxController {
   /// Receives the logged User likes list.
   void fillLikes(List<String> likes) {
     for (var post in _feed) {
-      if (likes.contains(post.userID)) {
+      if (likes.contains(post.id)) {
         _likes.add(true);
       } else {
         _likes.add(false);
@@ -100,15 +124,24 @@ class PostController extends GetxController {
     }
   }
 
-  set togglePostLike(int index) => _likes[index] = !_likes[index];
+  set togglePostLike(int index) {
+    _likes[index] = !_likes[index];
+    _likes.refresh();
+  }
 
+  /// This method is called when the logged user logs out, it clears the post
+  /// information related to said user.
   userLoggedOut() {
     _feed.clear();
     _likes.clear();
     _userPosts.clear();
   }
 
-  userLoggedIn(String uuid) async {
+  /// This method is called when a user logs in, it fills the feed and related
+  /// likes, as well as the user's posts.
+  Future<bool> userLoggedIn(
+      String uuid, List<String> feedIDs, List<String> likes) async {
+    bool r1 = false, r2 = false;
     await postService.getUserPosts(uuid).then((posts) {
       _userPosts.clear();
       for (var post in posts!) {
@@ -127,6 +160,23 @@ class PostController extends GetxController {
           ),
         );
       }
-    });
+      r1 = true;
+    }).catchError(
+        (onError) => log('Error getting logged user posts: $onError'));
+    await getFeed(feedIDs).then((res) async {
+      fillLikes(likes);
+      log('Controller likes: $_likes');
+      r2 = true;
+    }).catchError((onError) => log('Error getting feed: $onError'));
+    return r1 && r2;
+  }
+
+  Future<bool> refreshFeed(List<String> feedIDs, List<String> likes) async {
+    bool r = false;
+    await getFeed(feedIDs).then((res) async {
+      fillLikes(likes);
+      r = true;
+    }).catchError((onError) => log('Error getting feed: $onError'));
+    return r;
   }
 }

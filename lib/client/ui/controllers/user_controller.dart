@@ -15,7 +15,7 @@ class UserController extends GetxController {
   UserBasicService userBasicService = UserBasicService();
   UserExtendedService userExtendedService = UserExtendedService();
 
-  UserModel _loggedUser = UserModel(id: '', username: '', email: '');
+  Rx<UserModel> _loggedUser = UserModel(id: '', username: '', email: '').obs;
   var _loggedUserID = "".obs;
   var _loggedUserUsername = "".obs;
   var _loggedUserEmail = "".obs;
@@ -24,7 +24,9 @@ class UserController extends GetxController {
   var _loggedUserFriends = <UserModel>[].obs;
 
   // Getter for the logged user
-  UserModel get loggedUser => _loggedUser;
+  UserModel get loggedUser => _loggedUser.value;
+  // Getter for the logged user's ID
+  String get loggedUserID => _loggedUserID.value;
   // Getter for status
   String get loggedUserStatus => _loggedUserStatus.value;
   // Getter for email
@@ -35,6 +37,9 @@ class UserController extends GetxController {
   String get loggedUserPicture => _loggedUserPicture.value;
   // Getter for friends
   List<UserModel> get loggedUserFriends => _loggedUserFriends.value;
+
+  // Setter for the logged user
+  set loggedUser(UserModel user) => _loggedUser.value = user;
 
   var status = ['Online', 'Offline', 'Busy', 'Away', 'Invisible'];
 
@@ -60,7 +65,7 @@ class UserController extends GetxController {
   Future<void> logUser(String username) async {
     UserModel user = await userBasicService.getUserByUsername(username);
     user.setValues(await userExtendedService.getUserByUUID(user.extendedId!));
-    _loggedUser = user;
+    _loggedUser.value = user;
     _loggedUserID.value = user.id;
     _loggedUserUsername.value = user.username;
     _loggedUserEmail.value = user.email;
@@ -69,7 +74,7 @@ class UserController extends GetxController {
       await userBasicService.updateUserBasic(username, {'status': 'Online'});
       _loggedUserStatus.value = 'Online';
     }
-    _loggedUserFriends.value = await getFriends(_loggedUser.id);
+    _loggedUserFriends.value = await getFriends(loggedUser.id);
   }
 
   Future<void> logOutUser() async {
@@ -87,13 +92,13 @@ class UserController extends GetxController {
 
   Future<void> userResumed() async {
     await userBasicService
-        .updateUserBasic(_loggedUser.username, {'status': 'Online'});
+        .updateUserBasic(loggedUser.username, {'status': 'Online'});
     _loggedUserStatus.value = 'Online';
   }
 
   Future<void> userInactive() async {
     await userBasicService
-        .updateUserBasic(_loggedUser.username, {'status': 'Away'});
+        .updateUserBasic(loggedUser.username, {'status': 'Away'});
     _loggedUserStatus.value = 'Away';
   }
 
@@ -104,12 +109,12 @@ class UserController extends GetxController {
   }
 
   Future<void> changeStatus(String status) async {
-    UserModel user = _loggedUser;
+    UserModel user = loggedUser;
     user.status = status;
-    _loggedUser = user;
+    loggedUser = user;
     _loggedUserStatus.value = status;
     await userBasicService
-        .updateUserBasic(_loggedUser.username, {'status': status});
+        .updateUserBasic(loggedUser.username, {'status': status});
   }
 
   /// Add a [UserModel] friend to the list of friends of the logged user
@@ -164,5 +169,31 @@ class UserController extends GetxController {
     });
 
     return friends;
+  }
+
+  /// This method is to get the ids involved in the feed construction.
+  ///
+  /// Return a [Future<List<String>>] that contains the list of users ids involved in the feed construction.
+  List<String> getFeedIds() {
+    var feedIDs = <String>[];
+    feedIDs = loggedUserFriends.map((e) => e.id).toList();
+    feedIDs.add(loggedUserID);
+
+    return feedIDs;
+  }
+
+  /// This method is used to add a new [String] post id to the LikedPosts
+  /// attribute of the logged user(UserModel) and to the LikedPosts field of
+  /// the collection.
+  Future<void> likePost(String postId, bool newLike) async {
+    var newLoggedUser = loggedUser;
+    if (newLike) {
+      newLoggedUser.likedPosts.add(postId);
+    } else {
+      newLoggedUser.likedPosts.remove(postId);
+    }
+    loggedUser = newLoggedUser;
+    await userExtendedService.postLikeClicked(
+        loggedUser.extendedId!, postId, newLike);
   }
 }

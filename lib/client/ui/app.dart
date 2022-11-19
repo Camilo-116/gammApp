@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gamma/client/ui/controllers/post_controller.dart';
 import 'package:gamma/client/ui/controllers/user_controller.dart';
 import 'package:gamma/client/ui/pages/home/home.dart';
 import 'package:get/get.dart';
@@ -21,6 +22,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   UserController userController = Get.find();
+  PostController postController = Get.find();
 
   @override
   void initState() {
@@ -79,7 +81,33 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                       (Widget child, Animation<double> animation) {
                     return ScaleTransition(scale: animation, child: child);
                   },
-                  child: (!controller.logged) ? LoginScreen() : const Home());
+                  child: (!controller.logged)
+                      ? LoginScreen()
+                      : FutureBuilder(
+                          future: postController.userLoggedIn(
+                              userController.loggedUserID,
+                              userController.getFeedIds(),
+                              userController.loggedUser.likedPosts),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData && !snapshot.hasError) {
+                              if (snapshot.data!) {
+                                return const Home();
+                              } else {
+                                return const Text("Couldn't load posts");
+                              }
+                            } else {
+                              return Stack(children: [
+                                Container(
+                                  color: const Color.fromARGB(255, 34, 15, 57),
+                                ),
+                                const Center(
+                                  child: CircularProgressIndicator(
+                                    color: Color.fromARGB(255, 99, 46, 162),
+                                  ),
+                                ),
+                              ]);
+                            }
+                          }));
             },
           )),
     );

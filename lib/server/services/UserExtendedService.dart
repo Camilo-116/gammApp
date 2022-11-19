@@ -67,4 +67,27 @@ class UserExtendedService {
         .then((value) => true)
         .catchError((onError) => false);
   }
+
+  Future<void> postLikeClicked(
+      String extendedUUID, String postId, bool newLikeStatus) async {
+    if (newLikeStatus) {
+      await FirebaseFirestore.instance
+          .collection('userExtended')
+          .doc(extendedUUID)
+          .update({
+            'likedPosts': FieldValue.arrayUnion([postId])
+          })
+          .then((value) => true)
+          .catchError((onError) => false);
+    } else {
+      await FirebaseFirestore.instance
+          .collection('userExtended')
+          .doc(extendedUUID)
+          .update({
+            'likedPosts': FieldValue.arrayRemove([postId])
+          })
+          .then((value) => true)
+          .catchError((onError) => false);
+    }
+  }
 }
