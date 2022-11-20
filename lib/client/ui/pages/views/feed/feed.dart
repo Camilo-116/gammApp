@@ -63,38 +63,39 @@ class _FeedState extends State<Feed> {
         shares: 3));
         */
 
-    return Obx(() =>
-        (postController.feed.isNotEmpty && postController.likes.isNotEmpty)
-            ? ListView.builder(
-                itemCount: postController.feed.length,
-                itemBuilder: (context, index) {
-                  return Column(
-                    children: [
-                      _postView(index, width, height),
-                      (index < postController.feed.length - 1)
-                          ? Padding(
-                              padding:
-                                  EdgeInsets.only(bottom: (8.0 / 756) * height),
-                              child: SizedBox(
-                                height: (15 / 756) * height,
-                              ),
-                            )
-                          : SizedBox(
+    return Obx(
+      () => (postController.feed.isNotEmpty && postController.likes.isNotEmpty)
+          ? ListView.builder(
+              itemCount: postController.feed.length,
+              itemBuilder: (context, index) {
+                return Column(
+                  children: [
+                    _postView(index, width, height),
+                    (index < postController.feed.length - 1)
+                        ? Padding(
+                            padding:
+                                EdgeInsets.only(bottom: (8.0 / 756) * height),
+                            child: SizedBox(
                               height: (15 / 756) * height,
                             ),
-                    ],
-                  );
-                })
-            : Stack(children: [
-                Container(
-                  color: const Color.fromARGB(255, 34, 15, 57),
+                          )
+                        : SizedBox(
+                            height: (15 / 756) * height,
+                          ),
+                  ],
+                );
+              })
+          : Stack(children: [
+              Container(
+                color: const Color.fromARGB(255, 34, 15, 57),
+              ),
+              const Center(
+                child: CircularProgressIndicator(
+                  color: Color.fromARGB(255, 99, 46, 162),
                 ),
-                const Center(
-                  child: CircularProgressIndicator(
-                    color: Color.fromARGB(255, 99, 46, 162),
-                  ),
-                ),
-              ]));
+              ),
+            ]),
+    );
   }
 
   Widget _postView(int index, double width, double height) {

@@ -1,7 +1,9 @@
 import 'dart:developer';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:gamma/client/ui/controllers/post_controller.dart';
 import 'package:gamma/client/ui/controllers/user_controller.dart';
+import 'package:gamma/client/ui/pages/views/friends_page.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../../server/models/user_model.dart';
@@ -21,6 +23,7 @@ class _UserPageState extends State<UserPage> {
   final double profileHeight = 120;
 
   UserController userController = Get.find();
+  PostController postController = Get.find();
 
   var user;
 
@@ -29,15 +32,18 @@ class _UserPageState extends State<UserPage> {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
 
-    (widget.userUUID != null)
+    (widget.userUUID != null && widget.userUUID != userController.loggedUserID)
         ? user = userController.getUserbyUUID(widget.userUUID!)
         : {};
 
-    return (widget.userUUID != null)
+    return (widget.userUUID != null &&
+            widget.userUUID != userController.loggedUserID)
         ? FutureBuilder(
             future: user,
             builder: (context, snapshot) {
               if (snapshot.hasData && !snapshot.hasError) {
+                UserModel user = snapshot.data as UserModel;
+                log('User: ${user.toMap()}');
                 return Scaffold(
                   backgroundColor: const Color.fromARGB(255, 34, 15, 57),
                   body: ListView(
@@ -45,11 +51,11 @@ class _UserPageState extends State<UserPage> {
                     children: <Widget>[
                       Container(
                         margin: EdgeInsets.only(bottom: (10 / 756) * height),
-                        child: buildCover(width, height),
+                        child: buildCover(user: user, width, height),
                       ),
-                      buildAccountStats(width, height),
-                      buildEditProfile(width, height),
-                      buildContent(width, height),
+                      buildAccountStats(user: user, width, height),
+                      buildAction(user: user, width, height),
+                      buildContent(user: user, width, height),
                       SizedBox(
                         height: height * 0.1,
                       ),
@@ -80,7 +86,7 @@ class _UserPageState extends State<UserPage> {
                   child: buildCover(width, height),
                 ),
                 buildAccountStats(width, height),
-                buildEditProfile(width, height),
+                buildAction(width, height),
                 buildContent(width, height),
                 SizedBox(
                   height: height * 0.1,
@@ -90,7 +96,7 @@ class _UserPageState extends State<UserPage> {
           );
   }
 
-  Widget buildCover(double width, double height) {
+  Widget buildCover(double width, double height, {UserModel? user}) {
     return Row(
       children: [
         Container(
@@ -105,9 +111,9 @@ class _UserPageState extends State<UserPage> {
                 radius: (((profileHeight / 756) * height) / 2) - 8,
                 backgroundColor: Colors.grey.shade800,
                 backgroundImage: AssetImage(
-                  (user != null)
-                      ? user!.profilePhoto
-                      : userController.loggedUser.profilePhoto,
+                  (user != null && user.id != userController.loggedUserID)
+                      ? user.profilePhoto
+                      : userController.loggedUserPicture,
                 )),
           ),
         ),
@@ -116,9 +122,9 @@ class _UserPageState extends State<UserPage> {
           children: [
             Container(
               margin: EdgeInsets.only(left: (20 / 360) * width),
-              child: (user != null)
+              child: (user != null && user.id != userController.loggedUserID)
                   ? Text(
-                      user!.username,
+                      user.username,
                       style: GoogleFonts.hind(
                         color: Colors.white,
                         fontSize: (24 / 360) * width,
@@ -136,7 +142,7 @@ class _UserPageState extends State<UserPage> {
             ),
             Row(
               children: [
-                (user != null)
+                (user != null && user.id != userController.loggedUserID)
                     ? Container(
                         margin: EdgeInsets.only(
                           left: (20 / 360) * width,
@@ -179,9 +185,9 @@ class _UserPageState extends State<UserPage> {
                               shape: BoxShape.circle,
                             )),
                       ),
-                (user != null)
+                (user != null && user.id != userController.loggedUserID)
                     ? Text(
-                        user!.status,
+                        user.status,
                         style: GoogleFonts.hind(
                             color: const Color.fromARGB(255, 241, 219, 255),
                             fontWeight: FontWeight.bold,
@@ -230,25 +236,26 @@ class _UserPageState extends State<UserPage> {
                     left: (20 / 360) * width,
                     top: (10 / 756) * height,
                   ),
-                  child: (user != null)
-                      ? AutoSizeText(
-                          user!.email,
-                          maxLines: 1,
-                          style: GoogleFonts.hind(
-                            color: Colors.white,
-                            fontSize: (16 / 360) * width,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        )
-                      : Obx(() => AutoSizeText(
-                            userController.loggedUserEmail,
-                            maxLines: 1,
-                            style: GoogleFonts.hind(
-                              color: Colors.white,
-                              fontSize: (16 / 360) * width,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          )),
+                  child:
+                      (user != null && user.id != userController.loggedUserID)
+                          ? AutoSizeText(
+                              user.email,
+                              maxLines: 1,
+                              style: GoogleFonts.hind(
+                                color: Colors.white,
+                                fontSize: (16 / 360) * width,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            )
+                          : Obx(() => AutoSizeText(
+                                userController.loggedUserEmail,
+                                maxLines: 1,
+                                style: GoogleFonts.hind(
+                                  color: Colors.white,
+                                  fontSize: (16 / 360) * width,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              )),
                 ),
               ],
             )
@@ -258,27 +265,55 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
-  Widget buildAccountStats(double width, double height) {
+  Widget buildAccountStats(double width, double height, {UserModel? user}) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: (20.0 / 360) * width),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          buildStatColumn('Publicaciones', 190, width, height),
-          buildStatColumn('Amigos', 1505, width, height),
-        ],
+        children: (user != null && user.id != userController.loggedUserID)
+            ? [
+                buildStatColumn(
+                    'Publicaciones', user.postsIDs.length, width, height,
+                    user: user),
+                buildStatColumn('Amigos', user.friends.length, width, height,
+                    user: user),
+              ]
+            : [
+                buildStatColumn('Publicaciones',
+                    postController.userPosts.length, width, height),
+                buildStatColumn('Amigos',
+                    userController.loggedUserFriends.length, width, height),
+              ],
       ),
     );
   }
 
-  Widget buildStatColumn(String label, int count, double width, double height) {
+  Widget buildStatColumn(String label, int count, double width, double height,
+      {UserModel? user}) {
     return Container(
         width: width * 0.4,
         padding: EdgeInsets.only(top: 0.0132 * height),
         child: TextButton(
-          onPressed: () {
-            log('$label Column Pressed');
-          },
+          onPressed: (label == 'Publicaciones')
+              ? null
+              : () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => Scaffold(
+                              appBar: AppBar(
+                                title: Text(
+                                    'Amigos de ${(user != null && user.id != userController.loggedUserID) ? user.username : userController.loggedUserUsername}'),
+                                backgroundColor: const Color.fromARGB(
+                                    255, 54, 9, 91), //Color(0xFF36095B),
+                              ),
+                              body: (user != null &&
+                                      user.id != userController.loggedUserID)
+                                  ? FriendsPage(userUUID: user.id)
+                                  : const FriendsPage(),
+                            )),
+                  );
+                },
           style: TextButton.styleFrom(
             padding: EdgeInsets.symmetric(
                 vertical: height * 0.003, horizontal: width * 0.0138),
@@ -299,35 +334,60 @@ class _UserPageState extends State<UserPage> {
         ));
   }
 
-  Widget buildEditProfile(double width, double height) => Padding(
-        padding: EdgeInsets.only(
-            top: height * 0.02, left: width * 0.11, right: width * 0.11),
-        child: Center(
-          child: TextButton(
-            onPressed: () {
-              log('Edit Button Pressed');
-            },
-            style: TextButton.styleFrom(
-              padding: EdgeInsets.symmetric(
-                  vertical: 0.01 * height, horizontal: 0.04 * width),
-              backgroundColor: const Color.fromARGB(255, 54, 9, 91),
-              minimumSize: const Size(200, 0),
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-              ),
-            ),
-            child: Text(
-              'Editar Perfil',
-              style: GoogleFonts.hind(
-                  color: const Color.fromARGB(255, 241, 219, 255),
-                  fontWeight: FontWeight.bold,
-                  fontSize: (20 / 360) * width),
+  Widget buildAction(double width, double height, {UserModel? user}) {
+    return Padding(
+      padding: EdgeInsets.only(
+          top: height * 0.02, left: width * 0.11, right: width * 0.11),
+      child: Center(
+        child: TextButton(
+          onPressed: () {
+            (user != null && user.id != userController.loggedUserID)
+                ? log('Add friend button pressed')
+                : log('Edit Button Pressed');
+          },
+          style: TextButton.styleFrom(
+            padding: EdgeInsets.symmetric(
+                vertical: 0.01 * height, horizontal: 0.04 * width),
+            backgroundColor: const Color.fromARGB(255, 54, 9, 91),
+            minimumSize: const Size(200, 0),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
             ),
           ),
+          child: (user != null && user.id != userController.loggedUserID)
+              ? RichText(
+                  text: TextSpan(children: [
+                  WidgetSpan(
+                    child: Padding(
+                      padding: EdgeInsets.only(right: 0.01 * width),
+                      child: Icon(
+                        Icons.person_add,
+                        color: const Color.fromARGB(255, 241, 219, 255),
+                        size: 0.04 * width,
+                      ),
+                    ),
+                  ),
+                  TextSpan(
+                    text: 'Agregar a amigos',
+                    style: GoogleFonts.hind(
+                        color: const Color.fromARGB(255, 241, 219, 255),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 0.04 * width),
+                  ),
+                ]))
+              : Text(
+                  'Editar Perfil',
+                  style: GoogleFonts.hind(
+                      color: const Color.fromARGB(255, 241, 219, 255),
+                      fontWeight: FontWeight.bold,
+                      fontSize: (20 / 360) * width),
+                ),
         ),
-      );
+      ),
+    );
+  }
 
-  Widget buildContent(double width, double height) => Column(
+  Widget buildContent(double width, double height, {UserModel? user}) => Column(
         children: [
           const Divider(),
           Text('Plataformas',
