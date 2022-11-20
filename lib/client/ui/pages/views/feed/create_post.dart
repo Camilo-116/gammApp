@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:gamma/client/ui/controllers/post_controller.dart';
 import 'package:gamma/client/ui/controllers/user_controller.dart';
 import 'package:gamma/client/ui/pages/views/feed/form/create_post_form.dart';
+import 'package:gamma/server/services/StorageService.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../../server/models/post_model.dart';
@@ -23,14 +24,18 @@ class CreatePost extends StatefulWidget {
 class _CreatePostState extends State<CreatePost> {
   UserController userController = Get.find();
   PostController postController = Get.find();
+  StorageService storage = StorageService();
 
   void _createPost(PostModel post) async {
-    log('Post to create: ${post.toMap(true)}');
     await postController.createPost(post).then((res) {
       log('$res');
-      (res)
-          ? _showBasicFlash('Publicación realizada con éxito')
-          : _showBasicFlash('No se pudo realizar la publicación');
+      if (res) {
+        _showBasicFlash('Publicación realizada con éxito');
+      } else {
+        _showBasicFlash('No se pudo realizar la publicación');
+        storage.deleteFile(post.picture).then(
+            (res) => (res) ? log('File deleted') : log('File not deleted'));
+      }
     });
   }
 

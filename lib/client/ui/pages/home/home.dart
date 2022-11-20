@@ -1,6 +1,4 @@
 import 'dart:developer';
-import 'package:carousel_slider/carousel_controller.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:gamma/client/ui/pages/views/feed/create_post.dart';
 import 'package:gamma/client/ui/pages/views/user/user_page.dart';

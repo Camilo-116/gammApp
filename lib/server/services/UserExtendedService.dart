@@ -35,12 +35,11 @@ class UserExtendedService {
         .add({
           'user_uuid': documentUserId,
           'name': userDescription['name'],
-          'profilePhoto': 'assets/images/user.png',
+          'profilePhoto': 'users_media/user.png',
           'about': userDescription['about'],
-          'coverPhoto': userDescription['coverPhoto'],
           'games': [],
-          'platforms': [],
-          'friends': Map<String, Map>.from({}),
+          'platforms': List<Map<String, String>>.empty(growable: true),
+          'friends': List<Map<String, Map>>.empty(growable: true),
         })
         .then((value) => value.id)
         .catchError((onError) => "");

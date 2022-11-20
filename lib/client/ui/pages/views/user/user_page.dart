@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gamma/client/ui/controllers/post_controller.dart';
 import 'package:gamma/client/ui/controllers/user_controller.dart';
 import 'package:gamma/client/ui/pages/views/friends_page.dart';
+import 'package:gamma/server/services/StorageService.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../../server/models/user_model.dart';
@@ -24,6 +25,7 @@ class _UserPageState extends State<UserPage> {
 
   UserController userController = Get.find();
   PostController postController = Get.find();
+  StorageService storage = StorageService();
 
   var user;
 
@@ -107,14 +109,24 @@ class _UserPageState extends State<UserPage> {
           child: CircleAvatar(
             radius: ((profileHeight / 756) * height) / 2,
             backgroundColor: const Color.fromARGB(255, 97, 24, 180),
-            child: CircleAvatar(
-                radius: (((profileHeight / 756) * height) / 2) - 8,
-                backgroundColor: Colors.grey.shade800,
-                backgroundImage: AssetImage(
+            child: FutureBuilder(
+              future: storage.downloadURL(
                   (user != null && user.id != userController.loggedUserID)
                       ? user.profilePhoto
-                      : userController.loggedUserPicture,
-                )),
+                      : userController.loggedUserPicture),
+              builder: (context, AsyncSnapshot<String> snapshot) {
+                if (snapshot.hasData && !snapshot.hasError) {
+                  return CircleAvatar(
+                      radius: (((profileHeight / 756) * height) / 2) - 8,
+                      backgroundColor: Colors.grey.shade800,
+                      backgroundImage: NetworkImage(
+                        snapshot.data!,
+                      ));
+                } else {
+                  return const CircularProgressIndicator();
+                }
+              },
+            ),
           ),
         ),
         Column(
@@ -151,10 +163,10 @@ class _UserPageState extends State<UserPage> {
                         width: (20 / 360) * width,
                         height: (20 / 756) * height,
                         decoration: BoxDecoration(
-                          color: (user!.status == 'Online')
+                          color: (user.status == 'Online')
                               ? Colors.green
-                              : (user!.status == 'Offline' ||
-                                      user!.status == 'Invisible')
+                              : (user.status == 'Offline' ||
+                                      user.status == 'Invisible')
                                   ? Colors.grey
                                   : (user!.status == 'Busy')
                                       ? Colors.red
@@ -196,12 +208,14 @@ class _UserPageState extends State<UserPage> {
                     : Container(
                         padding: EdgeInsets.only(top: (2.0 / 756) * height),
                         child: TextButton(
-                          onPressed: () async {
-                            await userController.changeStatus(
-                                await _dialogBuilder(context) ??
-                                    userController.loggedUserStatus);
-                            log('Change status to: ${userController.loggedUserStatus}');
-                          },
+                          onPressed: (user != null)
+                              ? null
+                              : () async {
+                                  await userController.changeStatus(
+                                      await _dialogBuilder(context) ??
+                                          userController.loggedUserStatus);
+                                  log('Change status to: ${userController.loggedUserStatus}');
+                                },
                           style: TextButton.styleFrom(
                             padding: EdgeInsets.symmetric(
                               vertical: (10 / 756) * height,
@@ -401,9 +415,9 @@ class _UserPageState extends State<UserPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                buildImg('assets/images/xbox.png', width, height),
-                buildImg('assets/images/playstation.png', width, height),
-                buildImg('assets/images/switch.png', width, height),
+                buildImg('platforms_logos/xbox-logo.png', width, height),
+                buildImg('platforms_logos/PlayStation-logo.jpg', width, height),
+                buildImg('platforms_logos/pc-logo.jpg', width, height),
               ],
             ),
           ),
@@ -419,9 +433,9 @@ class _UserPageState extends State<UserPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                buildImg('assets/images/rl.png', width, height),
-                buildImg('assets/images/valorant.png', width, height),
-                buildImg('assets/images/fallguys.png', width, height),
+                buildImg('games_icons/valorant_icon.png', width, height),
+                buildImg('games_icons/rocket_league_icon.png', width, height),
+                buildImg('games_icons/fall_guys_icon.png', width, height),
               ],
             ),
           ),
@@ -430,11 +444,20 @@ class _UserPageState extends State<UserPage> {
 
   Widget buildImg(String img, double width, double height) => ClipRRect(
         borderRadius: BorderRadius.circular(20),
-        child: Image.asset(
-          img,
-          fit: BoxFit.cover,
-          width: (100 / 360) * width,
-          height: (150 / 756) * height,
+        child: FutureBuilder(
+          future: storage.downloadURL(img),
+          builder: (context, AsyncSnapshot<String> snapshot) {
+            if (snapshot.hasData && !snapshot.hasError) {
+              return Image.network(
+                snapshot.data!,
+                fit: BoxFit.cover,
+                width: (100 / 360) * width,
+                height: (150 / 756) * height,
+              );
+            } else {
+              return const CircularProgressIndicator();
+            }
+          },
         ),
       );
 

@@ -165,7 +165,6 @@ class PostController extends GetxController {
         (onError) => log('Error getting logged user posts: $onError'));
     await getFeed(feedIDs).then((res) async {
       fillLikes(likes);
-      log('Controller likes: $_likes');
       r2 = true;
     }).catchError((onError) => log('Error getting feed: $onError'));
     return r1 && r2;

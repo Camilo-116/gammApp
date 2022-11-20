@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:gamma/client/ui/controllers/authentication_controller.dart';
 import 'package:gamma/client/ui/controllers/post_controller.dart';
+import 'package:gamma/server/services/StorageService.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../../server/models/post_model.dart';
@@ -20,6 +21,7 @@ class _FeedState extends State<Feed> {
   AuthenticationController authenticationController = Get.find();
   PostController postController = Get.find();
   UserController userController = Get.find();
+  StorageService storage = StorageService();
 
   @override
   Widget build(BuildContext context) {
@@ -143,7 +145,20 @@ class _FeedState extends State<Feed> {
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
               ),
-              child: Image.asset(postController.feed[index].userProfilePicture),
+              child: FutureBuilder(
+                future: storage
+                    .downloadURL(postController.feed[index].userProfilePicture),
+                builder: (context, AsyncSnapshot<String> snapshot) {
+                  if (snapshot.hasData && !snapshot.hasError) {
+                    return Image.network(
+                      snapshot.data!,
+                      fit: BoxFit.cover,
+                    );
+                  } else {
+                    return const CircularProgressIndicator();
+                  }
+                },
+              ),
             ),
             Padding(
               padding:
@@ -210,11 +225,21 @@ class _FeedState extends State<Feed> {
                               postController.feed[index].id!, result);
                         });
                       },
-                      child: Image.network(
-                        postController.feed[index].picture,
-                        width: (100 / 360) * width,
-                        height: (300 / 756) * height,
-                        fit: BoxFit.cover,
+                      child: FutureBuilder(
+                        future: storage
+                            .downloadURL(postController.feed[index].picture),
+                        builder: (context, AsyncSnapshot<String> snapshot) {
+                          if (snapshot.hasData && !snapshot.hasError) {
+                            return Image.network(
+                              snapshot.data!,
+                              width: (100 / 360) * width,
+                              height: (300 / 756) * height,
+                              fit: BoxFit.cover,
+                            );
+                          } else {
+                            return const CircularProgressIndicator();
+                          }
+                        },
                       ),
                     ),
                   ))

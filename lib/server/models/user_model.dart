@@ -7,7 +7,7 @@ class UserModel {
     required this.username,
     required this.email,
     this.extendedId,
-    this.profilePhoto = 'assets/images/user.png',
+    this.profilePhoto = 'users_media/user.png',
     this.name,
     this.status = "Offline",
     this.about =
@@ -53,7 +53,7 @@ class UserModel {
   List games;
 
   /// List of platforms used frequently by the user.
-  List platforms;
+  List<Map<String, String>> platforms;
 
   /// About the user.
   String about;
@@ -82,10 +82,19 @@ class UserModel {
   /// At the end, the non-required attributes of the user will be filled.
   void setValues(Map values) {
     List<Map<String, String>> f = [];
+    log('Friends got: ${values['friends']}');
     values['friends'].forEach((friend) {
       f.add({
         'uuid': friend['uuid'],
         'username': friend['username'],
+      });
+    });
+
+    List<Map<String, String>> p = [];
+    values['platforms'].forEach((platform) {
+      p.add({
+        'logo_url': platform['logo_url'],
+        'name': platform['name'],
       });
     });
     extendedId = values['id'];
@@ -96,7 +105,7 @@ class UserModel {
     postsIDs = List<String>.from(
         values['postsIDs'] ?? List<String>.empty(growable: true));
     games = values['games'] ?? [];
-    platforms = values['platforms'] ?? [];
+    platforms = p;
     profilePhoto = values['profilePhoto'] ?? "";
     about = values['about'] ?? "";
   }
