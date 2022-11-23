@@ -3,15 +3,15 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:gamma/client/ui/controllers/authentication_controller.dart';
 import 'package:gamma/client/ui/controllers/post_controller.dart';
+import 'package:gamma/server/services/StorageService.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../../server/models/post_model.dart';
+import '../../../controllers/user_controller.dart';
 import '../user/user_page.dart';
 
 class Feed extends StatefulWidget {
-  Feed({Key? key, required this.feed}) : super(key: key);
-
-  List<PostModel> feed;
+  Feed({Key? key}) : super(key: key);
 
   @override
   _FeedState createState() => _FeedState();
@@ -20,6 +20,8 @@ class Feed extends StatefulWidget {
 class _FeedState extends State<Feed> {
   AuthenticationController authenticationController = Get.find();
   PostController postController = Get.find();
+  UserController userController = Get.find();
+  StorageService storage = StorageService();
 
   @override
   Widget build(BuildContext context) {
@@ -63,25 +65,39 @@ class _FeedState extends State<Feed> {
         shares: 3));
         */
 
-    return ListView.builder(
-        itemCount: widget.feed.length,
-        itemBuilder: (context, index) {
-          return Column(
-            children: [
-              _postView(index, width, height),
-              (index < widget.feed.length - 1)
-                  ? Padding(
-                      padding: EdgeInsets.only(bottom: (8.0 / 756) * height),
-                      child: SizedBox(
-                        height: (15 / 756) * height,
-                      ),
-                    )
-                  : SizedBox(
-                      height: (15 / 756) * height,
-                    ),
-            ],
-          );
-        });
+    return Obx(
+      () => (postController.feed.isNotEmpty && postController.likes.isNotEmpty)
+          ? ListView.builder(
+              itemCount: postController.feed.length,
+              itemBuilder: (context, index) {
+                return Column(
+                  children: [
+                    _postView(index, width, height),
+                    (index < postController.feed.length - 1)
+                        ? Padding(
+                            padding:
+                                EdgeInsets.only(bottom: (8.0 / 756) * height),
+                            child: SizedBox(
+                              height: (15 / 756) * height,
+                            ),
+                          )
+                        : SizedBox(
+                            height: (15 / 756) * height,
+                          ),
+                  ],
+                );
+              })
+          : Stack(children: [
+              Container(
+                color: const Color.fromARGB(255, 34, 15, 57),
+              ),
+              const Center(
+                child: CircularProgressIndicator(
+                  color: Color.fromARGB(255, 99, 46, 162),
+                ),
+              ),
+            ]),
+    );
   }
 
   Widget _postView(int index, double width, double height) {
@@ -129,7 +145,20 @@ class _FeedState extends State<Feed> {
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
               ),
-              child: Image.asset(widget.feed[index].userProfilePicture),
+              child: FutureBuilder(
+                future: storage
+                    .downloadURL(postController.feed[index].userProfilePicture),
+                builder: (context, AsyncSnapshot<String> snapshot) {
+                  if (snapshot.hasData && !snapshot.hasError) {
+                    return Image.network(
+                      snapshot.data!,
+                      fit: BoxFit.cover,
+                    );
+                  } else {
+                    return const CircularProgressIndicator();
+                  }
+                },
+              ),
             ),
             Padding(
               padding:
@@ -189,13 +218,28 @@ class _FeedState extends State<Feed> {
                     aspectRatio: 1,
                     child: GestureDetector(
                       onDoubleTap: () {
-                        postController.likePost(index);
+                        postController
+                            .likePost(userController.loggedUser, index)
+                            .then((result) {
+                          userController.likePost(
+                              postController.feed[index].id!, result);
+                        });
                       },
-                      child: Image.network(
-                        postController.feed[index].picture,
-                        width: (100 / 360) * width,
-                        height: (300 / 756) * height,
-                        fit: BoxFit.cover,
+                      child: FutureBuilder(
+                        future: storage
+                            .downloadURL(postController.feed[index].picture),
+                        builder: (context, AsyncSnapshot<String> snapshot) {
+                          if (snapshot.hasData && !snapshot.hasError) {
+                            return Image.network(
+                              snapshot.data!,
+                              width: (100 / 360) * width,
+                              height: (300 / 756) * height,
+                              fit: BoxFit.cover,
+                            );
+                          } else {
+                            return const CircularProgressIndicator();
+                          }
+                        },
                       ),
                     ),
                   ))
@@ -221,34 +265,35 @@ class _FeedState extends State<Feed> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               IconButton(
-                icon: Obx(
-                  () => Icon(
-                    postController.likes[index]
-                        ? Icons.favorite
-                        : Icons.favorite_border,
-                    color: postController.likes[index]
-                        ? const Color.fromARGB(255, 235, 65, 229)
-                        : const Color.fromARGB(255, 129, 117, 139),
-                    size: (24 / 360) * width,
-                  ),
-                ),
+                icon: Obx(() => Icon(
+                      postController.likes[index]
+                          ? Icons.favorite
+                          : Icons.favorite_border,
+                      color: postController.likes[index]
+                          ? const Color.fromARGB(255, 235, 65, 229)
+                          : const Color.fromARGB(255, 129, 117, 139),
+                      size: (24 / 360) * width,
+                    )),
                 onPressed: () {
-                  postController.likePost(index);
+                  postController
+                      .likePost(userController.loggedUser, index)
+                      .then((result) {
+                    userController.likePost(
+                        postController.feed[index].id!, result);
+                  });
                 },
               ),
-              Obx(
-                () => Text(
-                  (postController.feed[index].likes.length > 1000000)
-                      ? '${num.parse((postController.feed[index].likes.length / 1000000).toStringAsFixed(1))} M'
-                      : (postController.feed[index].likes.length > 1000)
-                          ? '${num.parse((postController.feed[index].likes.length / 1000).toStringAsFixed(1))} k'
-                          : '${postController.feed[index].likes.length}',
-                  style: GoogleFonts.hind(
-                      color: const Color.fromARGB(255, 129, 117, 139),
-                      fontWeight: FontWeight.normal,
-                      fontSize: (16 / 360) * width),
-                ),
-              ),
+              Obx(() => Text(
+                    (postController.feed[index].likes.length > 1000000)
+                        ? '${num.parse((postController.feed[index].likes.length / 1000000).toStringAsFixed(1))} M'
+                        : (postController.feed[index].likes.length > 1000)
+                            ? '${num.parse((postController.feed[index].likes.length / 1000).toStringAsFixed(1))} k'
+                            : '${postController.feed[index].likes.length}',
+                    style: GoogleFonts.hind(
+                        color: const Color.fromARGB(255, 129, 117, 139),
+                        fontWeight: FontWeight.normal,
+                        fontSize: (16 / 360) * width),
+                  )),
               IconButton(
                 icon: Icon(
                   Icons.chat_bubble,

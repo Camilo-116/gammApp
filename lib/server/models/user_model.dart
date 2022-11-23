@@ -7,15 +7,16 @@ class UserModel {
     required this.username,
     required this.email,
     this.extendedId,
-    this.profilePhoto = 'assets/images/user.png',
+    this.profilePhoto = 'users_media/user.png',
     this.name,
     this.status = "Offline",
     this.about =
         "Juegos favoritos: \nRocket League\nFIFA 23\nValorant\nLeague of Legends\nAmong Us",
-    this.friends = const {},
+    this.friends = const [],
     this.games = const [],
     this.platforms = const [],
     this.likedPosts = const [],
+    this.postsIDs = const [],
   });
 
   /// Id of the related userBasic.
@@ -40,16 +41,19 @@ class UserModel {
   String status;
 
   /// List of friends of the user.
-  Map<String, Map> friends;
+  List<Map<String, String>> friends;
 
   /// List of liked posts of the user.
   List<String> likedPosts;
+
+  /// List of posts ids of the user.
+  List<String> postsIDs;
 
   /// List of games played frequently by the user.
   List games;
 
   /// List of platforms used frequently by the user.
-  List platforms;
+  List<Map<String, String>> platforms;
 
   /// About the user.
   String about;
@@ -66,6 +70,7 @@ class UserModel {
       'extendedId': extendedId,
       'friends': friends,
       'likedPosts': likedPosts,
+      'postsIDs': postsIDs,
       'games': games,
       'platforms': platforms,
     };
@@ -76,17 +81,31 @@ class UserModel {
   /// Receives a [Map] object containing the extra information of the user.
   /// At the end, the non-required attributes of the user will be filled.
   void setValues(Map values) {
-    Map<String, Map>? f = {};
-    f.forEach((key, value) {
-      f[key] = value;
+    List<Map<String, String>> f = [];
+    log('Friends got: ${values['friends']}');
+    values['friends'].forEach((friend) {
+      f.add({
+        'uuid': friend['uuid'],
+        'username': friend['username'],
+      });
+    });
+
+    List<Map<String, String>> p = [];
+    values['platforms'].forEach((platform) {
+      p.add({
+        'logo_url': platform['logo_url'],
+        'name': platform['name'],
+      });
     });
     extendedId = values['id'];
     name = values['name'] ?? "";
     friends = f;
     likedPosts = List<String>.from(
         values['likedPosts'] ?? List<String>.empty(growable: true));
+    postsIDs = List<String>.from(
+        values['postsIDs'] ?? List<String>.empty(growable: true));
     games = values['games'] ?? [];
-    platforms = values['platforms'] ?? [];
+    platforms = p;
     profilePhoto = values['profilePhoto'] ?? "";
     about = values['about'] ?? "";
   }

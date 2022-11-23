@@ -27,9 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
     log(data.toString());
     log('userExist: $userExist');
     (userExist == 0)
-        ? await userController
-            .logUser(username)
-            .then((res) => postController.userLoggedOut())
+        ? await userController.logUser(username)
         : log('Error login');
     setState(() {
       if (userExist == 0) {

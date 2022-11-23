@@ -1,7 +1,9 @@
 import 'dart:developer';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:gamma/server/models/post_model.dart';
+import 'package:gamma/server/services/StorageService.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -21,9 +23,10 @@ class CreatePostForm extends StatefulWidget {
 
 class _CreatePostFormState extends State<CreatePostForm> {
   UserController userController = Get.find();
+  StorageService storage = StorageService();
 
   TextEditingController controller = TextEditingController();
-  String imageURL = '';
+  String mediaPath = '', mediaName = '';
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +35,7 @@ class _CreatePostFormState extends State<CreatePostForm> {
     return Column(
       children: [
         _buildTextField(controller, width, height),
-        _buildPostButton(width, height),
+        _buildUploadButton(width, height),
       ],
     );
   }
@@ -42,9 +45,18 @@ class _CreatePostFormState extends State<CreatePostForm> {
     UserController userController = Get.find();
     const maxLines = 15;
     return ListTile(
-      leading: CircleAvatar(
-        backgroundImage: AssetImage(userController.loggedUser.profilePhoto),
-        radius: width * 0.0888,
+      leading: FutureBuilder(
+        future: storage.downloadURL(userController.loggedUser.profilePhoto),
+        builder: (context, AsyncSnapshot<String> snapshot) {
+          if (snapshot.hasData && !snapshot.hasError) {
+            return CircleAvatar(
+              backgroundImage: NetworkImage(snapshot.data!),
+              radius: width * 0.0888,
+            );
+          } else {
+            return const CircularProgressIndicator();
+          }
+        },
       ),
       title: Container(
         margin: const EdgeInsets.all(12),
@@ -92,26 +104,28 @@ class _CreatePostFormState extends State<CreatePostForm> {
             color: Colors.white,
             size: width * 0.06,
           ),
-          onPressed: () {
+          onPressed: () async {
             log('Create post button pressed');
             String caption = controller.text;
             controller.clear();
-            widget.callback(PostModel(
-              userID: userController.loggedUser.id,
-              userUsername: userController.loggedUserUsername,
-              userProfilePicture: userController.loggedUserPicture,
-              picture: imageURL,
-              caption: caption,
-              postedTimeStamp: DateTime.now(),
-              likes: List<String>.empty(growable: true),
-              comments: List<Map<String, String>>.empty(growable: true),
-              shares: List<String>.empty(growable: true),
-            ));
+            await storage.uploadFile(mediaName, mediaPath, 2).then((reference) {
+              widget.callback(PostModel(
+                userID: userController.loggedUser.id,
+                userUsername: userController.loggedUserUsername,
+                userProfilePicture: userController.loggedUserPicture,
+                picture: reference,
+                caption: caption,
+                postedTimeStamp: DateTime.now(),
+                likes: List<String>.empty(growable: true),
+                comments: List<Map<String, String>>.empty(growable: true),
+                shares: List<String>.empty(growable: true),
+              ));
+            }).catchError((onError) => log('Error uploading file: $onError'));
           }),
     );
   }
 
-  Widget _buildPostButton(double width, double height) {
+  Widget _buildUploadButton(double width, double height) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
@@ -125,7 +139,18 @@ class _CreatePostFormState extends State<CreatePostForm> {
         width: width * 0.3,
         padding: EdgeInsets.only(top: 0.0132 * height),
         child: TextButton(
-          onPressed: () {
+          onPressed: () async {
+            var results = await FilePicker.platform.pickFiles(
+              allowMultiple: false,
+              type: FileType.custom,
+              allowedExtensions: ['jpg', 'png', 'jpeg'],
+            );
+
+            if (results != null) {
+              mediaPath = results.files.single.path!;
+              mediaName = results.files.single.name;
+            }
+
             log('$post Column Pressed');
           },
           style: TextButton.styleFrom(

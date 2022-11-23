@@ -18,6 +18,7 @@ class _LoginFormState extends State<LoginForm> {
   // ignore: prefer_final_fields
   bool _isObscure = true;
   bool _rememberMe = false;
+  bool _loginPressed = false;
   String? _username;
   String? _password;
 
@@ -167,14 +168,19 @@ class _LoginFormState extends State<LoginForm> {
         child: SizedBox(
           width: double.infinity,
           child: ElevatedButton(
-            onPressed: () {
-              _username = controllers[0].text;
-              _password = controllers[1].text;
-              for (var controller in controllers) {
-                controller.clear();
-              }
-              widget.callback(_username, _password, _rememberMe);
-            },
+            onPressed: (_loginPressed)
+                ? null
+                : () {
+                    _username = controllers[0].text;
+                    _password = controllers[1].text;
+                    for (var controller in controllers) {
+                      controller.clear();
+                    }
+                    widget.callback(_username, _password, _rememberMe);
+                    setState(() {
+                      // _loginPressed = true;
+                    });
+                  },
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.all((15.0)),
               shape: RoundedRectangleBorder(
