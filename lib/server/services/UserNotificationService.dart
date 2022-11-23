@@ -8,44 +8,36 @@ import 'package:get/get_connect/http/src/utils/utils.dart';
 class UserNotificationService {
   Map typeNotification = {'friendRequest': 0, 'friendRequestAccepted': 1};
 
-  /*
-  Friend request status
-    0: Pending
-    1: Accepted
-  */
-
   /// This method is used to send a friend request and add it to the notification pipeline
   ///
   /// Receives the [String] uuid of the user that sends the request,
   /// and the [String] uuid of the user that receives the request, as well as his [String] username.
   /// Returns a [Future<bool>] indicating whether the notification was sent or not.
   Future<bool> addUsernameNotification(
-      String senderUUID,
-      String? senderExtendedUUID,
-      String? recieverUsername,
-      String? recieverUUID) async {
+    String senderUsername,
+    String senderUUID,
+    String senderExtendedUUID,
+    String? recieverUsername,
+    String? recieverUUID,
+    String? recieverExtendedUUID,
+  ) async {
     log('Add username notification ...');
-    return FirebaseFirestore.instance.collection('userNotifications').add({
-      'senderUUID': senderUUID,
-      'senderExtenedUUID': senderExtendedUUID,
-      'recieverUsername': recieverUsername,
-      'recieverUUID': recieverUUID,
-      'typeNotification': typeNotification['friendRequest'],
-    }).then((value) async {
-      return await FirebaseFirestore.instance
-          .collection('userExtended')
-          .doc(senderExtendedUUID)
-          .update({
-            "friends": {
-              recieverUUID: {'username': recieverUsername, 'status': 0}
-            },
-          })
-          .then((value) => true)
-          .catchError((onError) => false);
-    }).catchError((onError) {
-      print(onError);
-      return false;
-    });
+    return FirebaseFirestore.instance
+        .collection('userNotification')
+        .add({
+          'senderUsername': senderUsername,
+          'senderUUID': senderUUID,
+          'senderExtenedUUID': senderExtendedUUID,
+          'recieverUsername': recieverUsername,
+          'recieverUUID': recieverUUID,
+          'recieverExtendedUUID': recieverExtendedUUID,
+          'typeNotification': typeNotification['friendRequest'],
+        })
+        .then((value) => true)
+        .catchError((onError) {
+          print(onError);
+          return false;
+        });
   }
 
   /// This method is used to send a friend request has been accepted and add to the notification pipeline.
@@ -53,29 +45,42 @@ class UserNotificationService {
   /// Receives the [String] uuid of the user that sent the request,
   /// and the [String] uuid of the user that received the request.
   /// Returns a [Future<bool>] indicating whether the request was sent or not.
-  Future<bool> requestAcceptedNotification(String senderUsername,
-      String senderUUID, String senderExtendedUUID, String recieverUUID) async {
+  Future<bool> requestAcceptedNotification(
+      String senderUsername,
+      String senderUUID,
+      String senderExtendedUUID,
+      String recieverUUID,
+      String recieverExtendedUUID,
+      String recieverUsername) async {
     log('Request accepted notification ...');
     return await FirebaseFirestore.instance.collection('userNotification').add({
       'senderUsername': senderUsername,
       'recieverUUID': recieverUUID,
       'typeNotification': typeNotification['friendRequestAccepted'],
     }).then((value) async {
+      log('Request accepted notification added (Reciever : (${recieverUsername})  -> Sender : (${senderUsername})})...');
       return await FirebaseFirestore.instance
           .collection('userExtended')
-          .doc(recieverUUID)
+          .doc(recieverExtendedUUID)
           .update({
-        'friends': {
-          senderUUID: {'username': senderUsername, 'status': 1},
-        }
+        "friends": FieldValue.arrayUnion([
+          {
+            "username": senderUsername,
+            "uuid": senderUUID,
+          }
+        ])
       }).then((res) async {
+        log('Request accepted notification added (Sender -> Reciever)...');
         return await FirebaseFirestore.instance
             .collection('userExtended')
             .doc(senderExtendedUUID)
             .update({
-              'friends': {
-                recieverUUID: {'username': senderUsername, 'status': 1},
-              }
+              'friends': FieldValue.arrayUnion([
+                {
+                  "username": recieverUsername,
+                  "uuid": recieverExtendedUUID,
+                }
+              ])
             })
             .then((res) => true)
             .catchError((onError) => false);

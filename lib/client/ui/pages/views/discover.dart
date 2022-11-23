@@ -88,10 +88,12 @@ class _DiscoverGamersState extends State<DiscoverGamers> {
                               log('Add ...');
                               await userNotificationService
                                   .addUsernameNotification(
+                                      user.username,
                                       user.id,
-                                      user.extendedId,
+                                      user.extendedId ?? "",
                                       'Dembouz',
-                                      'OeXZbU6zU455O9pjtLKs');
+                                      'OeXZbU6zU455O9pjtLKs',
+                                      'NB01rxyWHrsAeMAZJEWq');
                             },
                           ),
                           IconButton(
