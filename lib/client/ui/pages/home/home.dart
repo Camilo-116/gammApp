@@ -66,7 +66,58 @@ class _HomeState extends State<Home> {
                       .then((value) => postController.userLoggedOut());
                   log('Logout button pressed');
                 } else {
-                  log('Notification button pressed');
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return SimpleDialog(
+                            title: Text('Notificaciones',
+                                style: GoogleFonts.hind(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            backgroundColor:
+                                const Color.fromARGB(255, 37, 19, 60),
+                            children: [
+                              SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Text('Juancho quiere ser tu amigo',
+                                          style: GoogleFonts.hind(
+                                              color: Colors.white,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.bold)),
+                                    ),
+                                    SimpleDialogOption(
+                                      onPressed: () {
+                                        log('Friend request accepted');
+                                      },
+                                      child: const Icon(
+                                        Icons.person_add,
+                                        color: Colors.white,
+                                        size: 20,
+                                      ),
+                                    ),
+                                    SimpleDialogOption(
+                                      onPressed: () {
+                                        log('Friend request rejected');
+                                      },
+                                      child: const Icon(
+                                        Icons.close,
+                                        color: Colors.white,
+                                        size: 20,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ]);
+                      });
                 }
               },
               icon: (_currentIndex == 4)
