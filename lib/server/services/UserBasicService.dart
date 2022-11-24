@@ -45,6 +45,8 @@ class UserBasicService {
       if (res.docs.isNotEmpty) {
         dataUserBasic = res.docs[0].data();
         uuid = res.docs[0].id;
+      } else {
+        throw Exception("User not found");
       }
     });
     return UserModel(

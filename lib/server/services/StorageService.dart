@@ -38,10 +38,11 @@ class StorageService {
         return reference + fileName;
       } catch (err) {
         log('Error uploading file: $err');
-        return 'Not uploaded';
+        return '';
       }
     } else {
-      return 'No file provided';
+      log('Empty fileName or path');
+      return '';
     }
   }
 

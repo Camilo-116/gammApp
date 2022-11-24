@@ -19,24 +19,50 @@ class _LoginScreenState extends State<LoginScreen> {
   PostController postController = Get.find();
 
   void _login(String username, String password, bool rememberMe) async {
-    int userExist = await authenticationController.login(username, password);
-    var data = {
-      'username': username,
-      'password': password,
-    };
-    log(data.toString());
-    log('userExist: $userExist');
-    (userExist == 0)
-        ? await userController.logUser(username)
-        : log('Error login');
-    setState(() {
-      if (userExist == 0) {
-        authenticationController.logged = true;
-      } else {
-        authenticationController.logged = false;
-        log('UserExist: $userExist');
-        log('ERROR');
-      }
+    if (username.isNotEmpty && password.isNotEmpty) {
+      int userExist = await authenticationController.login(username, password);
+      var data = {
+        'username': username,
+        'password': password,
+      };
+      log(data.toString());
+      log('userExist: $userExist');
+      (userExist == 0)
+          ? await userController.logUser(username).catchError(
+              (onError) => authenticationController.ongoingLogin = false)
+          : log('Error login');
+      setState(() {
+        if (userExist == 0) {
+          authenticationController.logged = true;
+        } else {
+          authenticationController.logged = false;
+          switch (userExist) {
+            case 1:
+              authenticationController.updateLoginErrors('Nombre de Usuario',
+                  {'error': true, 'message': 'El usuario no existe.'});
+              break;
+            case 2:
+              authenticationController.updateLoginErrors('Contraseña',
+                  {'error': true, 'message': 'La contraseña es incorrecta.'});
+              break;
+            default:
+          }
+          log('UserExist: $userExist');
+          log('ERROR');
+        }
+      });
+    } else {
+      (username.isEmpty)
+          ? authenticationController.updateLoginErrors('Nombre de Usuario',
+              {'error': true, 'message': 'El campo no puede estar vacío.'})
+          : null;
+      (password.isEmpty)
+          ? authenticationController.updateLoginErrors('Contraseña',
+              {'error': true, 'message': 'El campo no puede estar vacío.'})
+          : null;
+    }
+    Future.delayed(const Duration(milliseconds: 300), () {
+      authenticationController.ongoingLogin = false;
     });
   }
 

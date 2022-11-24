@@ -37,6 +37,7 @@ class UserExtendedService {
           'name': userDescription['name'],
           'profilePhoto': 'users_media/user.png',
           'about': userDescription['about'],
+          'likedPosts': List<String>.empty(growable: true),
           'games': [],
           'platforms': List<Map<String, String>>.empty(growable: true),
           'friends': List<Map<String, Map>>.empty(growable: true),

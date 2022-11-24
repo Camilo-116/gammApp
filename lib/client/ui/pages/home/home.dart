@@ -59,16 +59,20 @@ class _HomeState extends State<Home> {
           actions: [
             IconButton(
               onPressed: () async {
-                authController.logOut();
-                await userController
-                    .logOutUser()
-                    .then((value) => postController.userLoggedOut());
-                log('Logout button pressed');
+                if (_currentIndex == 4) {
+                  authController.logOut();
+                  await userController
+                      .logOutUser()
+                      .then((value) => postController.userLoggedOut());
+                  log('Logout button pressed');
+                } else {
+                  log('Notification button pressed');
+                }
               },
-              icon: const Icon(
-                Icons.logout,
-                color: Colors.white,
-              ),
+              icon: (_currentIndex == 4)
+                  ? const Icon(Icons.logout, color: Colors.white)
+                  : const Icon(Icons.notifications_none_rounded,
+                      color: Colors.white),
             ),
           ],
           toolbarHeight: (56 / 756) * height,

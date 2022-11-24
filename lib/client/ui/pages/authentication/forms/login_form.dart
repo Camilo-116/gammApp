@@ -1,7 +1,10 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:gamma/client/ui/controllers/authentication_controller.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:progress_indicators/progress_indicators.dart';
 
 import '../signup_page.dart';
 
@@ -15,6 +18,8 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
+  AuthenticationController authController = Get.find();
+
   // ignore: prefer_final_fields
   bool _isObscure = true;
   bool _rememberMe = false;
@@ -29,43 +34,75 @@ class _LoginFormState extends State<LoginForm> {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
 
-    return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text(
-            'Conéctate y juega con\ngamers cerca de tí',
-            textAlign: TextAlign.center,
-            style: GoogleFonts.hind(
-              color: Colors.white,
-              fontSize: width * (28 / 360),
-              fontWeight: FontWeight.bold,
+    return Obx(
+      () => Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'Conéctate y juega con\ngamers cerca de tí',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.hind(
+                color: Colors.white,
+                fontSize: width * (28 / 360),
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          SizedBox(height: (30.0 / 756) * height),
-          _buildTF('Nombre de Usuario', Icons.person, false, textControllers[0],
-              width, height),
-          SizedBox(height: (20.0 / 756) * height),
-          _buildTF('Contraseña', Icons.lock, _isObscure, textControllers[1],
-              width, height),
-          _buildForgotBtn(textControllers, width),
-          _buildRememberMeBtn(width, height),
-          _buildLoginBtn(textControllers, width, height),
-          _buildSignWith(textControllers, width),
-        ]);
+            SizedBox(height: (30.0 / 756) * height),
+            _buildTF(
+                'Nombre de Usuario',
+                Icons.person,
+                false,
+                textControllers[0],
+                width,
+                height,
+                authController.loginErrors['Nombre de Usuario']!),
+            SizedBox(height: (20.0 / 756) * height),
+            _buildTF('Contraseña', Icons.lock, _isObscure, textControllers[1],
+                width, height, authController.loginErrors['Contraseña']!),
+            _buildForgotBtn(textControllers, width),
+            _buildRememberMeBtn(width, height),
+            _buildLoginBtn(textControllers, width, height),
+            _buildSignWith(textControllers, width),
+          ]),
+    );
   }
 
-  Widget _buildTF(String nCampo, IconData icon, bool obscure,
-      TextEditingController controller, double width, double height) {
+  Widget _buildTF(
+      String nCampo,
+      IconData icon,
+      bool obscure,
+      TextEditingController controller,
+      double width,
+      double height,
+      Map error) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(
-          nCampo,
-          style: GoogleFonts.hind(
-            color: const Color.fromARGB(255, 254, 244, 255),
-            fontWeight: FontWeight.bold,
-            fontSize: (18 / 360) * width,
-          ),
+        Row(
+          children: [
+            Text(
+              nCampo,
+              style: GoogleFonts.hind(
+                color: Colors.white,
+                fontSize: (14.0 / 360) * width,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            (error['error'] != false)
+                ? Padding(
+                    padding: EdgeInsets.only(left: (10 / 360) * width),
+                    child: Text(
+                      error['message'].toString(),
+                      style: TextStyle(
+                        color: const Color.fromARGB(255, 235, 65, 229),
+                        fontSize: (8.0 / 360) * width,
+                      ),
+                    ),
+                  )
+                : const SizedBox(
+                    height: 0,
+                  ),
+          ],
         ),
         SizedBox(height: (10.0 / 756) * height),
         Container(
@@ -167,33 +204,39 @@ class _LoginFormState extends State<LoginForm> {
             top: (25.0 / 756) * height, bottom: (10 / 756) * height),
         child: SizedBox(
           width: double.infinity,
-          child: ElevatedButton(
-            onPressed: (_loginPressed)
-                ? null
-                : () {
-                    _username = controllers[0].text;
-                    _password = controllers[1].text;
-                    for (var controller in controllers) {
-                      controller.clear();
-                    }
-                    widget.callback(_username, _password, _rememberMe);
-                    setState(() {
-                      // _loginPressed = true;
-                    });
-                  },
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.all((15.0)),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30.0),
+          child: Obx(
+            () => ElevatedButton(
+              onPressed: (authController.ongoingLogin)
+                  ? null
+                  : () {
+                      _username = controllers[0].text;
+                      _password = controllers[1].text;
+                      for (var controller in controllers) {
+                        controller.clear();
+                      }
+                      widget.callback(_username, _password, _rememberMe);
+                      authController.ongoingLogin = true;
+                    },
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.all((15.0)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+                backgroundColor: const Color.fromARGB(255, 116, 31, 185),
               ),
-              backgroundColor: const Color.fromARGB(255, 116, 31, 185),
+              child: (authController.ongoingLogin)
+                  ? JumpingDotsProgressIndicator(
+                      color: const Color.fromARGB(255, 254, 244, 255),
+                      fontSize: (18.0 / 360) * width,
+                      dotSpacing: (5 / 360) * width,
+                    )
+                  : Text('Ingresar',
+                      style: GoogleFonts.hind(
+                        color: const Color.fromARGB(255, 254, 244, 255),
+                        fontSize: (18.0 / 360) * width,
+                        fontWeight: FontWeight.bold,
+                      )),
             ),
-            child: Text('Ingresar',
-                style: GoogleFonts.hind(
-                  color: const Color.fromARGB(255, 254, 244, 255),
-                  fontSize: (18.0 / 360) * width,
-                  fontWeight: FontWeight.bold,
-                )),
           ),
         ));
   }

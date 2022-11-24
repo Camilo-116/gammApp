@@ -58,7 +58,7 @@ class PostModel {
       'comments': comments,
       'shares': shares
     };
-    (forCreation) ? postMap['id'] = id ?? '' : {};
+    (!forCreation) ? postMap['id'] = id ?? '' : {};
     return postMap;
   }
 }

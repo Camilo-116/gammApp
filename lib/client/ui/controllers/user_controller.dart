@@ -117,6 +117,17 @@ class UserController extends GetxController {
         .updateUserBasic(loggedUser.username, {'status': status});
   }
 
+  /// This method checks if a user with a certain [String] username exists in the database.
+  ///
+  /// Returns a [bool] with the result.
+  Future<bool> checkUser(String username) async {
+    bool exists = false;
+    await userBasicService.getUserByUsername(username).then((value) {
+      exists = true;
+    }).catchError((onError) => log('$onError'));
+    return exists;
+  }
+
   /// Add a [UserModel] friend to the list of friends of the logged user
   /// and the respective userExtended in the database collection.
   ///

@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:gamma/client/ui/controllers/user_controller.dart';
 import 'package:get/get.dart';
 
 import '../../controllers/authentication_controller.dart';
@@ -12,24 +13,70 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   AuthenticationController authenticationController = Get.find();
+  UserController userController = Get.find();
 
   void _signUp(String email, String password, Map extraInformation) async {
-    var data = {
-      'email': email,
-      'password': password,
-      'extraInformation': extraInformation,
-    };
-    log('Sign up data: $data');
-    int userCreated = await authenticationController.signIn(
-        email, password, extraInformation);
-    log('Usercreated: $userCreated');
-    setState(() {
-      if (userCreated == 0) {
-        Navigator.pop(context);
+    if (email.isNotEmpty &&
+        password.isNotEmpty &&
+        extraInformation['username'].isNotEmpty &&
+        extraInformation['name'].isNotEmpty &&
+        extraInformation['confirmation'].isNotEmpty) {
+      if (password == extraInformation['confirmation']) {
+        int userCreated = await authenticationController.signIn(
+            email, password, extraInformation);
+        setState(() {
+          if (userCreated == 0) {
+            Navigator.pop(context);
+          } else {
+            log('UserCreated: $userCreated');
+            switch (userCreated) {
+              case 1:
+                authenticationController.updateSignUpErrors(
+                    'Correo Electrónico', {
+                  'error': true,
+                  'message': 'El email ya se encuentra en uso.'
+                });
+                break;
+              case 2:
+                authenticationController.updateSignUpErrors('Contraseña',
+                    {'error': true, 'message': 'La contraseña es muy débil.'});
+                break;
+              case 4:
+                authenticationController.updateSignUpErrors('Nombre de Usuario',
+                    {'error': true, 'message': 'Ya se encuentra en uso.'});
+                break;
+              default:
+            }
+          }
+        });
       } else {
-        log('Error in creation');
+        authenticationController.updateSignUpErrors('Confirmar Contraseña',
+            {'error': true, 'message': 'Las contraseñas no coinciden.'});
       }
-    });
+    } else {
+      (email.isEmpty)
+          ? authenticationController.updateSignUpErrors('Correo Electrónico',
+              {'error': true, 'message': 'El campo no puede estar vacío.'})
+          : null;
+      (password.isEmpty)
+          ? authenticationController.updateSignUpErrors('Contraseña',
+              {'error': true, 'message': 'El campo no puede estar vacío.'})
+          : null;
+      (extraInformation['username']!.isEmpty)
+          ? authenticationController.updateSignUpErrors('Nombre de Usuario',
+              {'error': true, 'message': 'El campo no puede estar vacío.'})
+          : null;
+      (extraInformation['name']!.isEmpty)
+          ? authenticationController.updateSignUpErrors('Nombre',
+              {'error': true, 'message': 'El campo no puede estar vacío.'})
+          : null;
+      (extraInformation['confirmation']!.isEmpty)
+          ? authenticationController.updateSignUpErrors('Confirmar Contraseña',
+              {'error': true, 'message': 'El campo no puede estar vacío.'})
+          : null;
+    }
+    Future.delayed(const Duration(milliseconds: 300),
+        () => authenticationController.ongoingRegister = false);
   }
 
   @override
@@ -67,6 +114,7 @@ class _SignupScreenState extends State<SignupScreen> {
             icon: const Icon(Icons.arrow_back),
             color: Colors.white,
             onPressed: () {
+              authenticationController.clearSignUpErrors();
               Navigator.pop(context);
             },
           ),

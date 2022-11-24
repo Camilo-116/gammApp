@@ -51,6 +51,7 @@ dependencies:
   flutter_cache_manager: ^3.3.0
   file_picker: ^4.0.3
   firebase_storage: ^11.0.4
+  progress_indicators: ^1.0.0
 
 dev_dependencies:
   flutter_test:

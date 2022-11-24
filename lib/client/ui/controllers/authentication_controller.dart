@@ -9,14 +9,66 @@ import 'package:get/get.dart';
 class AuthenticationController extends GetxController {
   // ignore: prefer_final_fields
   var _logged = false.obs;
+  var _ongoingLogin = false.obs;
+  var _ongoingRegister = false.obs;
+  var _loginErrors = {
+    'Nombre de Usuario': {
+      'error': false,
+      'message': '',
+    },
+    'Contraseña': {
+      'error': false,
+      'message': '',
+    },
+  }.obs;
+  var _signUpErrors = {
+    'Nombre': {
+      'error': false,
+      'message': '',
+    },
+    'Nombre de Usuario': {
+      'error': false,
+      'message': '',
+    },
+    'Correo Electrónico': {
+      'error': false,
+      'message': '',
+    },
+    'Contraseña': {
+      'error': false,
+      'message': '',
+    },
+    'Confirmar Contraseña': {
+      'error': false,
+      'message': '',
+    },
+    'About': {
+      'error': false,
+      'message': '',
+    },
+  }.obs;
 
   UserBasicService userBasicService = UserBasicService();
   UserExtendedService userExtendedService = UserExtendedService();
 
   bool get logged => _logged.value;
+  bool get ongoingLogin => _ongoingLogin.value;
+  bool get ongoingRegister => _ongoingRegister.value;
+  Map<String, Map<String, Object>> get signUpErrors => _signUpErrors;
+  Map<String, Map<String, Object>> get loginErrors => _loginErrors;
 
-  set logged(bool logged) {
-    _logged.value = logged;
+  set logged(bool value) => _logged.value = value;
+  set ongoingLogin(bool value) => _ongoingLogin.value = value;
+  set ongoingRegister(bool value) => _ongoingRegister.value = value;
+
+  void updateSignUpErrors(String campo, Map<String, Object> signUpErrors) {
+    _signUpErrors[campo] = signUpErrors;
+    _signUpErrors.refresh();
+  }
+
+  void updateLoginErrors(String campo, Map<String, Object> loginErrors) {
+    _loginErrors[campo] = loginErrors;
+    _loginErrors.refresh();
   }
 
   /*
@@ -73,6 +125,7 @@ class AuthenticationController extends GetxController {
    * 0: Sign in successful
    * 1: Email already in use
    * 2: Password is too weak
+   * 4: Username already in use
    * 3: Unknown error
    */
     String username = extraInformation['username'];
@@ -108,11 +161,55 @@ class AuthenticationController extends GetxController {
         await userBasicService.linkUserBasicExtended(id, idExtended);
         return 0;
       }
-      return 1;
+      return 4;
     });
   }
 
   void logOut() {
     _logged.value = false;
+  }
+
+  /// This method clears the errors in the sign up form
+  void clearSignUpErrors() {
+    _signUpErrors = {
+      'Nombre': {
+        'error': false,
+        'message': '',
+      },
+      'Nombre de Usuario': {
+        'error': false,
+        'message': '',
+      },
+      'Correo Electrónico': {
+        'error': false,
+        'message': '',
+      },
+      'Contraseña': {
+        'error': false,
+        'message': '',
+      },
+      'Confirmar Contraseña': {
+        'error': false,
+        'message': '',
+      },
+      'About': {
+        'error': false,
+        'message': '',
+      },
+    }.obs;
+  }
+
+  /// This method clears the login errors in the form
+  void clearLoginErrors() {
+    _loginErrors = {
+      'Nombre de Usuario': {
+        'error': false,
+        'message': '',
+      },
+      'Contraseña': {
+        'error': false,
+        'message': '',
+      },
+    }.obs;
   }
 }
