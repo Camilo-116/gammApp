@@ -1,3 +1,4 @@
+import 'package:gamma/server/utils/Utils.dart';
 import 'package:haversine_distance/haversine_distance.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -153,8 +154,8 @@ class UserBasicService {
   /// This method is used to retrieve the [List] of users to match of a user given its [String] basicUUID, [String] extendedUUID and [List] with his location and optional [Map] filters.
   ///
   /// Returns a [Future<List>] with the users to match.
-  Future<List> getMatchmaking(
-      String basicUUID, String extendedUUID, List location,
+  Future<List> getMatchmaking(String basicUUID, String extendedUUID,
+      List location, List myGames, List myPlattaforms,
       {Map filter = const {"distance": 300}}) async {
     List<Map> matchmaking = [];
     List friends = [];
@@ -171,14 +172,29 @@ class UserBasicService {
             .get()
             .then((res) {
           if (res.docs.isNotEmpty) {
-            Future.forEach(res.docs, (element) {
-              Location locationUser = Location(
-                  element.data()['location'][0], element.data()['location'][1]);
-              Location myLocation = Location(location[0], location[1]);
-              if (hv.haversine(myLocation, locationUser, Unit.METER).floor() <=
-                  filter['distance']) {
-                matchmaking.add(element.data());
-              }
+            Future.forEach(res.docs, (element) async {
+              await FirebaseFirestore.instance
+                  .collection('userExtended')
+                  .doc(element.data()['user_extended_uuid'])
+                  .get()
+                  .then((res) {
+                var friend = res.data()!;
+                var gamesF = friend['games'];
+                var plattformsF = friend['plattforms'];
+                var coincidence = Utils.checkCoincidences(gamesF, myGames) +
+                    Utils.checkCoincidences(plattformsF, myPlattaforms);
+                var distanceF = Utils.getDistance(
+                    friend['location'], location, filter['distance']);
+                if (distanceF[1] && coincidence > 0) {
+                  matchmaking.add({
+                    'profilePhoto': friend['profilePhoto'],
+                    'games': gamesF,
+                    'plattforms': plattformsF,
+                    'username': element.data()['username'],
+                    'distance': distanceF[0],
+                  });
+                }
+              }).catchError((e) => []);
             });
           }
           return matchmaking;
