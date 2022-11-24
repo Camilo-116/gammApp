@@ -69,18 +69,8 @@ class _DiscoverGamersState extends State<DiscoverGamers> {
                         children: [
                           IconButton(
                             icon: Icon(
-                              Icons.chevron_left,
-                              color: Colors.white,
-                              size: (30 / 360) * width,
-                            ),
-                            onPressed: () {
-                              log('Left swipe ...');
-                            },
-                          ),
-                          IconButton(
-                            icon: Icon(
-                              Icons.add,
-                              color: Colors.white,
+                              Icons.person_add,
+                              color: const Color.fromARGB(255, 235, 65, 229),
                               size: (30 / 360) * width,
                             ),
                             onPressed: () async {
@@ -98,12 +88,12 @@ class _DiscoverGamersState extends State<DiscoverGamers> {
                           ),
                           IconButton(
                             icon: Icon(
-                              Icons.chevron_right,
+                              Icons.navigate_next_rounded,
                               color: Colors.white,
                               size: (30 / 360) * width,
                             ),
                             onPressed: () {
-                              log('Right swipe ...');
+                              log('Next');
                             },
                           ),
                         ],
