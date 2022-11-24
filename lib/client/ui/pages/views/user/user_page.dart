@@ -404,39 +404,60 @@ class _UserPageState extends State<UserPage> {
   Widget buildContent(double width, double height, {UserModel? user}) => Column(
         children: [
           const Divider(),
-          Text('Plataformas',
-              textAlign: TextAlign.left,
-              style: GoogleFonts.hind(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: (20 / 360) * width)),
+          TextButton(
+              onPressed: () => {log('Plataformas')},
+              child: Text('Plataformas',
+                  textAlign: TextAlign.left,
+                  style: GoogleFonts.hind(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: (20 / 360) * width))),
           Container(
             color: const Color.fromARGB(255, 54, 9, 91),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                buildImg('platforms_logos/xbox-logo.png', width, height),
-                buildImg('platforms_logos/PlayStation-logo.jpg', width, height),
-                buildImg('platforms_logos/pc-logo.jpg', width, height),
-              ],
+            width: width,
+            alignment: Alignment.center,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    buildImg('platforms_logos/xbox-logo.png', width, height),
+                    buildImg(
+                        'platforms_logos/PlayStation-logo.jpg', width, height),
+                    buildImg('platforms_logos/pc-logo.jpg', width, height),
+                  ],
+                ),
+              ),
             ),
           ),
           const Divider(),
-          Text('Juegos',
-              textAlign: TextAlign.left,
-              style: GoogleFonts.hind(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: (20 / 360) * width)),
+          TextButton(
+              onPressed: () => {log('Juegos')},
+              child: Text('Juegos',
+                  textAlign: TextAlign.left,
+                  style: GoogleFonts.hind(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: (20 / 360) * width))),
           Container(
             color: const Color.fromARGB(255, 54, 9, 91),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                buildImg('games_icons/valorant_icon.png', width, height),
-                buildImg('games_icons/rocket_league_icon.png', width, height),
-                buildImg('games_icons/fall_guys_icon.png', width, height),
-              ],
+            alignment: Alignment.center,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    buildImg('games_icons/valorant_icon.png', width, height),
+                    buildImg(
+                        'games_icons/rocket_league_icon.png', width, height),
+                    buildImg('games_icons/fall_guys_icon.png', width, height),
+                  ],
+                ),
+              ),
             ),
           ),
         ],
