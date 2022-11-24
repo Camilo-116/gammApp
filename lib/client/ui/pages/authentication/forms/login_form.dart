@@ -59,8 +59,6 @@ class _LoginFormState extends State<LoginForm> {
             SizedBox(height: (20.0 / 756) * height),
             _buildTF('Contraseña', Icons.lock, _isObscure, textControllers[1],
                 width, height, authController.loginErrors['Contraseña']!),
-            _buildForgotBtn(textControllers, width),
-            _buildRememberMeBtn(width, height),
             _buildLoginBtn(textControllers, width, height),
             _buildSignWith(textControllers, width),
           ]),
@@ -166,34 +164,6 @@ class _LoginFormState extends State<LoginForm> {
               )),
         ),
       ],
-    );
-  }
-
-  Widget _buildRememberMeBtn(double width, double height) {
-    return SizedBox(
-      height: (20.0 / 756) * height,
-      child: Row(children: <Widget>[
-        Theme(
-            data: ThemeData(unselectedWidgetColor: Colors.white),
-            child: SizedBox(
-              child: Checkbox(
-                value: _rememberMe,
-                checkColor: const Color.fromARGB(255, 116, 31, 185),
-                activeColor: Colors.white,
-                onChanged: (value) {
-                  setState(() {
-                    _rememberMe = value!;
-                  });
-                },
-              ),
-            )),
-        Text('Mantener sesión iniciada',
-            style: GoogleFonts.hind(
-              color: Colors.white,
-              fontWeight: FontWeight.normal,
-              fontSize: (14 / 360) * width,
-            ))
-      ]),
     );
   }
 
