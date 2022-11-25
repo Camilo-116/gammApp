@@ -159,7 +159,7 @@ class UserBasicService {
   /// Returns a [Future<List>] with the users to match.
   Future<List<dynamic>> getMatchmaking(String basicUUID, String extendedUUID,
       List<Map<String, String>> myFriends, List myGames, List myPlatforms,
-      {Map filter = const {"distance": 300}}) async {
+      {Map filter = const {"distance": 1000}}) async {
     List<Map> matchmaking = [];
     List friends = [];
     GpsService gpsService = GpsService();
@@ -193,10 +193,11 @@ class UserBasicService {
           var coincidences = Utils.makeUsersComparator(myGames, myPlatforms,
               res.data()!['games'], res.data()!['platforms']);
           dev.log('coincidences: $coincidences');
-          var test = {'latitude': 11.0071, 'longitude': -74.8092};
+          var test = res.data()!['lastPosition'] ??
+              {'latitude': 11.002816, 'longitude': -74.834607};
           var maxDist = filter['distance'].toDouble();
           var distanceF = Utils.getDistance(test, pos, maxDist);
-          dev.log('Distance: $distanceF[0]');
+          dev.log('Distance: $distanceF');
           if (distanceF[1] && coincidences > 0) {
             matchmaking.add({
               'profilePhoto': res.data()!['profilePhoto'],
