@@ -165,7 +165,7 @@ class UserBasicService {
     GpsService gpsService = GpsService();
     var pos = await gpsService.getLastLocation(extendedUUID);
     dev.log('pos: $pos');
-    friends = [basicUUID, ...myFriends.map((e) => e['uuid'])];
+    friends = [basicUUID, ...myFriends.map((e) => e['uuidExtended'])];
     dev.log('$friends');
     var notFriends = await FirebaseFirestore.instance
         .collection('userBasic')
@@ -200,6 +200,8 @@ class UserBasicService {
               'platforms': res.data()!['platforms'],
               'username': element.data()['username'],
               'distance': distanceF[0],
+              'extendedUUID': nextUUID,
+              'basicUUID': res.data()!['user_uuid'],
             });
           }
         } else {

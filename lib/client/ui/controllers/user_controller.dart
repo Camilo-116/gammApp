@@ -104,6 +104,7 @@ class UserController extends GetxController {
       await userBasicService.getMatchmaking(
           user.id, user.extendedId!, user.friends, user.games, user.platforms)
     ];
+    log('Discover users: ${_loggedUserDiscoverUsers.value}');
     _loggedUserGames.value = user.games;
     _loggedUserPlatforms.value = user.platforms;
     if (user.status == 'Offline') {

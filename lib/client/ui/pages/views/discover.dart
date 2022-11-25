@@ -115,14 +115,30 @@ class _DiscoverGamersState extends State<DiscoverGamers> {
                                 onPressed: () async {
                                   UserModel user = userController.loggedUser;
                                   log('Add ...');
-                                  await userNotificationService
-                                      .addUsernameNotification(
-                                          user.username,
-                                          user.id,
-                                          user.extendedId ?? "",
-                                          'Dembouz',
-                                          'OeXZbU6zU455O9pjtLKs',
-                                          'NB01rxyWHrsAeMAZJEWq');
+                                  var isMatch = await userNotificationService
+                                      .checkIfMatch(
+                                          user.id, 'OeXZbU6zU455O9pjtLKs');
+                                  if (isMatch) {
+                                    log('Match');
+                                    await userNotificationService
+                                        .requestAcceptedNotification(
+                                            user.username,
+                                            user.id,
+                                            user.extendedId ?? "",
+                                            'Dembouz',
+                                            'OeXZbU6zU455O9pjtLKs',
+                                            'NB01rxyWHrsAeMAZJEWq');
+                                  } else {
+                                    log('Waiting for match');
+                                    await userNotificationService
+                                        .addUsernameNotification(
+                                            user.username,
+                                            user.id,
+                                            user.extendedId ?? "",
+                                            'elpapitodelbackend',
+                                            'GAMkU892j2Wfr0oNhou8',
+                                            'J0CRaMcYwcHSPRyI0bnB');
+                                  }
                                 },
                               ),
                               IconButton(
