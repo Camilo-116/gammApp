@@ -5,6 +5,7 @@ import 'package:gamma/client/ui/controllers/post_controller.dart';
 import 'package:gamma/client/ui/controllers/user_controller.dart';
 import 'package:gamma/client/ui/pages/views/friends_page.dart';
 import 'package:gamma/server/services/StorageService.dart';
+import 'package:gamma/client/ui/pages/views/selectInterest.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../../server/models/user_model.dart';
@@ -427,7 +428,13 @@ class _UserPageState extends State<UserPage> {
         children: [
           const Divider(),
           TextButton(
-              onPressed: () => {log('Plataformas')},
+              onPressed: () => {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SelectInterest()),
+                    )
+                  },
               child: Text('Plataformas',
                   textAlign: TextAlign.left,
                   style: GoogleFonts.hind(
