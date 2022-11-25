@@ -159,7 +159,7 @@ class UserBasicService {
   /// Returns a [Future<List>] with the users to match.
   Future<List<dynamic>> getMatchmaking(String basicUUID, String extendedUUID,
       List<Map<String, String>> myFriends, List myGames, List myPlatforms,
-      {Map filter = const {"distance": 300}}) async {
+      {Map filter = const {"distance": 1000}}) async {
     List<Map> matchmaking = [];
     List friends = [];
     GpsService gpsService = GpsService();
@@ -181,7 +181,7 @@ class UserBasicService {
       }
     });
     await Future.forEach(notFriends, (element) async {
-      var nextUUID = element.data()['user_extended_uuid'];
+      var nextUUID = element.data()['user_extended_uuid'].toString().trim();
       dev.log('Next to see is : $nextUUID');
       await FirebaseFirestore.instance
           .collection('userExtended')
@@ -192,9 +192,12 @@ class UserBasicService {
           dev.log("We have extended info");
           var coincidences = Utils.makeUsersComparator(myGames, myPlatforms,
               res.data()!['games'], res.data()!['platforms']);
-          var test = {'latitude': 11.0071, 'longitude': -74.8092};
-          var distanceF = Utils.getDistance(test, pos, filter['distance']);
-          dev.log('Distance: $distanceF[0]');
+          dev.log('coincidences: $coincidences');
+          var test = res.data()!['lastPosition'] ??
+              {'latitude': 11.002816, 'longitude': -74.834607};
+          var maxDist = filter['distance'].toDouble();
+          var distanceF = Utils.getDistance(test, pos, maxDist);
+          dev.log('Distance: $distanceF');
           if (distanceF[1] && coincidences > 0) {
             matchmaking.add({
               'profilePhoto': res.data()!['profilePhoto'],
@@ -209,7 +212,10 @@ class UserBasicService {
         } else {
           dev.log('User not found');
         }
-      }).catchError((e) => e);
+      }).catchError((e) {
+        dev.log("Falle con:$nextUUID, error: $e");
+        return [];
+      });
     }).then((value) {
       dev.log('Finished');
       dev.log('Matchmaking: $matchmaking');
