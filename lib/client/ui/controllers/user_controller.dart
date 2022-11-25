@@ -97,26 +97,30 @@ class UserController extends GetxController {
   Future<void> logUser(String username) async {
     _loggedUserFriendsReady.value = false;
     UserModel user = await userBasicService.getUserByUsername(username);
-    // try {
-    //   var pos = await Geolocator.getCurrentPosition();
-    //   await gpsService.addPositionToUser(
-    //       user.extendedId!, pos.latitude, pos.longitude);
-    // } catch (e) {
-    //   log('Error getting position: $e');
-    //   rethrow;
-    // }
-
+    bool haveGPS = await Geolocator.isLocationServiceEnabled();
+    late LocationPermission _permission;
+    if (haveGPS) {
+      _permission = await Geolocator.checkPermission();
+    }
+    if (_permission == LocationPermission.denied) {
+      _permission = await Geolocator.requestPermission();
+    }
+    var pos = await Geolocator.getCurrentPosition();
+    log('Mi posicion es: $pos');
+    await gpsService.addPositionToUser(
+        user.extendedId!, pos.latitude, pos.longitude);
     user.setValues(await userExtendedService.getUserByUUID(user.extendedId!));
     _loggedUser.value = user;
     _loggedUserID.value = user.id;
     _loggedUserUsername.value = user.username;
     _loggedUserEmail.value = user.email;
     _loggedUserPicture.value = user.profilePhoto;
-    // _loggedUserDiscoverUsers.value = [
-    //   await userBasicService.getMatchmaking(
-    //       user.id, user.extendedId!, user.friends, user.games, user.platforms)
-    // ];
-    // log('Discover users: ${_loggedUserDiscoverUsers.value}');
+    _loggedUserDiscoverUsers.value = [
+      await userBasicService.getMatchmaking(
+          user.id, user.extendedId!, user.friends, user.games, user.platforms)
+    ];
+    log('Discover users: ${_loggedUserDiscoverUsers.value}');
+    log('Ok');
     _loggedUserGames.value = user.games;
     _loggedUserPlatforms.value = user.platforms;
     if (user.status == 'Offline') {

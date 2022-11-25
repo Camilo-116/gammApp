@@ -181,7 +181,7 @@ class UserBasicService {
       }
     });
     await Future.forEach(notFriends, (element) async {
-      var nextUUID = element.data()['user_extended_uuid'];
+      var nextUUID = element.data()['user_extended_uuid'].toString().trim();
       dev.log('Next to see is : $nextUUID');
       await FirebaseFirestore.instance
           .collection('userExtended')
@@ -192,8 +192,10 @@ class UserBasicService {
           dev.log("We have extended info");
           var coincidences = Utils.makeUsersComparator(myGames, myPlatforms,
               res.data()!['games'], res.data()!['platforms']);
+          dev.log('coincidences: $coincidences');
           var test = {'latitude': 11.0071, 'longitude': -74.8092};
-          var distanceF = Utils.getDistance(test, pos, filter['distance']);
+          var maxDist = filter['distance'].toDouble();
+          var distanceF = Utils.getDistance(test, pos, maxDist);
           dev.log('Distance: $distanceF[0]');
           if (distanceF[1] && coincidences > 0) {
             matchmaking.add({
@@ -209,7 +211,10 @@ class UserBasicService {
         } else {
           dev.log('User not found');
         }
-      }).catchError((e) => e);
+      }).catchError((e) {
+        dev.log("Falle con:$nextUUID, error: $e");
+        return [];
+      });
     }).then((value) {
       dev.log('Finished');
       dev.log('Matchmaking: $matchmaking');
