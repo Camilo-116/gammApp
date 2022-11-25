@@ -93,16 +93,16 @@ class UserModel {
     List<Map<String, String>> p = [];
     values['platforms'].forEach((platform) {
       p.add({
-        'logo_url': platform['logo_url'],
         'name': platform['name'],
+        'logo_url': platform['logo_url'],
       });
     });
 
     List<Map<String, String>> g = [];
     values['games'].forEach((game) {
       g.add({
-        'icon_url': game['icon_url'],
         'name': game['name'],
+        'icon_url': game['icon_url'],
       });
     });
 

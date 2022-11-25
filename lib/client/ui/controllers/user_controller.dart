@@ -321,4 +321,114 @@ class UserController extends GetxController {
 
     return platforms;
   }
+
+  /// This method is used to add a platform to the Field platforms of the logged
+  /// user and the extended user user in the database.
+  ///
+  /// Receives a [int] index that refers to the index of the platform in the
+  /// StaticInfo.platforms list.
+  /// Return a [Future<bool>] that indicates if the operation was successful.
+  Future<bool> addPlatform(int index) async {
+    var platform = StaticInfo.platforms[index];
+
+    var added =
+        await userExtendedService.addPlatform(loggedUser.extendedId!, platform);
+
+    if (added) {
+      loggedUser.platforms.add(platform);
+      _loggedUserPlatforms.value = loggedUser.platforms;
+      _loggedUser.refresh();
+    }
+
+    return added;
+  }
+
+  /// This method is used to add a game to the Field games of the logged
+  /// user and the extended user user in the database.
+  ///
+  /// Receives a [int] index that refers to the index of the game in the
+  /// StaticInfo.games list.
+  /// Return a [Future<bool>] that indicates if the operation was successful.
+  Future<bool> addGame(int index) async {
+    var game = {
+      'name': StaticInfo.games[index]['name'] as String,
+      'icon_url': StaticInfo.games[index]['icon_url'] as String
+    };
+
+    var added = await userExtendedService.addGame(loggedUser.extendedId!, game);
+
+    if (added) {
+      loggedUser.games.add(game);
+      _loggedUserGames.value = loggedUser.games;
+      _loggedUser.refresh();
+    }
+
+    return added;
+  }
+
+  /// This method is used to remove a platform from the Field platforms of the logged
+  /// user and the extended user user in the database.
+  ///
+  /// Receives a [int] index that refers to the index of the platform in the
+  /// StaticInfo.platforms list.
+  /// Return a [Future<bool>] that indicates if the operation was successful.
+  Future<bool> removePlatform(int index) async {
+    var platform = {
+      'logo_url': StaticInfo.platforms[index]['logo_url'] as String,
+      'name': StaticInfo.platforms[index]['name'] as String
+    };
+
+    var removed = await userExtendedService.removePlatform(
+        loggedUser.extendedId!, platform);
+
+    if (removed) {
+      loggedUser.platforms.remove(loggedUser.platforms
+          .firstWhere((p) => p['name'] == platform['name']));
+      _loggedUserPlatforms.value = loggedUser.platforms;
+      _loggedUser.refresh();
+    }
+
+    return removed;
+  }
+
+  /// This method is used to remove a game from the Field games of the logged
+  /// user and the extended user user in the database.
+  ///
+  /// Receives a [int] index that refers to the index of the game in the
+  /// StaticInfo.games list.
+  /// Return a [Future<bool>] that indicates if the operation was successful.
+  Future<bool> removeGame(int index) async {
+    var game = {
+      'name': StaticInfo.games[index]['name'] as String,
+      'icon_url': StaticInfo.games[index]['icon_url'] as String
+    };
+
+    var removed =
+        await userExtendedService.removeGame(loggedUser.extendedId!, game);
+
+    if (removed) {
+      loggedUser.games.remove(
+          loggedUser.games.firstWhere((g) => g['name'] == game['name']));
+      _loggedUserGames.value = loggedUser.games;
+      _loggedUser.refresh();
+    }
+
+    return removed;
+  }
+
+  /// This method is used to update the logged user's about field
+  ///
+  /// Receives a [String] newAbout that is the new about field of the user.
+  /// Return a [Future<bool>] that indicates if the operation was successful.
+  Future<bool> updateAbout(String newAbout) async {
+    var updated =
+        await userExtendedService.updateAbout(loggedUser.extendedId!, newAbout);
+
+    if (updated) {
+      loggedUser.about = newAbout;
+      _loggedUser.refresh();
+    }
+
+    return updated;
+  }
 }

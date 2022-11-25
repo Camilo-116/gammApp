@@ -90,4 +90,79 @@ class UserExtendedService {
           .catchError((onError) => false);
     }
   }
+
+  /// This method is used to add a platform to the field platforms
+  ///
+  /// Receives a [String] with the uuid of the user(userExtended) and a [Map] with the platform to be added.
+  /// Returns a [Future<bool>] indicating if the platform was succesfully added or not.
+  Future<bool> addPlatform(String uuid, Map platform) async {
+    return await FirebaseFirestore.instance
+        .collection('userExtended')
+        .doc(uuid)
+        .update({
+          'platforms': FieldValue.arrayUnion([platform])
+        })
+        .then((value) => true)
+        .catchError((onError) => false);
+  }
+
+  /// This method is used to add a game to the field games
+  ///
+  /// Receives a [String] with the uuid of the user(userExtended) and a [Map] with the game to be added.
+  /// Returns a [Future<bool>] indicating if the game was succesfully added or not.
+  Future<bool> addGame(String uuid, Map game) async {
+    return await FirebaseFirestore.instance
+        .collection('userExtended')
+        .doc(uuid)
+        .update({
+          'games': FieldValue.arrayUnion([game])
+        })
+        .then((value) => true)
+        .catchError((onError) => false);
+  }
+
+  /// This method is used to remove a platform from the field platforms
+  ///
+  /// Receives a [String] with the uuid of the user(userExtended) and a [Map] with the platform to be removed.
+  /// Returns a [Future<bool>] indicating if the platform was succesfully removed or not.
+  Future<bool> removePlatform(String uuid, Map platform) async {
+    return await FirebaseFirestore.instance
+        .collection('userExtended')
+        .doc(uuid)
+        .update({
+          'platforms': FieldValue.arrayRemove([platform])
+        })
+        .then((value) => true)
+        .catchError((onError) => false);
+  }
+
+  /// This method is used to remove a game from the field games
+  ///
+  /// Receives a [String] with the uuid of the user(userExtended) and a [Map] with the game to be removed.
+  /// Returns a [Future<bool>] indicating if the game was succesfully removed or not.
+  Future<bool> removeGame(String uuid, Map game) async {
+    return await FirebaseFirestore.instance
+        .collection('userExtended')
+        .doc(uuid)
+        .update({
+          'games': FieldValue.arrayRemove([game])
+        })
+        .then((value) => true)
+        .catchError((onError) => false);
+  }
+
+  /// This method is used to update the about field of a user(userExtended)
+  ///
+  /// Receives a [String] with the uuid of the user(userExtended) and a [String] with the new about.
+  /// Returns a [Future<bool>] indicating if the about was succesfully updated or not.
+  Future<bool> updateAbout(String uuid, String newAbout) async {
+    return await FirebaseFirestore.instance
+        .collection('userExtended')
+        .doc(uuid)
+        .update({
+          'about': newAbout,
+        })
+        .then((value) => true)
+        .catchError((onError) => false);
+  }
 }

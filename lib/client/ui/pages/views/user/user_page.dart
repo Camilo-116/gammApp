@@ -32,7 +32,34 @@ class _UserPageState extends State<UserPage> {
   var games;
   var platforms;
 
-  void _editProfile(List<bool> selectedGames, List<bool> selectedPlatforms) {}
+  void _editProfile(List<Map<String, Object>> changedP,
+      List<Map<String, Object>> changedG, String newAbout) async {
+    (newAbout.isNotEmpty) ? userController.updateAbout(newAbout) : null;
+    for (var p in changedP) {
+      if (p['action'] == 'add') {
+        await userController.addPlatform(p['index'] as int);
+      } else {
+        await userController
+            .removePlatform(p['index'] as int)
+            .then((value) => log('Success: $value'));
+      }
+    }
+    for (var g in changedG) {
+      if (g['action'] == 'add') {
+        await userController.addGame(g['index'] as int);
+      } else {
+        await userController.removeGame(g['index'] as int);
+      }
+    }
+    if (changedG.isNotEmpty || changedP.isNotEmpty) {
+      setState(() {
+        (changedG.isNotEmpty) ? games = userController.loggedUserGames : null;
+        (changedP.isNotEmpty)
+            ? platforms = userController.loggedUserPlatforms
+            : null;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -431,121 +458,122 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
-  Widget buildContent(double width, double height, {UserModel? user}) => Column(
-        children: [
-          const Divider(),
-          Text(
-            'Plataformas',
-            textAlign: TextAlign.left,
-            style: GoogleFonts.hind(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: (20 / 360) * width,
-            ),
+  Widget buildContent(double width, double height, {UserModel? user}) {
+    return Column(
+      children: [
+        const Divider(),
+        Text(
+          'Plataformas',
+          textAlign: TextAlign.left,
+          style: GoogleFonts.hind(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: (20 / 360) * width,
           ),
-          Container(
-            color: const Color.fromARGB(255, 54, 9, 91),
-            height: (120 / 756) * height,
-            width: width,
-            alignment: Alignment.center,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: (user != null)
-                  ? FutureBuilder(
-                      future: platforms,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData && !snapshot.hasError) {
-                          var platforms =
-                              snapshot.data as List<Map<String, String>>;
-                          return ListView.builder(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            itemCount: platforms.length,
-                            itemBuilder: (context, index) {
-                              return buildImg(
-                                  platforms[index]['logo_url']!, width, height);
-                            },
-                          );
-                        } else {
-                          return const CircularProgressIndicator(
-                            color: Color.fromARGB(255, 99, 46, 162),
-                          );
-                        }
-                      })
-                  : ListView.builder(
-                      shrinkWrap: true,
-                      scrollDirection: Axis.horizontal,
-                      itemCount: platforms!.length,
-                      itemBuilder: (context, index) {
-                        return buildImg(
-                            platforms![index]['logo_url']!, width, height);
-                      },
-                    ),
-            ),
+        ),
+        Container(
+          color: const Color.fromARGB(255, 54, 9, 91),
+          height: (120 / 756) * height,
+          width: width,
+          alignment: Alignment.center,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: (user != null)
+                ? FutureBuilder(
+                    future: platforms,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData && !snapshot.hasError) {
+                        var platforms =
+                            snapshot.data as List<Map<String, String>>;
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          itemCount: platforms.length,
+                          itemBuilder: (context, index) {
+                            return buildImg(
+                                platforms[index]['logo_url']!, width, height);
+                          },
+                        );
+                      } else {
+                        return const CircularProgressIndicator(
+                          color: Color.fromARGB(255, 99, 46, 162),
+                        );
+                      }
+                    })
+                : ListView.builder(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: platforms!.length,
+                    itemBuilder: (context, index) {
+                      return buildImg(
+                          platforms![index]['logo_url']!, width, height);
+                    },
+                  ),
           ),
-          const Divider(),
-          Text(
-            'Juegos',
-            textAlign: TextAlign.left,
-            style: GoogleFonts.hind(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: (20 / 360) * width,
-            ),
+        ),
+        const Divider(),
+        Text(
+          'Juegos',
+          textAlign: TextAlign.left,
+          style: GoogleFonts.hind(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: (20 / 360) * width,
           ),
-          Container(
-            color: const Color.fromARGB(255, 54, 9, 91),
-            height: (120 / 756) * height,
-            alignment: Alignment.center,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: (user != null)
-                  ? FutureBuilder(
-                      future: games,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData && !snapshot.hasError) {
-                          var games =
-                              snapshot.data as List<Map<String, String>>;
-                          return ListView.builder(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            itemCount: games.length,
-                            itemBuilder: (context, index) {
-                              return buildImg(
-                                  games[index]['icon_url']!, width, height);
-                            },
-                          );
-                        } else {
-                          return const CircularProgressIndicator(
-                            color: Color.fromARGB(255, 99, 46, 162),
-                          );
-                        }
-                      })
-                  : ListView.builder(
-                      shrinkWrap: true,
-                      scrollDirection: Axis.horizontal,
-                      itemCount: games!.length,
-                      itemBuilder: (context, index) {
-                        return buildImg(
-                            games![index]['icon_url']!, width, height);
-                      },
-                    ),
-              //     SingleChildScrollView(
-              //   scrollDirection: Axis.horizontal,
-              //   child: Row(
-              //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              //     children: [
-              //       buildImg('games_icons/valorant_icon.png', width, height),
-              //       buildImg(
-              //           'games_icons/rocket_league_icon.png', width, height),
-              //       buildImg('games_icons/fall_guys_icon.png', width, height),
-              //     ],
-              //   ),
-              // ),
-            ),
+        ),
+        Container(
+          color: const Color.fromARGB(255, 54, 9, 91),
+          height: (120 / 756) * height,
+          alignment: Alignment.center,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: (user != null)
+                ? FutureBuilder(
+                    future: games,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData && !snapshot.hasError) {
+                        var games = snapshot.data as List<Map<String, String>>;
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          itemCount: games.length,
+                          itemBuilder: (context, index) {
+                            return buildImg(
+                                games[index]['icon_url']!, width, height);
+                          },
+                        );
+                      } else {
+                        return const CircularProgressIndicator(
+                          color: Color.fromARGB(255, 99, 46, 162),
+                        );
+                      }
+                    })
+                : ListView.builder(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: games!.length,
+                    itemBuilder: (context, index) {
+                      return buildImg(
+                          games![index]['icon_url']!, width, height);
+                    },
+                  ),
+            //     SingleChildScrollView(
+            //   scrollDirection: Axis.horizontal,
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            //     children: [
+            //       buildImg('games_icons/valorant_icon.png', width, height),
+            //       buildImg(
+            //           'games_icons/rocket_league_icon.png', width, height),
+            //       buildImg('games_icons/fall_guys_icon.png', width, height),
+            //     ],
+            //   ),
+            // ),
           ),
-        ],
-      );
+        ),
+      ],
+    );
+  }
 
   Widget buildImg(String img, double width, double height) {
     return Padding(
