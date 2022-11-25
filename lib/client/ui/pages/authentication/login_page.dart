@@ -32,7 +32,8 @@ class _LoginScreenState extends State<LoginScreen> {
       (userExist == 0)
           ? await userController.logUser(username).catchError((onError) {
               authenticationController.ongoingLogin = false;
-              Future.error(onError);
+              userExist = -1;
+              // Future.error(onError);
             })
           : log('Error login');
       setState(() {
@@ -41,6 +42,9 @@ class _LoginScreenState extends State<LoginScreen> {
         } else {
           authenticationController.logged = false;
           switch (userExist) {
+            case -1:
+              log('Error de permisos.');
+              break;
             case 1:
               authenticationController.updateLoginErrors('Nombre de Usuario',
                   {'error': true, 'message': 'El usuario no existe.'});

@@ -196,6 +196,10 @@ class _HomeState extends State<Home> {
                                 userController.getFeedIds(),
                                 userController.loggedUser.likedPosts);
                             break;
+                          case 3:
+                            userController
+                                .refreshFriends(userController.loggedUserID);
+                            break;
                         }
                       }
                       setState(() {

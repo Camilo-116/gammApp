@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/animation.dart';
+import 'package:gamma/client/ui/controllers/static_info_controller.dart';
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -26,6 +27,7 @@ class UserController extends GetxController {
   var _loggedUserStatus = 'Offline'.obs;
   var _loggedUserPicture = "".obs;
   var _loggedUserFriends = <UserModel>[].obs;
+  var _loggedUserFriendsReady = false.obs;
   var _loggedUserGames = <Map<String, String>>[].obs;
   var _loggedUserPlatforms = <Map<String, String>>[].obs;
   var _loggedUserDiscoverUsers = <List<dynamic>>[].obs;
@@ -50,6 +52,9 @@ class UserController extends GetxController {
 
   /// Getter for friends
   List<UserModel> get loggedUserFriends => _loggedUserFriends.value;
+
+  /// Getter for friends ready indicator
+  bool get loggedUserFriendsReady => _loggedUserFriendsReady.value;
 
   /// Getter for games
   List<Map<String, String>> get loggedUserGames => _loggedUserGames.value;
@@ -90,28 +95,39 @@ class UserController extends GetxController {
   ///
   /// Receives the [String] username of the user.
   Future<void> logUser(String username) async {
+    _loggedUserFriendsReady.value = false;
     UserModel user = await userBasicService.getUserByUsername(username);
-    var pos = await Geolocator.getCurrentPosition();
-    await gpsService.addPositionToUser(
-        user.extendedId!, pos.latitude, pos.longitude);
+    // try {
+    //   var pos = await Geolocator.getCurrentPosition();
+    //   await gpsService.addPositionToUser(
+    //       user.extendedId!, pos.latitude, pos.longitude);
+    // } catch (e) {
+    //   log('Error getting position: $e');
+    //   rethrow;
+    // }
+
     user.setValues(await userExtendedService.getUserByUUID(user.extendedId!));
     _loggedUser.value = user;
     _loggedUserID.value = user.id;
     _loggedUserUsername.value = user.username;
     _loggedUserEmail.value = user.email;
     _loggedUserPicture.value = user.profilePhoto;
-    _loggedUserDiscoverUsers.value = [
-      await userBasicService.getMatchmaking(
-          user.id, user.extendedId!, user.friends, user.games, user.platforms)
-    ];
-    log('Discover users: ${_loggedUserDiscoverUsers.value}');
+    // _loggedUserDiscoverUsers.value = [
+    //   await userBasicService.getMatchmaking(
+    //       user.id, user.extendedId!, user.friends, user.games, user.platforms)
+    // ];
+    // log('Discover users: ${_loggedUserDiscoverUsers.value}');
     _loggedUserGames.value = user.games;
     _loggedUserPlatforms.value = user.platforms;
     if (user.status == 'Offline') {
       await userBasicService.updateUserBasic(username, {'status': 'Online'});
       _loggedUserStatus.value = 'Online';
     }
-    _loggedUserFriends.value = await getFriends(loggedUser.id);
+    _loggedUserFriends.value = await getFriends(loggedUser.id).then((value) {
+      _loggedUserFriendsReady.value = true;
+      return value;
+    });
+    StaticInfo.init();
   }
 
   /// This method is used to execute all required actions to log out a user.
@@ -146,6 +162,16 @@ class UserController extends GetxController {
     for (var friend in _loggedUserFriends) {
       friend.status = status[m.Random().nextInt(status.length)];
     }
+  }
+
+  /// THis method is used to refresh the logged user friends list.
+  Future<void> refreshFriends(String uuid) async {
+    log('Refreshing friends');
+    getFriends(uuid).then((friends) {
+      _loggedUserFriendsReady.value = false;
+      _loggedUserFriends.value = friends;
+      _loggedUserFriendsReady.value = true;
+    });
   }
 
   /// This method is used to change the status of the logged user.
@@ -208,7 +234,6 @@ class UserController extends GetxController {
       await userExtendedService.getUserByUUID(uuid).then((extendedUser) async {
         if (extendedUser['friends'].length > 0) {
           for (var friend in extendedUser['friends']) {
-            log('Friend: $friend');
             await userBasicService
                 .getUserByUUID(friend['uuidBasic'])
                 .then((friendUser) async {

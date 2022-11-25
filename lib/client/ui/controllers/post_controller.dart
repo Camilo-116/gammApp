@@ -73,14 +73,13 @@ class PostController extends GetxController {
             ),
           );
         }
-        return true;
       } else {
         log('No posts found');
       }
       _feedReady.value = true;
     }).catchError(
         (onError) => log('Error getting posts (Post controller): $onError'));
-    return false;
+    return _feedReady.value;
   }
 
   // CORREGIR, NO RESTAR A LOS LIKES, SINO ELIMINAR AL USUARIO DE LA LISTA
@@ -175,13 +174,11 @@ class PostController extends GetxController {
   }
 
   Future<bool> refreshFeed(List<String> feedIDs, List<String> likes) async {
-    bool r = false;
     _feedReady.value = false;
     await getFeed(feedIDs).then((res) async {
       fillLikes(likes);
-      r = true;
       _feedReady.value = true;
     }).catchError((onError) => log('Error getting feed: $onError'));
-    return r;
+    return _feedReady.value;
   }
 }

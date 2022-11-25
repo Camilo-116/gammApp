@@ -55,10 +55,23 @@ class _FriendsPageState extends State<FriendsPage> {
                   ]);
                 }
               })
-          : ListView.builder(
-              itemCount: userController.loggedUserFriends.length,
-              itemBuilder: (context, index) => buildFriends(
-                  userController.loggedUserFriends[index], context),
+          : Obx(
+              () => (userController.loggedUserFriendsReady)
+                  ? ListView.builder(
+                      itemCount: userController.loggedUserFriends.length,
+                      itemBuilder: (context, index) => buildFriends(
+                          userController.loggedUserFriends[index], context),
+                    )
+                  : Stack(children: [
+                      Container(
+                        color: const Color.fromARGB(255, 34, 15, 57),
+                      ),
+                      const Center(
+                        child: CircularProgressIndicator(
+                          color: Color.fromARGB(255, 99, 46, 162),
+                        ),
+                      ),
+                    ]),
             ),
     );
   }

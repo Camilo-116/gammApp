@@ -32,12 +32,12 @@ class _UserPageState extends State<UserPage> {
   var games;
   var platforms;
 
+  void _editProfile(List<bool> selectedGames, List<bool> selectedPlatforms) {}
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-
-    log('User logged: ${userController.loggedUserGames}');
 
     if (widget.userUUID != null &&
         widget.userUUID != userController.loggedUserID) {
@@ -368,7 +368,12 @@ class _UserPageState extends State<UserPage> {
           onPressed: (user != null && user.id != userController.loggedUserID)
               ? null
               : () {
-                  log('Edit Button Pressed');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            SelectInterest(callback: _editProfile)),
+                  );
                 },
           style: TextButton.styleFrom(
             padding: EdgeInsets.symmetric(
@@ -427,20 +432,15 @@ class _UserPageState extends State<UserPage> {
   Widget buildContent(double width, double height, {UserModel? user}) => Column(
         children: [
           const Divider(),
-          TextButton(
-              onPressed: () => {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const SelectInterest()),
-                    )
-                  },
-              child: Text('Plataformas',
-                  textAlign: TextAlign.left,
-                  style: GoogleFonts.hind(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: (20 / 360) * width))),
+          Text(
+            'Plataformas',
+            textAlign: TextAlign.left,
+            style: GoogleFonts.hind(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: (20 / 360) * width,
+            ),
+          ),
           Container(
             color: const Color.fromARGB(255, 54, 9, 91),
             height: (120 / 756) * height,
@@ -482,14 +482,15 @@ class _UserPageState extends State<UserPage> {
             ),
           ),
           const Divider(),
-          TextButton(
-              onPressed: () => {log('Juegos')},
-              child: Text('Juegos',
-                  textAlign: TextAlign.left,
-                  style: GoogleFonts.hind(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: (20 / 360) * width))),
+          Text(
+            'Juegos',
+            textAlign: TextAlign.left,
+            style: GoogleFonts.hind(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: (20 / 360) * width,
+            ),
+          ),
           Container(
             color: const Color.fromARGB(255, 54, 9, 91),
             height: (120 / 756) * height,
