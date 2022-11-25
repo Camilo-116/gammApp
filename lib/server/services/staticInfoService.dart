@@ -37,4 +37,6 @@ class StaticInfoService {
     }).catchError((onError) => log('Error getting platforms: $onError'));
     return platforms;
   }
+
+  /// This method is used
 }

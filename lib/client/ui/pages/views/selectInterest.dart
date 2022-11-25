@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:gamma/client/ui/controllers/post_controller.dart';
 import 'package:gamma/client/ui/controllers/user_controller.dart';
 import 'package:gamma/server/services/staticInfoService.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -8,7 +9,14 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../controllers/static_info_controller.dart';
 
 class SelectInterest extends StatefulWidget {
-  const SelectInterest({super.key, required this.callback});
+  const SelectInterest(
+      {super.key,
+      required this.callback,
+      required this.userGames,
+      required this.userPlatforms});
+
+  final List<Map<String, Object>> userGames;
+  final List<Map<String, String>> userPlatforms;
 
   final Function callback;
 
@@ -18,84 +26,11 @@ class SelectInterest extends StatefulWidget {
 
 class _SelectInterestState extends State<SelectInterest> {
   UserController userController = UserController();
-  StaticInfoService staticInfoService = StaticInfoService();
+  PostController postController = PostController();
 
-  // final List<Widget> _games = <Widget>[
-  //   Text(
-  //     'GOW:Ragnarok',
-  //     style: GoogleFonts.hind(
-  //       color: Colors.white,
-  //       fontSize: 18,
-  //     ),
-  //   ),
-  //   Text(
-  //     'GW 3',
-  //     style: GoogleFonts.hind(
-  //       color: Colors.white,
-  //       fontSize: 18,
-  //     ),
-  //   ),
-  //   Text(
-  //     'RL',
-  //     style: GoogleFonts.hind(
-  //       color: Colors.white,
-  //       fontSize: 18,
-  //     ),
-  //   ),
-  //   Text(
-  //     'Valorant',
-  //     style: GoogleFonts.hind(
-  //       color: Colors.white,
-  //       fontSize: 18,
-  //     ),
-  //   ),
-  //   Text(
-  //     'Fall Guys',
-  //     style: GoogleFonts.hind(
-  //       color: Colors.white,
-  //       fontSize: 18,
-  //     ),
-  //   )
-  // ];
   List<Widget>? _games;
   List<Widget>? _platforms;
-  // final List<Widget> _platforms = <Widget>[
-  //   Text(
-  //     'PS',
-  //     style: GoogleFonts.hind(
-  //       color: Colors.white,
-  //       fontSize: 18,
-  //     ),
-  //   ),
-  //   Text(
-  //     'Xbox',
-  //     style: GoogleFonts.hind(
-  //       color: Colors.white,
-  //       fontSize: 18,
-  //     ),
-  //   ),
-  //   Text(
-  //     'Switch',
-  //     style: GoogleFonts.hind(
-  //       color: Colors.white,
-  //       fontSize: 18,
-  //     ),
-  //   ),
-  //   Text(
-  //     'PC',
-  //     style: GoogleFonts.hind(
-  //       color: Colors.white,
-  //       fontSize: 18,
-  //     ),
-  //   ),
-  //   Text(
-  //     'Mobile',
-  //     style: GoogleFonts.hind(
-  //       color: Colors.white,
-  //       fontSize: 18,
-  //     ),
-  //   )
-  // ];
+
   final List<bool> _selectedPlatforms = <bool>[];
   final List<bool> _selectedGames = <bool>[];
   bool vertical = false;
@@ -104,8 +39,7 @@ class _SelectInterestState extends State<SelectInterest> {
   List<Widget> _platformsWidgets(double width) {
     var platforms = StaticInfo.platforms;
     var tempP = <Widget>[];
-    var userPlatforms =
-        userController.loggedUserPlatforms.map((p) => p['name']).toList();
+    var userPlatforms = widget.userPlatforms.map((p) => p['name']).toList();
     if (platforms.isNotEmpty) {
       for (var platform in platforms) {
         (userPlatforms.contains(platform['name']))
@@ -128,9 +62,7 @@ class _SelectInterestState extends State<SelectInterest> {
   List<Widget> _gamesWidgets(double width) {
     var games = StaticInfo.games;
     var tempG = <Widget>[];
-    var userGames =
-        userController.loggedUserGames.map((g) => g['name']).toList();
-    log('userGames: $userGames');
+    var userGames = widget.userGames.map((g) => g['name']!).toList();
     if (games.isNotEmpty) {
       for (var game in games) {
         (userGames.contains(game['name']))
@@ -157,7 +89,6 @@ class _SelectInterestState extends State<SelectInterest> {
     final ThemeData theme = Theme.of(context);
 
     if (!oneTime) {
-      log('Entra aqui');
       _platforms = _platformsWidgets(width);
       _games = _gamesWidgets(width);
       oneTime = true;

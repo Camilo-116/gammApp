@@ -371,8 +371,10 @@ class _UserPageState extends State<UserPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            SelectInterest(callback: _editProfile)),
+                        builder: (context) => SelectInterest(
+                            callback: _editProfile,
+                            userGames: userController.loggedUserGames,
+                            userPlatforms: userController.loggedUserPlatforms)),
                   );
                 },
           style: TextButton.styleFrom(
