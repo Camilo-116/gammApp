@@ -28,15 +28,25 @@ class _UserPageState extends State<UserPage> {
   StorageService storage = StorageService();
 
   var user;
+  var games;
+  var platforms;
 
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
 
-    (widget.userUUID != null && widget.userUUID != userController.loggedUserID)
-        ? user = userController.getUserbyUUID(widget.userUUID!)
-        : {};
+    if (widget.userUUID != null &&
+        widget.userUUID != userController.loggedUserID) {
+      user = userController.getUserbyUUID(widget.userUUID!);
+
+      // games = userController.getUserGamesbyUUID(widget.userUUID!);
+      // platforms = userController.getUserPlatformsbyUUID(widget.userUUID!);
+    } else {
+      games = userController.loggedUserGames;
+      platforms = userController.loggedUserPlatforms;
+      // platforms = userController.getPlatformsInfo(userController.loggedUser.platforms);
+    }
 
     return (widget.userUUID != null &&
             widget.userUUID != userController.loggedUserID)
@@ -421,7 +431,7 @@ class _UserPageState extends State<UserPage> {
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     buildImg('platforms_logos/xbox-logo.png', width, height),
                     buildImg(
@@ -448,7 +458,15 @@ class _UserPageState extends State<UserPage> {
               padding: const EdgeInsets.all(8.0),
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                child: Row(
+                child:
+                    // ListView.builder(
+                    //   itemCount: games,
+                    //   itemBuilder: (context, index) {
+                    //     return buildImg(
+                    //         'platforms_logos/pc-logo.jpg', width, height);
+                    //   },
+                    // ),
+                    Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     buildImg('games_icons/valorant_icon.png', width, height),
@@ -463,7 +481,10 @@ class _UserPageState extends State<UserPage> {
         ],
       );
 
-  Widget buildImg(String img, double width, double height) => ClipRRect(
+  Widget buildImg(String img, double width, double height) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: (8.0 / 360) * width),
+      child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
         child: FutureBuilder(
           future: storage.downloadURL(img),
@@ -480,7 +501,9 @@ class _UserPageState extends State<UserPage> {
             }
           },
         ),
-      );
+      ),
+    );
+  }
 
   Future<String?> _dialogBuilder(BuildContext context) {
     return showDialog<String>(

@@ -50,7 +50,7 @@ class UserModel {
   List<String> postsIDs;
 
   /// List of games played frequently by the user.
-  List games;
+  List<Map<String, String>> games;
 
   /// List of platforms used frequently by the user.
   List<Map<String, String>> platforms;
@@ -82,7 +82,6 @@ class UserModel {
   /// At the end, the non-required attributes of the user will be filled.
   void setValues(Map values) {
     List<Map<String, String>> f = [];
-    log('Friends got: ${values['friends']}');
     values['friends'].forEach((friend) {
       f.add({
         'uuid': friend['uuid'],
@@ -97,6 +96,15 @@ class UserModel {
         'name': platform['name'],
       });
     });
+
+    List<Map<String, String>> g = [];
+    values['games'].forEach((game) {
+      p.add({
+        'icon_url': game['icon_url'],
+        'name': game['name'],
+      });
+    });
+
     extendedId = values['id'];
     name = values['name'] ?? "";
     friends = f;
@@ -104,7 +112,7 @@ class UserModel {
         values['likedPosts'] ?? List<String>.empty(growable: true));
     postsIDs = List<String>.from(
         values['postsIDs'] ?? List<String>.empty(growable: true));
-    games = values['games'] ?? [];
+    games = g;
     platforms = p;
     profilePhoto = values['profilePhoto'] ?? "";
     about = values['about'] ?? "";

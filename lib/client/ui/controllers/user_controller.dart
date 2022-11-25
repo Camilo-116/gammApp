@@ -4,6 +4,7 @@ import 'dart:math' as m;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/animation.dart';
 import 'package:get/get.dart';
 
@@ -22,25 +23,41 @@ class UserController extends GetxController {
   var _loggedUserStatus = 'Offline'.obs;
   var _loggedUserPicture = "".obs;
   var _loggedUserFriends = <UserModel>[].obs;
+  var _loggedUserGames = <Map<String, String>>[].obs;
+  var _loggedUserPlatforms = <Map<String, String>>[].obs;
 
-  // Getter for the logged user
+  /// Getter for the logged user
   UserModel get loggedUser => _loggedUser.value;
-  // Getter for the logged user's ID
+
+  /// Getter for the logged user's ID
   String get loggedUserID => _loggedUserID.value;
-  // Getter for status
+
+  /// Getter for status
   String get loggedUserStatus => _loggedUserStatus.value;
-  // Getter for email
+
+  /// Getter for email
   String get loggedUserEmail => _loggedUserEmail.value;
-  // Getter for username
+
+  /// Getter for username
   String get loggedUserUsername => _loggedUserUsername.value;
-  // Getter for picture
+
+  /// Getter for picture
   String get loggedUserPicture => _loggedUserPicture.value;
-  // Getter for friends
+
+  /// Getter for friends
   List<UserModel> get loggedUserFriends => _loggedUserFriends.value;
 
-  // Setter for the logged user
+  /// Getter for games
+  List<Map<String, String>> get loggedUserGames => _loggedUserGames.value;
+
+  /// Getter for platforms
+  List<Map<String, String>> get loggedUserPlatforms =>
+      _loggedUserPlatforms.value;
+
+  /// Setter for the logged user
   set loggedUser(UserModel user) => _loggedUser.value = user;
 
+  /// Possible statuses
   var status = ['Online', 'Offline', 'Busy', 'Away', 'Invisible'];
 
   @override
@@ -62,6 +79,9 @@ class UserController extends GetxController {
     return user;
   }
 
+  /// This method is used to execute all required actions to log in a user.
+  ///
+  /// Receives the [String] username of the user.
   Future<void> logUser(String username) async {
     UserModel user = await userBasicService.getUserByUsername(username);
     user.setValues(await userExtendedService.getUserByUUID(user.extendedId!));
@@ -77,6 +97,7 @@ class UserController extends GetxController {
     _loggedUserFriends.value = await getFriends(loggedUser.id);
   }
 
+  /// This method is used to execute all required actions to log out a user.
   Future<void> logOutUser() async {
     await userBasicService
         .updateUserBasic(loggedUserUsername, {'status': 'Offline'});
@@ -90,12 +111,14 @@ class UserController extends GetxController {
     log('User logged out');
   }
 
+  /// This method is used to resume the activity of the logged user.
   Future<void> userResumed() async {
     await userBasicService
         .updateUserBasic(loggedUser.username, {'status': 'Online'});
     _loggedUserStatus.value = 'Online';
   }
 
+  /// This method is used to pause the activity of the logged user.
   Future<void> userInactive() async {
     await userBasicService
         .updateUserBasic(loggedUser.username, {'status': 'Away'});
@@ -108,6 +131,9 @@ class UserController extends GetxController {
     }
   }
 
+  /// This method is used to change the status of the logged user.
+  ///
+  /// Receives the [String] status of the user.
   Future<void> changeStatus(String status) async {
     UserModel user = loggedUser;
     user.status = status;
@@ -164,6 +190,7 @@ class UserController extends GetxController {
     await userBasicService.getExtendedId(uuid).then((uuid) async {
       await userExtendedService.getUserByUUID(uuid).then((extendedUser) async {
         if (extendedUser['friends'].length > 0) {
+          log('Friends: ${extendedUser['friends']}');
           for (var friend in extendedUser['friends']) {
             await userBasicService
                 .getUserByUUID(friend['uuid'])
@@ -206,5 +233,37 @@ class UserController extends GetxController {
     loggedUser = newLoggedUser;
     await userExtendedService.postLikeClicked(
         loggedUser.extendedId!, postId, newLike);
+  }
+
+  /// This method is used to retrieve the games of a specific user given its [String] uuid.
+  ///
+  /// Return a [List<Map<String, Object>>] with the games of the user.
+  /// If the user has no games, return an empty list.
+  Future<List<Map<String, Object>>> getUserGamesbyUUID(String uuid) async {
+    var games = <Map<String, Object>>[];
+    await userBasicService.getExtendedId(uuid).then((uuid) async {
+      await userExtendedService.getUserByUUID(uuid).then((extendedUser) async {
+        if (extendedUser['games'].length > 0) {
+          for (var game in extendedUser['games']) {
+            games.add(game);
+          }
+        } else {
+          log('No games');
+        }
+      });
+    });
+
+    return games;
+  }
+
+  /// This method retrieves the info of the games related to a given [List<String>] of the games uuids
+  ///
+  /// Return a [List<Map<String, Object>>] with the games info.
+  /// If the user has no games, return an empty list.
+  Future<void> getGamesInfo(List<String> gamesUUIDs) async {
+    var gamesInfo = gamesUUIDs.map((uuid) async =>
+        await FirebaseFirestore.instance.collection('games').doc(uuid).get());
+    log('Games info: $gamesInfo');
+    // return gamesInfo;
   }
 }
