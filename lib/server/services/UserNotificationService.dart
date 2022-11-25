@@ -16,9 +16,14 @@ class UserNotificationService {
         .where('senderUUID', isEqualTo: receiverUUID)
         .get()
         .then((res) {
-      log('${res.docs}');
-      if (res.docs.isNotEmpty) return true;
-      return false;
+      if (res.docs.isNotEmpty) {
+        log('MATCH FOUND');
+        res.docs[0].reference.delete();
+        return true;
+      } else {
+        log('NO MATCH FOUND');
+        return false;
+      }
     });
   }
 

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:haversine_distance/haversine_distance.dart';
 
 class Utils {
@@ -7,9 +9,9 @@ class Utils {
     Location myLocation = Location(myLoc['latitude'], myLoc['longitude']);
     var distanceF = hv.haversine(myLocation, locationUser, Unit.METER).floor();
     if (distanceF <= distance) {
-      return [distance, true];
+      return [distanceF, true];
     }
-    return [distance, false];
+    return [distanceF, false];
   }
 
   static makeUsersComparator(

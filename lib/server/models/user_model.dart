@@ -84,7 +84,8 @@ class UserModel {
     List<Map<String, String>> f = [];
     values['friends'].forEach((friend) {
       f.add({
-        'uuid': friend['uuid'],
+        'uuid': friend['uuidBasic'],
+        'uuidExtended': friend['uuidExtended'],
         'username': friend['username'],
       });
     });

@@ -208,8 +208,9 @@ class UserController extends GetxController {
       await userExtendedService.getUserByUUID(uuid).then((extendedUser) async {
         if (extendedUser['friends'].length > 0) {
           for (var friend in extendedUser['friends']) {
+            log('Friend: $friend');
             await userBasicService
-                .getUserByUUID(friend['uuid'])
+                .getUserByUUID(friend['uuidBasic'])
                 .then((friendUser) async {
               friendUser.setValues(await userExtendedService
                   .getUserByUUID(friendUser.extendedId!));

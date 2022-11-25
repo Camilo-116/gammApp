@@ -165,6 +165,7 @@ class UserBasicService {
     GpsService gpsService = GpsService();
     var pos = await gpsService.getLastLocation(extendedUUID);
     dev.log('pos: $pos');
+    dev.log('myFriends: $myFriends');
     friends = [basicUUID, ...myFriends.map((e) => e['uuidExtended'])];
     dev.log('$friends');
     var notFriends = await FirebaseFirestore.instance
@@ -193,6 +194,7 @@ class UserBasicService {
               res.data()!['games'], res.data()!['platforms']);
           var test = {'latitude': 11.0071, 'longitude': -74.8092};
           var distanceF = Utils.getDistance(test, pos, filter['distance']);
+          dev.log('Distance: $distanceF[0]');
           if (distanceF[1] && coincidences > 0) {
             matchmaking.add({
               'profilePhoto': res.data()!['profilePhoto'],
