@@ -16,11 +16,13 @@ class PostController extends GetxController {
   var _feed = <PostModel>[].obs;
   var _likes = <bool>[].obs;
   var _userPosts = <PostModel>[].obs;
+  var _feedReady = false.obs;
 
   PostService postService = PostService();
   UserExtendedService userExtendedService = UserExtendedService();
 
   RxList<bool> get likes => _likes;
+  bool get feedReady => _feedReady.value;
   List<PostModel> get feed => _feed;
   List<PostModel> get userPosts => _userPosts;
 
@@ -50,6 +52,7 @@ class PostController extends GetxController {
   /// It receives a [List<String>] with the uuids of the logged user's friends
   /// and adds each friend's posts to the [List<PostModel>] _feed.
   Future<bool> getFeed(List<String> friendsIDs) async {
+    _feedReady.value = false;
     _feed.clear();
     _likes.clear();
     await postService.getPostsByUsers(friendsIDs).then((posts) {
@@ -74,6 +77,7 @@ class PostController extends GetxController {
       } else {
         log('No posts found');
       }
+      _feedReady.value = true;
     }).catchError(
         (onError) => log('Error getting posts (Post controller): $onError'));
     return false;
@@ -172,9 +176,11 @@ class PostController extends GetxController {
 
   Future<bool> refreshFeed(List<String> feedIDs, List<String> likes) async {
     bool r = false;
+    _feedReady.value = false;
     await getFeed(feedIDs).then((res) async {
       fillLikes(likes);
       r = true;
+      _feedReady.value = true;
     }).catchError((onError) => log('Error getting feed: $onError'));
     return r;
   }

@@ -36,16 +36,17 @@ class _UserPageState extends State<UserPage> {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
 
+    log('User logged: ${userController.loggedUserGames}');
+
     if (widget.userUUID != null &&
         widget.userUUID != userController.loggedUserID) {
       user = userController.getUserbyUUID(widget.userUUID!);
 
-      // games = userController.getUserGamesbyUUID(widget.userUUID!);
-      // platforms = userController.getUserPlatformsbyUUID(widget.userUUID!);
+      games = userController.getUserGamesbyUUID(widget.userUUID!);
+      platforms = userController.getUserPlatformsbyUUID(widget.userUUID!);
     } else {
       games = userController.loggedUserGames;
       platforms = userController.loggedUserPlatforms;
-      // platforms = userController.getPlatformsInfo(userController.loggedUser.platforms);
     }
 
     return (widget.userUUID != null &&
@@ -55,7 +56,6 @@ class _UserPageState extends State<UserPage> {
             builder: (context, snapshot) {
               if (snapshot.hasData && !snapshot.hasError) {
                 UserModel user = snapshot.data as UserModel;
-                log('User: ${user.toMap()}');
                 return Scaffold(
                   backgroundColor: const Color.fromARGB(255, 34, 15, 57),
                   body: ListView(
@@ -364,11 +364,11 @@ class _UserPageState extends State<UserPage> {
           top: height * 0.02, left: width * 0.11, right: width * 0.11),
       child: Center(
         child: TextButton(
-          onPressed: () {
-            (user != null && user.id != userController.loggedUserID)
-                ? log('Add friend button pressed')
-                : log('Edit Button Pressed');
-          },
+          onPressed: (user != null && user.id != userController.loggedUserID)
+              ? null
+              : () {
+                  log('Edit Button Pressed');
+                },
           style: TextButton.styleFrom(
             padding: EdgeInsets.symmetric(
                 vertical: 0.01 * height, horizontal: 0.04 * width),
@@ -379,26 +379,38 @@ class _UserPageState extends State<UserPage> {
             ),
           ),
           child: (user != null && user.id != userController.loggedUserID)
-              ? RichText(
-                  text: TextSpan(children: [
-                  WidgetSpan(
-                    child: Padding(
-                      padding: EdgeInsets.only(right: 0.01 * width),
-                      child: Icon(
-                        Icons.person_add,
-                        color: const Color.fromARGB(255, 241, 219, 255),
-                        size: 0.04 * width,
+              ? Column(
+                  children: [
+                    RichText(
+                        text: TextSpan(children: [
+                      WidgetSpan(
+                        child: Padding(
+                          padding: EdgeInsets.only(right: 0.01 * width),
+                          child: Image.asset(
+                            'assets/images/discord-logo.png',
+                            width: 0.06 * width,
+                            height: 0.06 * width,
+                          ),
+                        ),
                       ),
+                      TextSpan(
+                        text: 'Contactar por discord',
+                        style: GoogleFonts.hind(
+                            color: const Color.fromARGB(233, 65, 77, 214),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 0.04 * width),
+                      ),
+                    ])),
+                    Text(
+                      '(Próximamente...)',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.hind(
+                          color: const Color.fromARGB(121, 88, 101, 242),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 0.03 * width),
                     ),
-                  ),
-                  TextSpan(
-                    text: 'Agregar a amigos',
-                    style: GoogleFonts.hind(
-                        color: const Color.fromARGB(255, 241, 219, 255),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 0.04 * width),
-                  ),
-                ]))
+                  ],
+                )
               : Text(
                   'Editar Perfil',
                   style: GoogleFonts.hind(
@@ -424,22 +436,42 @@ class _UserPageState extends State<UserPage> {
                       fontSize: (20 / 360) * width))),
           Container(
             color: const Color.fromARGB(255, 54, 9, 91),
+            height: (120 / 756) * height,
             width: width,
             alignment: Alignment.center,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    buildImg('platforms_logos/xbox-logo.png', width, height),
-                    buildImg(
-                        'platforms_logos/PlayStation-logo.jpg', width, height),
-                    buildImg('platforms_logos/pc-logo.jpg', width, height),
-                  ],
-                ),
-              ),
+              child: (user != null)
+                  ? FutureBuilder(
+                      future: platforms,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData && !snapshot.hasError) {
+                          var platforms =
+                              snapshot.data as List<Map<String, String>>;
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            itemCount: platforms.length,
+                            itemBuilder: (context, index) {
+                              return buildImg(
+                                  platforms[index]['logo_url']!, width, height);
+                            },
+                          );
+                        } else {
+                          return const CircularProgressIndicator(
+                            color: Color.fromARGB(255, 99, 46, 162),
+                          );
+                        }
+                      })
+                  : ListView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: platforms!.length,
+                      itemBuilder: (context, index) {
+                        return buildImg(
+                            platforms![index]['logo_url']!, width, height);
+                      },
+                    ),
             ),
           ),
           const Divider(),
@@ -453,29 +485,53 @@ class _UserPageState extends State<UserPage> {
                       fontSize: (20 / 360) * width))),
           Container(
             color: const Color.fromARGB(255, 54, 9, 91),
+            height: (120 / 756) * height,
             alignment: Alignment.center,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child:
-                    // ListView.builder(
-                    //   itemCount: games,
-                    //   itemBuilder: (context, index) {
-                    //     return buildImg(
-                    //         'platforms_logos/pc-logo.jpg', width, height);
-                    //   },
-                    // ),
-                    Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    buildImg('games_icons/valorant_icon.png', width, height),
-                    buildImg(
-                        'games_icons/rocket_league_icon.png', width, height),
-                    buildImg('games_icons/fall_guys_icon.png', width, height),
-                  ],
-                ),
-              ),
+              child: (user != null)
+                  ? FutureBuilder(
+                      future: games,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData && !snapshot.hasError) {
+                          var games =
+                              snapshot.data as List<Map<String, String>>;
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            itemCount: games.length,
+                            itemBuilder: (context, index) {
+                              return buildImg(
+                                  games[index]['icon_url']!, width, height);
+                            },
+                          );
+                        } else {
+                          return const CircularProgressIndicator(
+                            color: Color.fromARGB(255, 99, 46, 162),
+                          );
+                        }
+                      })
+                  : ListView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: games!.length,
+                      itemBuilder: (context, index) {
+                        return buildImg(
+                            games![index]['icon_url']!, width, height);
+                      },
+                    ),
+              //     SingleChildScrollView(
+              //   scrollDirection: Axis.horizontal,
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              //     children: [
+              //       buildImg('games_icons/valorant_icon.png', width, height),
+              //       buildImg(
+              //           'games_icons/rocket_league_icon.png', width, height),
+              //       buildImg('games_icons/fall_guys_icon.png', width, height),
+              //     ],
+              //   ),
+              // ),
             ),
           ),
         ],

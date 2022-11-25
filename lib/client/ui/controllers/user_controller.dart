@@ -90,6 +90,8 @@ class UserController extends GetxController {
     _loggedUserUsername.value = user.username;
     _loggedUserEmail.value = user.email;
     _loggedUserPicture.value = user.profilePhoto;
+    _loggedUserGames.value = user.games;
+    _loggedUserPlatforms.value = user.platforms;
     if (user.status == 'Offline') {
       await userBasicService.updateUserBasic(username, {'status': 'Online'});
       _loggedUserStatus.value = 'Online';
@@ -190,7 +192,6 @@ class UserController extends GetxController {
     await userBasicService.getExtendedId(uuid).then((uuid) async {
       await userExtendedService.getUserByUUID(uuid).then((extendedUser) async {
         if (extendedUser['friends'].length > 0) {
-          log('Friends: ${extendedUser['friends']}');
           for (var friend in extendedUser['friends']) {
             await userBasicService
                 .getUserByUUID(friend['uuid'])
@@ -239,13 +240,16 @@ class UserController extends GetxController {
   ///
   /// Return a [List<Map<String, Object>>] with the games of the user.
   /// If the user has no games, return an empty list.
-  Future<List<Map<String, Object>>> getUserGamesbyUUID(String uuid) async {
-    var games = <Map<String, Object>>[];
+  Future<List<Map<String, String>>> getUserGamesbyUUID(String uuid) async {
+    var games = <Map<String, String>>[];
     await userBasicService.getExtendedId(uuid).then((uuid) async {
       await userExtendedService.getUserByUUID(uuid).then((extendedUser) async {
         if (extendedUser['games'].length > 0) {
           for (var game in extendedUser['games']) {
-            games.add(game);
+            games.add({
+              'name': game['name'],
+              'icon_url': game['icon_url'],
+            });
           }
         } else {
           log('No games');
@@ -256,14 +260,24 @@ class UserController extends GetxController {
     return games;
   }
 
-  /// This method retrieves the info of the games related to a given [List<String>] of the games uuids
+  /// This method is used to retrieve the platforms of a specific user given its [String] uuid.
   ///
-  /// Return a [List<Map<String, Object>>] with the games info.
-  /// If the user has no games, return an empty list.
-  Future<void> getGamesInfo(List<String> gamesUUIDs) async {
-    var gamesInfo = gamesUUIDs.map((uuid) async =>
-        await FirebaseFirestore.instance.collection('games').doc(uuid).get());
-    log('Games info: $gamesInfo');
-    // return gamesInfo;
+  /// Return a [List<Map<String, Object>>] with the platforms of the user.
+  /// If the user has no platforms, return an empty list.
+  Future<List<Map<String, String>>> getUserPlatformsbyUUID(String uuid) async {
+    var platforms = <Map<String, String>>[];
+    await userBasicService.getExtendedId(uuid).then((uuid) async {
+      await userExtendedService.getUserByUUID(uuid).then((extendedUser) async {
+        if (extendedUser['platforms'].length > 0) {
+          for (var platform in extendedUser['platforms']) {
+            platforms.add(platform);
+          }
+        } else {
+          log('No platforms');
+        }
+      });
+    });
+
+    return platforms;
   }
 }

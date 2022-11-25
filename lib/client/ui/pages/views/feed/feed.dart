@@ -27,46 +27,9 @@ class _FeedState extends State<Feed> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    /*
-    post_controller.addPost(PostModel(
-        id: 0,
-        user: user_controller.users[0],
-        picture: 'https://picsum.photos/seed/901/600',
-        caption: "I'm a Dahmer fan",
-        likes: 100000,
-        comments: 4700,
-        shares: 1500));
-    post_controller.addPost(PostModel(
-        id: 1,
-        user: user_controller.users[2],
-        picture:
-            'https://i.picsum.photos/id/413/400/400.jpg?hmac=-4Fi-wezu1Vi5MiN26ZcAqlCXNbyBGezeISVWgPAhQc',
-        caption: "OSU lover 'til the end of my days",
-        likes: 2,
-        comments: 0,
-        shares: 1));
-    post_controller.addPost(PostModel(
-        id: 2,
-        user: user_controller.users[1],
-        picture:
-            'https://i.picsum.photos/id/270/400/400.jpg?hmac=7wcLGHIwFHGv56-7wUIKXv99dcj4KfcYIsewlE1SmfA',
-        caption: "Treino",
-        likes: 40000,
-        comments: 420,
-        shares: 0));
-    post_controller.addPost(PostModel(
-        id: 3,
-        user: user_controller.users[3],
-        picture:
-            'https://i.picsum.photos/id/166/400/400.jpg?hmac=cHBjLdAgtcrf9aydJi-KSu0n2BfKLNe2LcJ0WpJoso0',
-        caption: "Panamá es mío",
-        likes: 305948,
-        comments: 6969,
-        shares: 3));
-        */
 
     return Obx(
-      () => (postController.feed.isNotEmpty && postController.likes.isNotEmpty)
+      () => (postController.feedReady)
           ? ListView.builder(
               itemCount: postController.feed.length,
               itemBuilder: (context, index) {

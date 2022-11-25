@@ -87,7 +87,7 @@ class _DiscoverGamersState extends State<DiscoverGamers> {
                           IconButton(
                             icon: Icon(
                               Icons.navigate_next_rounded,
-                              color: Colors.white,
+                              color: const Color.fromARGB(255, 235, 65, 229),
                               size: (30 / 360) * width,
                             ),
                             onPressed: () {
