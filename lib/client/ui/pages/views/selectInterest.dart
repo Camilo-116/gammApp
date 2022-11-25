@@ -10,18 +10,78 @@ class SelectInterest extends StatefulWidget {
 
 class _SelectInterestState extends State<SelectInterest> {
   final List<Widget> _platforms = <Widget>[
-    Text('GOW:Ragnarok'),
-    Text('GW 3'),
-    Text('RL'),
-    Text('Valorant'),
-    Text('Fall Guys')
+    Text(
+      'GOW:Ragnarok',
+      style: GoogleFonts.hind(
+        color: Colors.white,
+        fontSize: 18,
+      ),
+    ),
+    Text(
+      'GW 3',
+      style: GoogleFonts.hind(
+        color: Colors.white,
+        fontSize: 18,
+      ),
+    ),
+    Text(
+      'RL',
+      style: GoogleFonts.hind(
+        color: Colors.white,
+        fontSize: 18,
+      ),
+    ),
+    Text(
+      'Valorant',
+      style: GoogleFonts.hind(
+        color: Colors.white,
+        fontSize: 18,
+      ),
+    ),
+    Text(
+      'Fall Guys',
+      style: GoogleFonts.hind(
+        color: Colors.white,
+        fontSize: 18,
+      ),
+    )
   ];
   final List<Widget> _games = <Widget>[
-    Text('PS'),
-    Text('Xbox'),
-    Text('Switch'),
-    Text('PC'),
-    Text('Mobile')
+    Text(
+      'PS',
+      style: GoogleFonts.hind(
+        color: Colors.white,
+        fontSize: 18,
+      ),
+    ),
+    Text(
+      'Xbox',
+      style: GoogleFonts.hind(
+        color: Colors.white,
+        fontSize: 18,
+      ),
+    ),
+    Text(
+      'Switch',
+      style: GoogleFonts.hind(
+        color: Colors.white,
+        fontSize: 18,
+      ),
+    ),
+    Text(
+      'PC',
+      style: GoogleFonts.hind(
+        color: Colors.white,
+        fontSize: 18,
+      ),
+    ),
+    Text(
+      'Mobile',
+      style: GoogleFonts.hind(
+        color: Colors.white,
+        fontSize: 18,
+      ),
+    )
   ];
   final List<bool> _selectedPlatforms = <bool>[
     false,
@@ -54,36 +114,40 @@ class _SelectInterestState extends State<SelectInterest> {
                 'Plataformas',
                 style: GoogleFonts.hind(
                   color: Colors.white,
-                  fontSize: 16,
+                  fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 5),
-              ToggleButtons(
-                direction: vertical ? Axis.vertical : Axis.horizontal,
-                onPressed: (int index) {
-                  // All buttons are selectable.
-                  setState(() {
-                    _selectedGames[index] = !_selectedGames[index];
-                  });
-                },
-                borderRadius: const BorderRadius.all(Radius.circular(8)),
-                selectedBorderColor: const Color.fromARGB(255, 177, 10, 163),
-                selectedColor: Colors.white,
-                fillColor: const Color.fromARGB(255, 177, 10, 163),
-                color: Colors.white,
-                constraints: const BoxConstraints(
-                  minHeight: 40.0,
-                  minWidth: 80.0,
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: ToggleButtons(
+                  direction: vertical ? Axis.vertical : Axis.horizontal,
+                  onPressed: (int index) {
+                    // All buttons are selectable.
+                    setState(() {
+                      _selectedGames[index] = !_selectedGames[index];
+                    });
+                  },
+                  borderRadius: const BorderRadius.all(Radius.circular(8)),
+                  selectedBorderColor: const Color.fromARGB(255, 177, 10, 163),
+                  selectedColor: Colors.white,
+                  fillColor: const Color.fromARGB(255, 177, 10, 163),
+                  color: Colors.white,
+                  constraints: const BoxConstraints(
+                    minHeight: 40.0,
+                    minWidth: 80.0,
+                  ),
+                  isSelected: _selectedGames,
+                  children: _games,
                 ),
-                isSelected: _selectedGames,
-                children: _games,
               ),
+              const SizedBox(height: 20),
               Text(
                 'Juegos',
                 style: GoogleFonts.hind(
                   color: Colors.white,
-                  fontSize: 16,
+                  fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
               ),
