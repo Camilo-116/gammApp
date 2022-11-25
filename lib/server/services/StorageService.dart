@@ -52,7 +52,6 @@ class StorageService {
   /// At the end of the download, returns a [String] with the file's location in the device's storage.
   /// If the download fails, returns a [String] with 'Not downloaded'.
   Future<String> downloadURL(String reference) async {
-    log('download reference: $reference');
     String path = '';
     try {
       path = await FirebaseStorage.instance.ref(reference).getDownloadURL();

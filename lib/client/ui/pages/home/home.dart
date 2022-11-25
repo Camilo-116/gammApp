@@ -189,7 +189,6 @@ class _HomeState extends State<Home> {
                     activeColor: const Color.fromARGB(255, 235, 65, 229),
                     color: const Color.fromARGB(255, 129, 117, 139),
                     onTabChange: (index) async {
-                      log('Post like: ${postController.likes}');
                       if (_currentIndex == index) {
                         switch (index) {
                           case 0:
