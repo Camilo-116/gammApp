@@ -7,14 +7,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/animation.dart';
 import 'package:get/get.dart';
+import 'package:geolocator/geolocator.dart';
 
 import '../../../server/models/user_model.dart';
+import '../../../server/services/GpsService.dart';
 import '../../../server/services/UserBasicService.dart';
 import '../../../server/services/UserExtendedService.dart';
 
 class UserController extends GetxController {
   UserBasicService userBasicService = UserBasicService();
   UserExtendedService userExtendedService = UserExtendedService();
+  GpsService gpsService = GpsService();
 
   Rx<UserModel> _loggedUser = UserModel(id: '', username: '', email: '').obs;
   var _loggedUserID = "".obs;
@@ -25,6 +28,7 @@ class UserController extends GetxController {
   var _loggedUserFriends = <UserModel>[].obs;
   var _loggedUserGames = <Map<String, String>>[].obs;
   var _loggedUserPlatforms = <Map<String, String>>[].obs;
+  var _loggedUserDiscoverUsers = <List<dynamic>>[].obs;
 
   /// Getter for the logged user
   UserModel get loggedUser => _loggedUser.value;
@@ -53,6 +57,9 @@ class UserController extends GetxController {
   /// Getter for platforms
   List<Map<String, String>> get loggedUserPlatforms =>
       _loggedUserPlatforms.value;
+
+  /// Getter for discover users
+  List<dynamic> get loggedUserDiscoverUsers => _loggedUserDiscoverUsers.value;
 
   /// Setter for the logged user
   set loggedUser(UserModel user) => _loggedUser.value = user;
@@ -84,12 +91,20 @@ class UserController extends GetxController {
   /// Receives the [String] username of the user.
   Future<void> logUser(String username) async {
     UserModel user = await userBasicService.getUserByUsername(username);
+    var pos = await Geolocator.getCurrentPosition();
+    await gpsService.addPositionToUser(
+        user.extendedId!, pos.latitude, pos.longitude);
     user.setValues(await userExtendedService.getUserByUUID(user.extendedId!));
     _loggedUser.value = user;
     _loggedUserID.value = user.id;
     _loggedUserUsername.value = user.username;
     _loggedUserEmail.value = user.email;
     _loggedUserPicture.value = user.profilePhoto;
+    _loggedUserDiscoverUsers.value = [
+      await userBasicService.getMatchmaking(
+          user.id, user.extendedId!, user.friends, user.games, user.platforms)
+    ];
+    print('Discover users: ${_loggedUserDiscoverUsers.value}');
     if (user.status == 'Offline') {
       await userBasicService.updateUserBasic(username, {'status': 'Online'});
       _loggedUserStatus.value = 'Online';

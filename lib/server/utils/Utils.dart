@@ -1,15 +1,22 @@
 import 'package:haversine_distance/haversine_distance.dart';
 
 class Utils {
-  static getDistance(List userLoc, List myLoc, double distance) {
+  static getDistance(Map userLoc, Map myLoc, double distance) {
     HaversineDistance hv = HaversineDistance();
-    Location locationUser = Location(userLoc[0], userLoc[1]);
-    Location myLocation = Location(myLoc[0], myLoc[1]);
+    Location locationUser = Location(userLoc['latitude'], userLoc['longitude']);
+    Location myLocation = Location(myLoc['latitude'], myLoc['longitude']);
     var distanceF = hv.haversine(myLocation, locationUser, Unit.METER).floor();
     if (distanceF <= distance) {
       return [distance, true];
     }
     return [distance, false];
+  }
+
+  static makeUsersComparator(
+      List myGames, List myPlatforms, List friendGames, List friendPlatforms) {
+    var coincidence = checkCoincidences(friendGames, myGames) +
+        checkCoincidences(friendPlatforms, myPlatforms);
+    return coincidence;
   }
 
   static int checkCoincidences(List l1, List l2) =>

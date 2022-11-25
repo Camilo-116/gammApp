@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:gamma/server/services/GpsService.dart';
 import 'package:gamma/server/utils/Utils.dart';
 import 'package:haversine_distance/haversine_distance.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -154,53 +157,60 @@ class UserBasicService {
   /// This method is used to retrieve the [List] of users to match of a user given its [String] basicUUID, [String] extendedUUID and [List] with his location and optional [Map] filters.
   ///
   /// Returns a [Future<List>] with the users to match.
-  Future<List> getMatchmaking(String basicUUID, String extendedUUID,
-      List location, List myGames, List myPlattaforms,
+  Future<List<dynamic>> getMatchmaking(String basicUUID, String extendedUUID,
+      List<Map<String, String>> myFriends, List myGames, List myPlatforms,
       {Map filter = const {"distance": 300}}) async {
     List<Map> matchmaking = [];
     List friends = [];
-    return await FirebaseFirestore.instance
-        .collection('userExtended')
-        .doc(extendedUUID)
+    GpsService gpsService = GpsService();
+    var pos = await gpsService.getLastLocation(extendedUUID);
+    dev.log('pos: $pos');
+    friends = [basicUUID, ...myFriends.map((e) => e['uuid'])];
+    dev.log('$friends');
+    var notFriends = await FirebaseFirestore.instance
+        .collection('userBasic')
+        .where('user_extended_uuid', whereNotIn: friends)
         .get()
-        .then((res) async {
-      if (res.exists && res.data()!.isNotEmpty) {
-        friends = [basicUUID, res.data()!['friends']];
-        await FirebaseFirestore.instance
-            .collection('userBasic')
-            .where('user_extended_uuid', whereNotIn: friends)
-            .get()
-            .then((res) {
-          if (res.docs.isNotEmpty) {
-            Future.forEach(res.docs, (element) async {
-              await FirebaseFirestore.instance
-                  .collection('userExtended')
-                  .doc(element.data()['user_extended_uuid'])
-                  .get()
-                  .then((res) {
-                var friend = res.data()!;
-                var gamesF = friend['games'];
-                var plattformsF = friend['plattforms'];
-                var coincidence = Utils.checkCoincidences(gamesF, myGames) +
-                    Utils.checkCoincidences(plattformsF, myPlattaforms);
-                var distanceF = Utils.getDistance(
-                    friend['location'], location, filter['distance']);
-                if (distanceF[1] && coincidence > 0) {
-                  matchmaking.add({
-                    'profilePhoto': friend['profilePhoto'],
-                    'games': gamesF,
-                    'plattforms': plattformsF,
-                    'username': element.data()['username'],
-                    'distance': distanceF[0],
-                  });
-                }
-              }).catchError((e) => []);
+        .then((res) {
+      if (res.docs.isNotEmpty) {
+        dev.log('We have people to match');
+        return res.docs;
+      } else {
+        return [];
+      }
+    });
+    await Future.forEach(notFriends, (element) async {
+      var nextUUID = element.data()['user_extended_uuid'];
+      dev.log('Next to see is : $nextUUID');
+      await FirebaseFirestore.instance
+          .collection('userExtended')
+          .doc(nextUUID)
+          .get()
+          .then((res) {
+        if (res.exists && res.data()!.isNotEmpty) {
+          dev.log("We have extended info");
+          var coincidences = Utils.makeUsersComparator(myGames, myPlatforms,
+              res.data()!['games'], res.data()!['platforms']);
+          var test = {'latitude': 11.0071, 'longitude': -74.8092};
+          var distanceF = Utils.getDistance(test, pos, filter['distance']);
+          if (distanceF[1] && coincidences > 0) {
+            matchmaking.add({
+              'profilePhoto': res.data()!['profilePhoto'],
+              'games': res.data()!['games'],
+              'platforms': res.data()!['platforms'],
+              'username': element.data()['username'],
+              'distance': distanceF[0],
             });
           }
-          return matchmaking;
-        });
-      }
-      return [];
-    }).catchError((e) => []);
+        } else {
+          dev.log('User not found');
+        }
+      }).catchError((e) => e);
+    }).then((value) {
+      dev.log('Finished');
+      dev.log('Matchmaking: $matchmaking');
+    });
+    dev.log("Sending $matchmaking");
+    return matchmaking;
   }
 }

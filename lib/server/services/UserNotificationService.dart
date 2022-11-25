@@ -17,9 +17,9 @@ class UserNotificationService {
     String senderUsername,
     String senderUUID,
     String senderExtendedUUID,
-    String? recieverUsername,
-    String? recieverUUID,
-    String? recieverExtendedUUID,
+    String? receiverUsername,
+    String? receiverUUID,
+    String? receiverExtendedUUID,
   ) async {
     log('Add username notification ...');
     return FirebaseFirestore.instance
@@ -27,10 +27,10 @@ class UserNotificationService {
         .add({
           'senderUsername': senderUsername,
           'senderUUID': senderUUID,
-          'senderExtenedUUID': senderExtendedUUID,
-          'recieverUsername': recieverUsername,
-          'recieverUUID': recieverUUID,
-          'recieverExtendedUUID': recieverExtendedUUID,
+          'senderExtendedUUID': senderExtendedUUID,
+          'receiverUsername': receiverUsername,
+          'receiverUUID': receiverUUID,
+          'receiverExtendedUUID': receiverExtendedUUID,
           'typeNotification': typeNotification['friendRequest'],
         })
         .then((value) => true)
@@ -49,36 +49,38 @@ class UserNotificationService {
       String senderUsername,
       String senderUUID,
       String senderExtendedUUID,
-      String recieverUUID,
-      String recieverExtendedUUID,
-      String recieverUsername) async {
+      String receiverUUID,
+      String receiverExtendedUUID,
+      String receiverUsername) async {
     log('Request accepted notification ...');
     return await FirebaseFirestore.instance.collection('userNotification').add({
       'senderUsername': senderUsername,
-      'recieverUUID': recieverUUID,
+      'receiverUUID': receiverUUID,
       'typeNotification': typeNotification['friendRequestAccepted'],
     }).then((value) async {
-      log('Request accepted notification added (Reciever : (${recieverUsername})  -> Sender : (${senderUsername})})...');
+      log('Request accepted notification added (Reciever : (${receiverUsername})  -> Sender : (${senderUsername})})...');
       return await FirebaseFirestore.instance
           .collection('userExtended')
-          .doc(recieverExtendedUUID)
+          .doc(receiverExtendedUUID)
           .update({
         "friends": FieldValue.arrayUnion([
           {
             "username": senderUsername,
-            "uuid": senderUUID,
+            "uuidBasic": senderUUID,
+            "uuidExtended": senderExtendedUUID,
           }
         ])
       }).then((res) async {
-        log('Request accepted notification added (Sender -> Reciever)...');
+        log('Request accepted notification added (Sender -> Receiver)...');
         return await FirebaseFirestore.instance
             .collection('userExtended')
             .doc(senderExtendedUUID)
             .update({
               'friends': FieldValue.arrayUnion([
                 {
-                  "username": recieverUsername,
-                  "uuid": recieverExtendedUUID,
+                  "username": receiverUsername,
+                  "uuidBasic": receiverUUID,
+                  "uuidExtended": receiverExtendedUUID,
                 }
               ])
             })

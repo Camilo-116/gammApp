@@ -4,6 +4,8 @@ import 'package:gamma/client/ui/controllers/authentication_controller.dart';
 import 'package:gamma/client/ui/controllers/post_controller.dart';
 import 'package:gamma/client/ui/controllers/user_controller.dart';
 import 'package:gamma/client/ui/pages/authentication/forms/login_form.dart';
+import 'package:gamma/server/services/GpsService.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -28,8 +30,10 @@ class _LoginScreenState extends State<LoginScreen> {
       log(data.toString());
       log('userExist: $userExist');
       (userExist == 0)
-          ? await userController.logUser(username).catchError(
-              (onError) => authenticationController.ongoingLogin = false)
+          ? await userController.logUser(username).catchError((onError) {
+              authenticationController.ongoingLogin = false;
+              Future.error(onError);
+            })
           : log('Error login');
       setState(() {
         if (userExist == 0) {
