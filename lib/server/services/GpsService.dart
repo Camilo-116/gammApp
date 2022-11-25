@@ -10,7 +10,6 @@ class GpsService {
   Future<bool> addPositionToUser(
       String uuidExtendeUser, double latitude, double longitude) async {
     bool added = false;
-    log('$uuidExtendeUser' + ' $latitude' + ' $longitude');
     await FirebaseFirestore.instance
         .collection('userExtended')
         .doc(uuidExtendeUser)

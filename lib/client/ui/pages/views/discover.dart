@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:gamma/server/models/user_model.dart';
+import 'package:gamma/server/services/StorageService.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:swipeable_card_stack/swipeable_card_stack.dart';
@@ -20,6 +21,9 @@ class _DiscoverGamersState extends State<DiscoverGamers> {
 
   UserController userController = Get.find();
   UserNotificationService userNotificationService = UserNotificationService();
+  StorageService storage = StorageService();
+
+  int _discoverIndex = 0;
 
   @override
   void initState() {
@@ -31,6 +35,37 @@ class _DiscoverGamersState extends State<DiscoverGamers> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
+
+    var discoverUsers = userController.loggedUserDiscoverUsers;
+
+    String games = '';
+    if (discoverUsers[_discoverIndex]['games'].length > 0) {
+      games =
+          'Juegos favoritos de ${discoverUsers[_discoverIndex]['username']}: \n';
+      for (var game in discoverUsers[_discoverIndex]['games']) {
+        games += '${game['name']}';
+        games +=
+            (game != discoverUsers[_discoverIndex]['games'].last) ? ', ' : '';
+      }
+      games += '.';
+    } else {
+      games = 'Este usuario no ha indicado sus juegos favoritos :c';
+    }
+
+    String platforms = '';
+    if (discoverUsers[_discoverIndex]['platforms'].length > 0) {
+      platforms = 'Plataformas que frecuenta: \n';
+      for (var platform in discoverUsers[_discoverIndex]['platforms']) {
+        platforms += '${platform['name']}';
+        platforms +=
+            (platform != discoverUsers[_discoverIndex]['platforms'].last)
+                ? ', '
+                : '';
+      }
+      platforms += '.';
+    } else {
+      platforms = 'Este usuario no ha indicado sus plataformas regulares >:c';
+    }
 
     return Scaffold(
       key: scaffoldKey,
@@ -48,53 +83,84 @@ class _DiscoverGamersState extends State<DiscoverGamers> {
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: (400 / 756) * height,
-                            decoration: const BoxDecoration(
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: (8.0 / 756) * width),
+                          child: Text(
+                            discoverUsers[_discoverIndex]['username']
+                                .toString(),
+                            style: GoogleFonts.hind(
                               color: Colors.white,
-                            ),
-                            child: Image.network(
-                              'https://picsum.photos/seed/788/600',
-                              width: (100 / 360) * width,
-                              height: (100 / 756) * height,
-                              fit: BoxFit.cover,
+                              fontSize: width * (20 / 360),
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Positioned(
-                              top: 16,
-                              right: 5,
-                              child: Text(
-                                'Nombre de usuario',
-                                style: GoogleFonts.hind(
-                                  color: Colors.black,
-                                  fontSize: width * (20 / 360),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              )),
-                          Positioned(
-                              top: 40,
-                              right: 5,
-                              child: Text(
-                                'email',
-                                style: GoogleFonts.hind(
-                                  color: Colors.black,
-                                  fontSize: width * (16 / 360),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              )),
-                        ],
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: (8.0 / 756) * width),
+                          child: Text(
+                            discoverUsers[_discoverIndex]['status'].toString(),
+                            style: GoogleFonts.hind(
+                              color: Colors.white,
+                              fontSize: width * (16 / 360),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        width: width,
+                        height: (300 / 756) * height,
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                        ),
+                        child: FutureBuilder(
+                          future: storage.downloadURL(
+                              discoverUsers[_discoverIndex]['profilePhoto']),
+                          builder: (context, AsyncSnapshot<String> snapshot) {
+                            if (snapshot.hasData && !snapshot.hasError) {
+                              return Image.network(
+                                snapshot.data!,
+                                fit: BoxFit.cover,
+                              );
+                            } else {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+                          },
+                        ),
                       ),
                       Align(
                         alignment: const AlignmentDirectional(-0.8, 0),
-                        child: Text(
-                          'Juegos:  Rocket League Valorant GOW3 \nPlataforma: PlayStation 5',
-                          style: GoogleFonts.hind(
-                              fontSize: (20 / 360) * width,
-                              color: Colors.white),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: (8.0 / 756) * height),
+                          child: Text(
+                            games,
+                            style: GoogleFonts.hind(
+                                fontSize: (18 / 360) * width,
+                                color: Colors.white),
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: const AlignmentDirectional(-0.8, 0),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: (8.0 / 756) * height),
+                          child: Text(
+                            platforms,
+                            style: GoogleFonts.hind(
+                                fontSize: (18 / 360) * width,
+                                color: Colors.white),
+                          ),
                         ),
                       ),
                       Align(
@@ -144,11 +210,17 @@ class _DiscoverGamersState extends State<DiscoverGamers> {
                               IconButton(
                                 icon: Icon(
                                   Icons.navigate_next_rounded,
-                                  color: Colors.white,
+                                  color:
+                                      const Color.fromARGB(255, 235, 65, 229),
                                   size: (48 / 360) * width,
                                 ),
                                 onPressed: () {
-                                  log('Next');
+                                  log(discoverUsers.length.toString());
+                                  setState(() {
+                                    (_discoverIndex < discoverUsers.length - 1)
+                                        ? _discoverIndex++
+                                        : _discoverIndex = 0;
+                                  });
                                 },
                               ),
                             ],

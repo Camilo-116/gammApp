@@ -159,14 +159,12 @@ class UserBasicService {
   /// Returns a [Future<List>] with the users to match.
   Future<List<dynamic>> getMatchmaking(String basicUUID, String extendedUUID,
       List<Map<String, String>> myFriends, List myGames, List myPlatforms,
-      {Map filter = const {"distance": 1000}}) async {
+      {Map filter = const {"distance": 80000}}) async {
     List<Map> matchmaking = [];
     List friends = [];
     GpsService gpsService = GpsService();
     var pos = await gpsService.getLastLocation(extendedUUID);
-    dev.log('pos: $pos');
-    dev.log('myFriends: $myFriends');
-    friends = [basicUUID, ...myFriends.map((e) => e['uuidExtended'])];
+    friends = [extendedUUID, ...myFriends.map((e) => e['uuidExtended'])];
     dev.log('$friends');
     var notFriends = await FirebaseFirestore.instance
         .collection('userBasic')
@@ -174,7 +172,6 @@ class UserBasicService {
         .get()
         .then((res) {
       if (res.docs.isNotEmpty) {
-        dev.log('We have people to match');
         return res.docs;
       } else {
         return [];
@@ -182,28 +179,25 @@ class UserBasicService {
     });
     await Future.forEach(notFriends, (element) async {
       var nextUUID = element.data()['user_extended_uuid'].toString().trim();
-      dev.log('Next to see is : $nextUUID');
       await FirebaseFirestore.instance
           .collection('userExtended')
           .doc(nextUUID)
           .get()
           .then((res) {
         if (res.exists && res.data()!.isNotEmpty) {
-          dev.log("We have extended info");
           var coincidences = Utils.makeUsersComparator(myGames, myPlatforms,
               res.data()!['games'], res.data()!['platforms']);
-          dev.log('coincidences: $coincidences');
           var test = res.data()!['lastPosition'] ??
               {'latitude': 11.002816, 'longitude': -74.834607};
           var maxDist = filter['distance'].toDouble();
           var distanceF = Utils.getDistance(test, pos, maxDist);
-          dev.log('Distance: $distanceF');
-          if (distanceF[1] && coincidences > 0) {
+          if (distanceF[1]) {
             matchmaking.add({
+              'username': element.data()['username'],
               'profilePhoto': res.data()!['profilePhoto'],
+              'status': element.data()['status'],
               'games': res.data()!['games'],
               'platforms': res.data()!['platforms'],
-              'username': element.data()['username'],
               'distance': distanceF[0],
               'extendedUUID': nextUUID,
               'basicUUID': res.data()!['user_uuid'],
@@ -218,9 +212,7 @@ class UserBasicService {
       });
     }).then((value) {
       dev.log('Finished');
-      dev.log('Matchmaking: $matchmaking');
     });
-    dev.log("Sending $matchmaking");
     return matchmaking;
   }
 }

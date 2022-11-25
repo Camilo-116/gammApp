@@ -24,7 +24,7 @@ class StorageService {
         reference = 'platforms_logos/';
         break;
       case 2:
-        reference = 'user_media/';
+        reference = 'users_media/';
         break;
       default:
         log('Improper type');

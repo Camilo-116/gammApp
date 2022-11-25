@@ -30,7 +30,7 @@ class UserController extends GetxController {
   var _loggedUserFriendsReady = false.obs;
   var _loggedUserGames = <Map<String, String>>[].obs;
   var _loggedUserPlatforms = <Map<String, String>>[].obs;
-  var _loggedUserDiscoverUsers = <List<dynamic>>[].obs;
+  var _loggedUserDiscoverUsers = <dynamic>[].obs;
 
   /// Getter for the logged user
   UserModel get loggedUser => _loggedUser.value;
@@ -106,7 +106,6 @@ class UserController extends GetxController {
       _permission = await Geolocator.requestPermission();
     }
     var pos = await Geolocator.getCurrentPosition();
-    log('Mi posicion es: $pos');
     await gpsService.addPositionToUser(
         user.extendedId!, pos.latitude, pos.longitude);
     user.setValues(await userExtendedService.getUserByUUID(user.extendedId!));
@@ -115,10 +114,8 @@ class UserController extends GetxController {
     _loggedUserUsername.value = user.username;
     _loggedUserEmail.value = user.email;
     _loggedUserPicture.value = user.profilePhoto;
-    _loggedUserDiscoverUsers.value = [
-      await userBasicService.getMatchmaking(
-          user.id, user.extendedId!, user.friends, user.games, user.platforms)
-    ];
+    _loggedUserDiscoverUsers.value = await userBasicService.getMatchmaking(
+        user.id, user.extendedId!, user.friends, user.games, user.platforms);
     log('Discover users: ${_loggedUserDiscoverUsers.value}');
     log('Ok');
     _loggedUserGames.value = user.games;
@@ -238,9 +235,11 @@ class UserController extends GetxController {
       await userExtendedService.getUserByUUID(uuid).then((extendedUser) async {
         if (extendedUser['friends'].length > 0) {
           for (var friend in extendedUser['friends']) {
+            log('Friend uuid ${friend['uuidBasic']}');
             await userBasicService
                 .getUserByUUID(friend['uuidBasic'])
                 .then((friendUser) async {
+              log('Friend: ${friendUser.toMap()}');
               friendUser.setValues(await userExtendedService
                   .getUserByUUID(friendUser.extendedId!));
               friends.add(friendUser);

@@ -30,9 +30,11 @@ class _LoginScreenState extends State<LoginScreen> {
       log(data.toString());
       log('userExist: $userExist');
       (userExist == 0)
-          ? await userController.logUser(username).catchError((onError) {
+          ? await userController
+              .logUser(username)
+              .then((value) => authenticationController.clearLoginErrors())
+              .catchError((onError) {
               authenticationController.ongoingLogin = false;
-              userExist = -1;
               // Future.error(onError);
             })
           : log('Error login');
