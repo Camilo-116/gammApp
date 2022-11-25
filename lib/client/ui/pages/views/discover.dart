@@ -48,74 +48,97 @@ class _DiscoverGamersState extends State<DiscoverGamers> {
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: (400 / 756) * height,
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                        ),
-                        child: Image.network(
-                          'https://picsum.photos/seed/788/600',
-                          width: (100 / 360) * width,
-                          height: (100 / 756) * height,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      Stack(
+                        alignment: Alignment.center,
                         children: [
-                          IconButton(
-                            icon: Icon(
-                              Icons.person_add,
-                              color: const Color.fromARGB(255, 235, 65, 229),
-                              size: (30 / 360) * width,
-                            ),
-                            onPressed: () async {
-                              UserModel user = userController.loggedUser;
-                              log('Add ...');
-                              await userNotificationService
-                                  .addUsernameNotification(
-                                      user.username,
-                                      user.id,
-                                      user.extendedId ?? "",
-                                      'Dembouz',
-                                      'OeXZbU6zU455O9pjtLKs',
-                                      'NB01rxyWHrsAeMAZJEWq');
-                            },
-                          ),
-                          IconButton(
-                            icon: Icon(
-                              Icons.navigate_next_rounded,
-                              color: const Color.fromARGB(255, 235, 65, 229),
-                              size: (30 / 360) * width,
-                            ),
-                            onPressed: () {
-                              log('Next');
-                            },
-                          ),
-                        ],
-                      ),
-                      Align(
-                        alignment: const AlignmentDirectional(-0.9, 0),
-                        child: Text(
-                          'Nombre de Usuario',
-                          textAlign: TextAlign.start,
-                          style: GoogleFonts.hind(
+                          Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: (400 / 756) * height,
+                            decoration: const BoxDecoration(
                               color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: (18 / 360) * width),
-                        ),
+                            ),
+                            child: Image.network(
+                              'https://picsum.photos/seed/788/600',
+                              width: (100 / 360) * width,
+                              height: (100 / 756) * height,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          Positioned(
+                              top: 16,
+                              right: 5,
+                              child: Text(
+                                'Nombre de usuario',
+                                style: GoogleFonts.hind(
+                                  color: Colors.black,
+                                  fontSize: width * (20 / 360),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              )),
+                          Positioned(
+                              top: 40,
+                              right: 5,
+                              child: Text(
+                                'email',
+                                style: GoogleFonts.hind(
+                                  color: Colors.black,
+                                  fontSize: width * (16 / 360),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              )),
+                        ],
                       ),
                       Align(
                         alignment: const AlignmentDirectional(-0.8, 0),
                         child: Text(
-                          'Juego favorito:  Rocket League\nRango: Supersonic Legend\nPlataforma: PlayStation 5',
+                          'Juegos:  Rocket League Valorant GOW3 \nPlataforma: PlayStation 5',
                           style: GoogleFonts.hind(
-                              fontSize: (14 / 360) * width,
+                              fontSize: (20 / 360) * width,
                               color: Colors.white),
                         ),
                       ),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Container(
+                          color: const Color.fromARGB(255, 34, 15, 57),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              IconButton(
+                                icon: Icon(
+                                  Icons.person_add,
+                                  color:
+                                      const Color.fromARGB(255, 235, 65, 229),
+                                  size: (48 / 360) * width,
+                                ),
+                                onPressed: () async {
+                                  UserModel user = userController.loggedUser;
+                                  log('Add ...');
+                                  await userNotificationService
+                                      .addUsernameNotification(
+                                          user.username,
+                                          user.id,
+                                          user.extendedId ?? "",
+                                          'Dembouz',
+                                          'OeXZbU6zU455O9pjtLKs',
+                                          'NB01rxyWHrsAeMAZJEWq');
+                                },
+                              ),
+                              IconButton(
+                                icon: Icon(
+                                  Icons.navigate_next_rounded,
+                                  color: Colors.white,
+                                  size: (48 / 360) * width,
+                                ),
+                                onPressed: () {
+                                  log('Next');
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
                     ],
                   ),
                 ),
