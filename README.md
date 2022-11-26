@@ -1,23 +1,35 @@
 # GammApp
-![Logo](assets\images\Logo48x48_1.png?raw=true)
+![Logo](https://github.com/Camilo-116/gammApp/blob/master/assets/images/Logo48x48_1.png)
 
 Gaming Social Network.
 
 Mobile Programming Course Final Project.
 
 # App flow
-![Sign In](https://github.com/Camilo-116/gammApp/blob/master/assets/images/Logo48x48_1.png)
-![Login page](assets\images\login.jpg?raw=true)
-![Login](assets\images\logfailed.jpg?raw=true)
-![Sign Up](assets\images\signup.jpg?raw=true)
-![Terms and Conditions](assets\images\termsandconditionsjpg?raw=true)
-![Feed](assets\images\feed.jpg?raw=true)
-![Create Post](assets\images\post.jpg?raw=true)
-![Discover](assets\images\discover.jpg?raw=true)
-![Friends view](assets\images\friendsview.jpg?raw=true)
-![User page](assets\images\user.jpg?raw=true)
-![User state](assets\images\states.jpg?raw=true)
-![User interest](assets\images\interest.jpg?raw=true)
+## Sign In
+![Sign In](https://github.com/Camilo-116/gammApp/blob/master/assets/images/inicio.jpg)
+## Login page
+![Login page](https://github.com/Camilo-116/gammApp/blob/master/assets/images/login.jpg)
+## Login
+![Login](https://github.com/Camilo-116/gammApp/blob/master/assets/images/logfailed.jpg)
+## Sign Up
+![Sign Up](https://github.com/Camilo-116/gammApp/blob/master/assets/images/signup.jpg)
+### Terms and Conditions
+![Terms and Conditions](https://github.com/Camilo-116/gammApp/blob/master/assets/images/termsandconditions.jpg)
+## Feed
+![Feed](https://github.com/Camilo-116/gammApp/blob/master/assets/images/feed.jpg)
+## Create Post
+![Create Post](https://github.com/Camilo-116/gammApp/blob/master/assets/images/post.jpg)
+## Discover
+![Discover](https://github.com/Camilo-116/gammApp/blob/master/assets/images/discover.jpg)
+## Friends view
+![Friends view](https://github.com/Camilo-116/gammApp/blob/master/assets/images/friendsview.jpg)
+## User page
+![User page](https://github.com/Camilo-116/gammApp/blob/master/assets/images/user.jpg)
+### User state
+![User state](https://github.com/Camilo-116/gammApp/blob/master/assets/images/states.jpg)
+### User interest
+![User interest](https://github.com/Camilo-116/gammApp/blob/master/assets/images/interest.jpg)
 
 ## Getting Started
 
