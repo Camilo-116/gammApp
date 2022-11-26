@@ -1,9 +1,23 @@
 # GammApp
-![Logo](assets/images/GammApp.png?raw=true)
+![Logo](assets\images\Logo48x48_1.png?raw=true)
 
 Gaming Social Network.
 
 Mobile Programming Course Final Project.
+
+# App flow
+![Sign In](assets\images\inicio.jpg?raw=true)
+![Login page](assets\images\login.jpg?raw=true)
+![Login](assets\images\logfailed.jpg?raw=true)
+![Sign Up](assets\images\signup.jpg?raw=true)
+![Terms and Conditions](assets\images\termsandconditionsjpg?raw=true)
+![Feed](assets\images\feed.jpg?raw=true)
+![Create Post](assets\images\post.jpg?raw=true)
+![Discover](assets\images\discover.jpg?raw=true)
+![Friends view](assets\images\friendsview.jpg?raw=true)
+![User page](assets\images\user.jpg?raw=true)
+![User state](assets\images\states.jpg?raw=true)
+![User interest](assets\images\interest.jpg?raw=true)
 
 ## Getting Started
 
