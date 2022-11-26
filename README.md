@@ -5,12 +5,6 @@ Gaming Social Network.
 
 Mobile Programming Course Final Project.
 
-# Vídeo de explicación del código
-[Click Here](https://youtu.be/4k6Y4F4ZGxo "Explanatory video of the code.")
-
-# Vídeo de demostración
-[Click Here](https://youtu.be/PHZ8Zs80NLM "Demo video")
-
 ## Getting Started
 
 This project is a starting point for a Flutter application.
