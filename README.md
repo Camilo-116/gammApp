@@ -6,7 +6,7 @@ Gaming Social Network.
 Mobile Programming Course Final Project.
 
 # App flow
-![Sign In](assets\images\inicio.jpg?raw=true)
+![Sign In](https://github.com/Camilo-116/gammApp/blob/master/assets/images/Logo48x48_1.png)
 ![Login page](assets\images\login.jpg?raw=true)
 ![Login](assets\images\logfailed.jpg?raw=true)
 ![Sign Up](assets\images\signup.jpg?raw=true)
